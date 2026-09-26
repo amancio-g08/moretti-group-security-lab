@@ -1,6 +1,6 @@
 # ADR-006: Identity evolves on-prem → hybrid → cloud
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-26
 - **Related:** ADR-002
 

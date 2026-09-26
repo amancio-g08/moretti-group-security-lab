@@ -1,6 +1,6 @@
 # ADR-005: Packet Tracer is the enterprise design; AWS is the operational lab
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-26
 - **Related:** ADR-001, ADR-007
 

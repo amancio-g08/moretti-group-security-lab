@@ -1,6 +1,6 @@
 # ADR-007: Minimum VM footprint, grown per phase
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-26
 - **Related:** ADR-003, ADR-004, ADR-005
 

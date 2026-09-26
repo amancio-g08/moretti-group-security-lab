@@ -1,6 +1,6 @@
 # ADR-002: AWS for infrastructure, Entra ID for cloud identity
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-26
 - **Related:** ADR-004, ADR-006
 
@@ -17,7 +17,7 @@ administrative services to the internet.
 | A. AWS only | Mature IaC; SSM gives brokered access with no inbound ports; Wazuh has a native AWS module | No native enterprise identity platform comparable to Entra ID |
 | B. Azure only | Native Entra ID integration | Azure Bastion is costly; brokered access otherwise needs a self-managed VPN |
 | C. GCP only | IAP TCP forwarding is inexpensive | Weaker fit for enterprise identity and Windows-centric scenarios |
-| D. AWS for infrastructure + Entra ID for identity | Brokered access without open ports; native AWS audit sources; industry-standard identity platform | Two platforms to operate |
+| D. AWS for infrastructure + Entra ID for identity | Brokered access without open ports; native AWS audit sources; cloud identity capabilities required by the lab (users, groups, MFA, Conditional Access where licensed) | Two platforms to operate |
 
 ## Decision
 
@@ -29,13 +29,14 @@ Option D. AWS hosts the operational lab; a dedicated Entra ID tenant provides cl
   inbound rules**, which directly satisfies the "no public administration" requirement at no
   bastion cost.
 - CloudTrail and VPC Flow Logs integrate with Wazuh natively.
-- Entra ID is independent of the infrastructure provider and demonstrates widely used identity
-  controls (MFA, Conditional Access, lifecycle).
+- Entra ID provides the cloud identity capabilities required for the lab, including users,
+  groups, MFA and, where licensed, Conditional Access. It is independent of the infrastructure
+  provider.
 - Demonstrating both platforms broadens the portfolio.
 
 ## Consequences
 
-- Positive: minimal attack surface; strong cloud-logging story; recognizable technologies.
+- Positive: minimal attack surface; strong cloud-logging story.
 - Negative: Conditional Access requires Entra ID P1, and access reviews/PIM require P2 — these
   depend on a time-limited trial. Where a feature is unavailable, the limitation is documented
   rather than simulated as if it existed.

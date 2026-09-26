@@ -10,7 +10,7 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 
 | Phase | Deliverable | Cloud cost | Status |
 |---|---|---|---|
-| 0 | Repository foundation and ADRs | None | In review |
+| 0 | Repository foundation and ADRs | None | Done |
 | 1 | Company data: departments, employees, assets, data classification, `network-matrix.yaml`, IAM roles, threat model v1 | None | Planned |
 | 2 | P01 — Packet Tracer enterprise design | None | Planned |
 | 3 | P05 — Python core (parsers, reports, matrix translation) | None | Planned |

@@ -1,6 +1,6 @@
 # ADR-003: Single-AZ deployment
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-26
 - **Related:** ADR-007
 
