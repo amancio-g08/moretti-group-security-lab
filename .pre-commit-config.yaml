@@ -25,3 +25,28 @@ repos:
         args: ["--markdown-linebreak-ext=md"]
       - id: mixed-line-ending
         args: ["--fix=lf"]
+
+  # Source-of-truth validation (ADR-001): a malformed policy file cannot be committed.
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.38.2
+    hooks:
+      - id: check-jsonschema
+        name: validate data/company.yaml
+        files: ^data/company\.yaml$
+        args: ["--schemafile", "data/schemas/company.schema.json"]
+      - id: check-jsonschema
+        name: validate data/assets.yaml
+        files: ^data/assets\.yaml$
+        args: ["--schemafile", "data/schemas/assets.schema.json"]
+      - id: check-jsonschema
+        name: validate data/network-matrix.yaml
+        files: ^data/network-matrix\.yaml$
+        args: ["--schemafile", "data/schemas/network-matrix.schema.json"]
+      - id: check-jsonschema
+        name: validate data/roles.yaml
+        files: ^data/roles\.yaml$
+        args: ["--schemafile", "data/schemas/roles.schema.json"]
+      - id: check-jsonschema
+        name: validate data/accounts.yaml
+        files: ^data/accounts\.yaml$
+        args: ["--schemafile", "data/schemas/accounts.schema.json"]

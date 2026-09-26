@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Moretti Group company profile",
+  "type": "object",
+  "required": ["company", "business_units", "departments", "classification_levels", "data_domains"],
+  "additionalProperties": false,
+  "$defs": {
+    "slug": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+    "employeeId": {"type": "string", "pattern": "^MG-[0-9]{4}$"},
+    "assetId": {"type": "string", "pattern": "^[A-Z0-9]+(-[A-Z0-9]+)*$"},
+    "classification": {"enum": ["public", "internal", "confidential", "restricted"]}
+  },
+  "properties": {
+    "company": {
+      "type": "object",
+      "required": ["name", "fictional", "ad_domain"],
+      "properties": {
+        "fictional": {"const": true},
+        "ad_domain": {"type": "string", "pattern": "\\.internal$"}
+      }
+    },
+    "business_units": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "required": ["id", "name"], "additionalProperties": false,
+        "properties": {"id": {"$ref": "#/$defs/slug"}, "name": {"type": "string"}, "description": {"type": "string"}}
+      }
+    },
+    "departments": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "required": ["id", "name", "business_unit", "segment", "head"], "additionalProperties": false,
+        "properties": {
+          "id": {"$ref": "#/$defs/slug"},
+          "name": {"type": "string"},
+          "business_unit": {"$ref": "#/$defs/slug"},
+          "segment": {"$ref": "#/$defs/slug"},
+          "head": {"$ref": "#/$defs/employeeId"}
+        }
+      }
+    },
+    "classification_levels": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["id", "rank"],
+        "properties": {"id": {"$ref": "#/$defs/classification"}, "rank": {"type": "integer", "minimum": 0}}
+      }
+    },
+    "data_domains": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["id", "name", "classification", "owner", "systems"], "additionalProperties": false,
+        "properties": {
+          "id": {"$ref": "#/$defs/slug"},
+          "name": {"type": "string"},
+          "classification": {"$ref": "#/$defs/classification"},
+          "owner": {"$ref": "#/$defs/slug"},
+          "systems": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assetId"}}
+        }
+      }
+    }
+  }
+}

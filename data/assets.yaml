@@ -1,0 +1,338 @@
+# Moretti Group — asset inventory (FICTITIOUS)
+#
+# Source of truth for hosts and network devices (ADR-001).
+# Consumed by: network matrix (asset references), Terraform (AWS hosts), Python enrichment
+# (IP -> asset -> owner -> segment), threat model.
+#
+# environments: where the asset exists — pt = Packet Tracer design, aws = operational lab
+#               (ADR-005, ADR-007). aws_phase = roadmap phase in which it is deployed.
+# criticality:  critical | high | medium | low
+# classification: highest data classification the asset stores or processes.
+#
+# Addressing convention per /24 segment:
+#   .1        default gateway (core SVI in PT; VPC router in AWS)
+#   .10-.99   static: servers, infrastructure, reserved workstation addresses
+#   .100-.199 DHCP pool for user devices (PT)
+
+assets:
+  # ---------------------------------------------------------------- servers (segment 80)
+  - id: DC01
+    type: server
+    role: Active Directory domain controller, DNS, DHCP
+    os: Windows Server 2022
+    segment: servers
+    ip: 10.10.80.10
+    owner: it
+    criticality: critical
+    classification: restricted
+    environments: [pt, aws]
+    aws_phase: 4
+  - id: DC02
+    type: server
+    role: Secondary domain controller, DNS
+    os: Windows Server 2022
+    segment: servers
+    ip: 10.10.80.11
+    owner: it
+    criticality: critical
+    classification: restricted
+    environments: [pt]
+  - id: FS01
+    type: server
+    role: File server (departmental shares)
+    os: Windows Server 2022
+    segment: servers
+    ip: 10.10.80.20
+    owner: it
+    criticality: high
+    classification: restricted
+    environments: [pt]
+  - id: APP-FIN01
+    type: server
+    role: Finance and fund operations application (web)
+    os: Ubuntu Server 24.04 LTS
+    segment: servers
+    ip: 10.10.80.30
+    owner: finance
+    criticality: critical
+    classification: restricted
+    environments: [pt, aws]
+    aws_phase: 7
+  - id: DB-FIN01
+    type: server
+    role: Finance application database (PostgreSQL)
+    os: Ubuntu Server 24.04 LTS
+    segment: servers
+    ip: 10.10.80.31
+    owner: finance
+    criticality: critical
+    classification: restricted
+    environments: [pt]
+    notes: In the AWS lab the database runs on APP-FIN01 to reduce footprint (ADR-007).
+  - id: APP-INV01
+    type: server
+    role: Investment management system (deal pipeline, portfolio monitoring)
+    os: Ubuntu Server 24.04 LTS
+    segment: servers
+    ip: 10.10.80.40
+    owner: investments
+    criticality: critical
+    classification: restricted
+    environments: [pt]
+  - id: APP-HR01
+    type: server
+    role: HR information system
+    os: Ubuntu Server 24.04 LTS
+    segment: servers
+    ip: 10.10.80.50
+    owner: hr
+    criticality: high
+    classification: restricted
+    environments: [pt]
+  - id: APP-CRM01
+    type: server
+    role: Investor relations CRM
+    os: Ubuntu Server 24.04 LTS
+    segment: servers
+    ip: 10.10.80.60
+    owner: investor-relations
+    criticality: high
+    classification: restricted
+    environments: [pt]
+  - id: GIT01
+    type: server
+    role: Internal Git server and CI runner
+    os: Ubuntu Server 24.04 LTS
+    segment: servers
+    ip: 10.10.80.70
+    owner: development
+    criticality: high
+    classification: confidential
+    environments: [pt]
+  - id: BKP01
+    type: server
+    role: Backup server
+    os: Ubuntu Server 24.04 LTS
+    segment: servers
+    ip: 10.10.80.90
+    owner: it
+    criticality: high
+    classification: restricted
+    environments: [pt]
+
+  # ---------------------------------------------------------------- security (segment 70)
+  - id: SIEM01
+    type: server
+    role: Wazuh manager, indexer and dashboard
+    os: Ubuntu Server 24.04 LTS
+    segment: security
+    ip: 10.10.70.10
+    owner: security
+    criticality: critical
+    classification: restricted
+    environments: [pt, aws]
+    aws_phase: 4
+  - id: SEC-WS01
+    type: workstation
+    role: SOC analyst workstation and authorized vulnerability scanner
+    os: Ubuntu Desktop 24.04 LTS
+    segment: security
+    ip: 10.10.70.20
+    owner: security
+    criticality: high
+    classification: restricted
+    environments: [pt]
+    notes: Deployed in AWS only if needed (ADR-007).
+
+  # ---------------------------------------------------------------- management (segment 10)
+  - id: JUMP01
+    type: server
+    role: Administrative jump host (privileged access workstation)
+    os: Windows Server 2022
+    segment: mgmt
+    ip: 10.10.10.20
+    owner: it
+    criticality: critical
+    classification: restricted
+    environments: [pt]
+    notes: In AWS the jump host role is fulfilled by AWS SSM Session Manager (ADR-005).
+
+  # ---------------------------------------------------------------- DMZ
+  - id: WEB01
+    type: server
+    role: Public corporate website
+    os: Ubuntu Server 24.04 LTS
+    segment: dmz
+    ip: 172.16.100.10
+    owner: investor-relations
+    criticality: medium
+    classification: public
+    environments: [pt]
+
+  # ---------------------------------------------------------------- workstations (reserved addresses)
+  - id: WS-EXE01
+    type: workstation
+    role: Executive workstation
+    os: Windows 11
+    segment: executive
+    ip: 10.10.100.10
+    owner: executive
+    criticality: high
+    classification: restricted
+    environments: [pt]
+  - id: WS-INV01
+    type: workstation
+    role: Investments workstation
+    os: Windows 11
+    segment: investments
+    ip: 10.10.120.10
+    owner: investments
+    criticality: high
+    classification: restricted
+    environments: [pt]
+  - id: WS-FIN01
+    type: workstation
+    role: Finance workstation
+    os: Windows 11 (PT) / Windows Server 2022 (AWS, see ADR-002)
+    segment: finance
+    ip: 10.10.20.10
+    owner: finance
+    criticality: high
+    classification: restricted
+    environments: [pt, aws]
+    aws_phase: 4
+  - id: WS-IR01
+    type: workstation
+    role: Investor relations workstation
+    os: Windows 11
+    segment: investor-relations
+    ip: 10.10.40.10
+    owner: investor-relations
+    criticality: medium
+    classification: restricted
+    environments: [pt]
+  - id: WS-OPS01
+    type: workstation
+    role: Fund operations workstation
+    os: Windows 11
+    segment: operations
+    ip: 10.10.110.10
+    owner: operations
+    criticality: medium
+    classification: confidential
+    environments: [pt]
+  - id: WS-HR01
+    type: workstation
+    role: HR workstation
+    os: Windows 11
+    segment: hr
+    ip: 10.10.30.10
+    owner: hr
+    criticality: high
+    classification: restricted
+    environments: [pt]
+  - id: WS-DEV01
+    type: workstation
+    role: Developer workstation
+    os: Ubuntu Desktop 24.04 LTS
+    segment: development
+    ip: 10.10.50.10
+    owner: development
+    criticality: medium
+    classification: confidential
+    environments: [pt, aws]
+    aws_phase: 4
+  - id: WS-IT01
+    type: workstation
+    role: IT and support workstation
+    os: Windows 11
+    segment: it
+    ip: 10.10.60.10
+    owner: it
+    criticality: medium
+    classification: internal
+    environments: [pt]
+  - id: GUEST01
+    type: workstation
+    role: Untrusted visitor device; simulated attacker in lab scenarios
+    os: Kali Linux (AWS) / generic laptop (PT)
+    segment: guest
+    ip: 10.10.90.10
+    owner: security
+    criticality: low
+    classification: public
+    environments: [pt, aws]
+    aws_phase: 4
+    notes: Used only against in-scope lab addresses (docs/lab-safety.md).
+
+  # ---------------------------------------------------------------- network devices (PT only)
+  - id: R-EDGE01
+    type: network
+    role: Internet edge router
+    os: Cisco ISR 4331 (IOS XE)
+    segment: transit
+    ip: 10.10.255.6
+    owner: it
+    criticality: critical
+    classification: internal
+    environments: [pt]
+  - id: FW01
+    type: network
+    role: Perimeter firewall (inside, outside, DMZ)
+    os: Cisco ASA 5506-X
+    segment: transit
+    ip: 10.10.255.2
+    owner: it
+    criticality: critical
+    classification: internal
+    environments: [pt]
+  - id: CORE-SW01
+    type: network
+    role: Core Layer 3 switch (inter-VLAN routing and ACLs)
+    os: Cisco Catalyst 3650
+    segment: mgmt
+    ip: 10.10.10.1
+    owner: it
+    criticality: critical
+    classification: internal
+    environments: [pt]
+  - id: ACC-SW01
+    type: network
+    role: Access switch, floor 1 (executive, investments, finance, HR)
+    os: Cisco Catalyst 2960
+    segment: mgmt
+    ip: 10.10.10.11
+    owner: it
+    criticality: high
+    classification: internal
+    environments: [pt]
+  - id: ACC-SW02
+    type: network
+    role: Access switch, floor 2 (investor relations, operations, development, guest)
+    os: Cisco Catalyst 2960
+    segment: mgmt
+    ip: 10.10.10.12
+    owner: it
+    criticality: high
+    classification: internal
+    environments: [pt]
+  - id: ACC-SW03
+    type: network
+    role: Access switch, IT and security
+    os: Cisco Catalyst 2960
+    segment: mgmt
+    ip: 10.10.10.13
+    owner: it
+    criticality: high
+    classification: internal
+    environments: [pt]
+  - id: SRV-SW01
+    type: network
+    role: Server farm switch
+    os: Cisco Catalyst 2960
+    segment: mgmt
+    ip: 10.10.10.14
+    owner: it
+    criticality: critical
+    classification: internal
+    environments: [pt]

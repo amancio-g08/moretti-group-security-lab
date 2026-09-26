@@ -1,0 +1,87 @@
+# Moretti Group — non-standard accounts (FICTITIOUS)
+#
+# Admin, service and break-glass accounts. Standard employee accounts come from employees.csv.
+# Consumed by: AD provisioning (P04), Wazuh CDB lists (P03: "privileged account used from an
+# unexpected host", "break-glass account used"), access reviews, Python enrichment.
+#
+# No passwords are stored here or anywhere in Git (docs/lab-safety.md).
+
+admin_accounts:
+  # Separate accounts for privileged work: a phished daily account yields no admin rights.
+  - username: adm-marcio.guimaraes
+    owner: MG-0080
+    privileged_roles: [tier0-domain-admin]
+    justification: IT manager is the single named Tier 0 administrator.
+  - username: adm-ana.costa
+    owner: MG-0081
+    privileged_roles: [server-admin]
+    justification: Systems administrator for Windows and Linux servers.
+  - username: adm-simone.araujo
+    owner: MG-0083
+    privileged_roles: [server-admin]
+    justification: Systems administrator for Windows and Linux servers.
+  - username: adm-wagner.brito
+    owner: MG-0084
+    privileged_roles: [server-admin]
+    justification: Cloud engineer; administers cloud-hosted servers.
+  - username: adm-rogerio.quintela
+    owner: MG-0082
+    privileged_roles: [network-admin]
+    justification: Network administrator.
+  - username: adm-kelly.mattos
+    owner: MG-0085
+    privileged_roles: [endpoint-admin]
+    justification: Endpoint administrator responsible for workstation builds and software.
+  - username: adm-luciana.fontana
+    owner: MG-0100
+    privileged_roles: [siem-admin]
+    justification: Head of security owns the SIEM platform.
+  - username: adm-ingrid.sales
+    owner: MG-0102
+    privileged_roles: [siem-admin]
+    justification: Security engineer maintains detections.
+  - username: adm-pedro.alves
+    owner: MG-0101
+    privileged_roles: [soc-responder]
+    justification: SOC analyst performs account containment during incidents.
+
+service_accounts:
+  - username: svc-backup
+    purpose: Backup of Windows file shares on FS01
+    owner: it
+    type: gmsa
+    interactive_logon: false
+    entitlements: [Backup Operators on FS01]
+    justification: Reads files for backup without being a server administrator.
+  - username: svc-vulnscan
+    purpose: Credentialed vulnerability scanning from SEC-WS01
+    owner: security
+    type: standard
+    interactive_logon: false
+    entitlements: [Read-only local access on scanned hosts]
+    justification: >-
+      Authorized scanner (network rule NM-028). Its failed and successful logons across many
+      hosts are expected and are the basis of false-positive scenario FP-01.
+  - username: svc-app-fin
+    purpose: LDAP bind for single sign-on on APP-FIN01
+    owner: finance
+    type: standard
+    interactive_logon: false
+    entitlements: [Read directory objects]
+    justification: The application reads group membership to map users to modules.
+  - username: svc-git-ldap
+    purpose: LDAP bind for authentication on GIT01
+    owner: development
+    type: standard
+    interactive_logon: false
+    entitlements: [Read directory objects]
+    justification: The Git server authenticates developers against AD.
+
+break_glass_accounts:
+  - username: bg-admin01
+    owner: security
+    privileged_roles: [tier0-domain-admin]
+    justification: >-
+      Emergency access if normal administration is unavailable. Credentials are sealed and
+      held by the security team; any use raises a critical alert and requires an incident
+      record.

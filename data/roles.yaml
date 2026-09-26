@@ -1,0 +1,332 @@
+# Moretti Group — roles and entitlements (FICTITIOUS)
+#
+# Source of truth for RBAC (ADR-001). Every permission a person holds must be traceable to a
+# role defined here, and every role must state why it needs each entitlement.
+# Consumed by: AD provisioning (P04, Phase 5), Entra ID (Phase 8), access reviews, Python checks.
+#
+# Group model: AGDLP
+#   Accounts -> Global groups (one per role, GG-Role-*)
+#            -> Domain Local groups (one per entitlement, DL-*)
+#            -> Permissions on the resource
+# Adding a person to a role therefore grants exactly the entitlements of that role, and a
+# resource owner only ever manages permissions for DL groups.
+
+entitlements:
+  # ---------------------------------------------------------------- finance application
+  - id: fin-ledger-maker
+    system: APP-FIN01
+    access: Create journal entries and payment requests
+    ad_group: DL-APP-FIN-Ledger-Maker
+    owner: finance
+    classification: restricted
+  - id: fin-payment-approver
+    system: APP-FIN01
+    access: Approve payment requests (cannot create them)
+    ad_group: DL-APP-FIN-Payment-Approver
+    owner: finance
+    classification: restricted
+  - id: fin-fundops
+    system: APP-FIN01
+    access: Fund administration module (capital calls, settlements)
+    ad_group: DL-APP-FIN-FundOps
+    owner: operations
+    classification: confidential
+  - id: fin-reports-ro
+    system: APP-FIN01
+    access: Read-only financial reports
+    ad_group: DL-APP-FIN-Reports-RO
+    owner: finance
+    classification: restricted
+  # ---------------------------------------------------------------- investment system
+  - id: inv-pipeline-rw
+    system: APP-INV01
+    access: Create and edit deals, memos and portfolio monitoring data
+    ad_group: DL-APP-INV-Pipeline-RW
+    owner: investments
+    classification: restricted
+  - id: inv-committee-approver
+    system: APP-INV01
+    access: Record investment committee decisions
+    ad_group: DL-APP-INV-Committee
+    owner: investments
+    classification: restricted
+  - id: inv-pipeline-ro
+    system: APP-INV01
+    access: Read-only view of pipeline and portfolio dashboards
+    ad_group: DL-APP-INV-Pipeline-RO
+    owner: investments
+    classification: restricted
+  # ---------------------------------------------------------------- CRM
+  - id: crm-rw
+    system: APP-CRM01
+    access: Manage investor records, commitments and KYC documents
+    ad_group: DL-APP-CRM-RW
+    owner: investor-relations
+    classification: restricted
+  - id: crm-ro
+    system: APP-CRM01
+    access: Read-only investor dashboards
+    ad_group: DL-APP-CRM-RO
+    owner: investor-relations
+    classification: restricted
+  # ---------------------------------------------------------------- HR system
+  - id: hris-rw
+    system: APP-HR01
+    access: Employee records (excluding payroll)
+    ad_group: DL-APP-HR-Records-RW
+    owner: hr
+    classification: restricted
+  - id: hris-payroll-rw
+    system: APP-HR01
+    access: Payroll and compensation data
+    ad_group: DL-APP-HR-Payroll-RW
+    owner: hr
+    classification: restricted
+  - id: hris-payroll-ro
+    system: APP-HR01
+    access: Read-only payroll data for approval
+    ad_group: DL-APP-HR-Payroll-RO
+    owner: hr
+    classification: restricted
+  # ---------------------------------------------------------------- file shares (FS01)
+  - {id: fs-public-ro,         system: FS01, access: "\\\\FS01\\Public read-only",          ad_group: DL-FS-Public-RO,        owner: executive,          classification: internal}
+  - {id: fs-executive-rw,      system: FS01, access: "\\\\FS01\\Executive read/write",      ad_group: DL-FS-Executive-RW,     owner: executive,          classification: restricted}
+  - {id: fs-investments-rw,    system: FS01, access: "\\\\FS01\\Investments read/write",    ad_group: DL-FS-Investments-RW,   owner: investments,        classification: restricted}
+  - {id: fs-finance-rw,        system: FS01, access: "\\\\FS01\\Finance read/write",        ad_group: DL-FS-Finance-RW,       owner: finance,            classification: restricted}
+  - {id: fs-ir-rw,             system: FS01, access: "\\\\FS01\\InvestorRelations read/write", ad_group: DL-FS-IR-RW,         owner: investor-relations, classification: restricted}
+  - {id: fs-operations-rw,     system: FS01, access: "\\\\FS01\\Operations read/write",     ad_group: DL-FS-Operations-RW,    owner: operations,         classification: confidential}
+  - {id: fs-hr-rw,             system: FS01, access: "\\\\FS01\\HR read/write",             ad_group: DL-FS-HR-RW,            owner: hr,                 classification: restricted}
+  - {id: fs-development-rw,    system: FS01, access: "\\\\FS01\\Development read/write",    ad_group: DL-FS-Development-RW,   owner: development,        classification: confidential}
+  - {id: fs-it-rw,             system: FS01, access: "\\\\FS01\\IT read/write",             ad_group: DL-FS-IT-RW,            owner: it,                 classification: internal}
+  - {id: fs-security-rw,       system: FS01, access: "\\\\FS01\\Security read/write",       ad_group: DL-FS-Security-RW,      owner: security,           classification: restricted}
+  # ---------------------------------------------------------------- engineering
+  - id: git-developer
+    system: GIT01
+    access: Clone, push feature branches, open merge requests
+    ad_group: DL-GIT-Developer
+    owner: development
+    classification: confidential
+  - id: git-maintainer
+    system: GIT01
+    access: Merge to protected branches and manage CI pipelines
+    ad_group: DL-GIT-Maintainer
+    owner: development
+    classification: confidential
+  # ---------------------------------------------------------------- IT and security operations
+  - id: jump-access
+    system: JUMP01
+    access: Remote Desktop logon to the jump host
+    ad_group: DL-JUMP01-RDP
+    owner: it
+    classification: restricted
+  - id: remote-assist
+    system: workstations
+    access: Remote Desktop to employee workstations for support
+    ad_group: DL-WS-RemoteAssist
+    owner: it
+    classification: internal
+  - id: ad-password-reset
+    system: DC01
+    access: Reset passwords and unlock accounts in the standard user OUs (not admin or service accounts)
+    ad_group: DL-AD-UserPasswordReset
+    owner: it
+    classification: restricted
+  - id: siem-analyst
+    system: SIEM01
+    access: Search events, triage alerts, manage cases
+    ad_group: DL-SIEM-Analyst
+    owner: security
+    classification: restricted
+  # ---------------------------------------------------------------- privileged (admin accounts only)
+  - id: priv-domain-admin
+    system: DC01
+    access: Domain Admins (Tier 0)
+    ad_group: Domain Admins
+    owner: it
+    classification: restricted
+    privileged: true
+  - id: priv-server-admin
+    system: servers
+    access: Local administrator on member servers (Tier 1)
+    ad_group: DL-Servers-LocalAdmin
+    owner: it
+    classification: restricted
+    privileged: true
+  - id: priv-network-admin
+    system: network-devices
+    access: Privilege level 15 on switches, firewall and router
+    ad_group: DL-Network-Admin
+    owner: it
+    classification: restricted
+    privileged: true
+  - id: priv-workstation-admin
+    system: workstations
+    access: Local administrator on workstations (Tier 2)
+    ad_group: DL-Workstations-LocalAdmin
+    owner: it
+    classification: restricted
+    privileged: true
+  - id: priv-siem-admin
+    system: SIEM01
+    access: Manage Wazuh rules, decoders, agents and users
+    ad_group: DL-SIEM-Admin
+    owner: security
+    classification: restricted
+    privileged: true
+  - id: priv-ad-disable-users
+    system: DC01
+    access: Disable user accounts in the standard user OUs (incident containment)
+    ad_group: DL-AD-UserDisable
+    owner: security
+    classification: restricted
+    privileged: true
+
+# Granted to every active employee through Domain Users.
+baseline_entitlements: [fs-public-ro]
+
+# Business roles, assigned to people through employees.csv.
+roles:
+  - id: executive-officer
+    ad_group: GG-Role-Executive
+    departments: [executive]
+    entitlements: [fin-reports-ro, inv-pipeline-ro, crm-ro, fs-executive-rw]
+    review: quarterly
+    justification: >-
+      The board oversees the whole business and needs read-only visibility of finance,
+      investments and investors. No write access to operational systems: decisions are
+      recorded by the teams that own them.
+  - id: investment-lead
+    ad_group: GG-Role-InvestmentLead
+    departments: [investments]
+    entitlements: [inv-pipeline-rw, inv-committee-approver, fs-investments-rw]
+    review: quarterly
+    justification: Partners and principals manage deals and record investment committee decisions.
+  - id: investment-professional
+    ad_group: GG-Role-InvestmentPro
+    departments: [investments]
+    entitlements: [inv-pipeline-rw, fs-investments-rw]
+    review: quarterly
+    justification: >-
+      Associates and analysts build deal materials and monitor the portfolio; they cannot record
+      committee decisions.
+  - id: finance-manager
+    ad_group: GG-Role-FinanceManager
+    departments: [finance]
+    entitlements: [fin-payment-approver, fin-reports-ro, fs-finance-rw]
+    review: quarterly
+    justification: >-
+      Approves payments. Deliberately has no maker entitlement: segregation of duties means the
+      person who approves a payment cannot also create it.
+  - id: finance-staff
+    ad_group: GG-Role-FinanceStaff
+    departments: [finance]
+    entitlements: [fin-ledger-maker, fs-finance-rw]
+    review: quarterly
+    justification: Records transactions and prepares payments that a finance manager must approve.
+  - id: investor-relations
+    ad_group: GG-Role-InvestorRelations
+    departments: [investor-relations]
+    entitlements: [crm-rw, fs-ir-rw]
+    review: quarterly
+    justification: Manages investor relationships, commitments and KYC documentation.
+  - id: operations-staff
+    ad_group: GG-Role-Operations
+    departments: [operations]
+    entitlements: [fin-fundops, fs-operations-rw]
+    review: semiannual
+    justification: >-
+      Runs fund administration in the finance application through a dedicated module, without
+      access to the general ledger or payment approval.
+  - id: hr-manager
+    ad_group: GG-Role-HRManager
+    departments: [hr]
+    entitlements: [hris-rw, hris-payroll-ro, fs-hr-rw]
+    review: quarterly
+    justification: Manages employee records and reviews payroll before it is paid.
+  - id: hr-staff
+    ad_group: GG-Role-HRStaff
+    departments: [hr]
+    entitlements: [hris-rw, fs-hr-rw]
+    review: quarterly
+    justification: Maintains employee records and recruiting; no access to compensation data.
+  - id: hr-payroll
+    ad_group: GG-Role-HRPayroll
+    departments: [hr]
+    entitlements: [hris-rw, hris-payroll-rw, fs-hr-rw]
+    review: quarterly
+    justification: Processes payroll and benefits.
+  - id: developer
+    ad_group: GG-Role-Developer
+    departments: [development]
+    entitlements: [git-developer, fs-development-rw]
+    review: semiannual
+    justification: >-
+      Writes code through merge requests. No access to production business systems
+      (network rule NM-026) and no ability to merge to protected branches.
+  - id: dev-lead
+    ad_group: GG-Role-DevLead
+    departments: [development]
+    entitlements: [git-maintainer, fs-development-rw]
+    review: semiannual
+    justification: Reviews and merges code and maintains CI pipelines.
+  - id: it-staff
+    ad_group: GG-Role-IT
+    departments: [it]
+    entitlements: [jump-access, remote-assist, fs-it-rw]
+    review: quarterly
+    justification: >-
+      Standard accounts of IT staff can reach the jump host and assist users. Administrative
+      rights are held only by separate admin accounts (accounts.yaml).
+  - id: support-agent
+    ad_group: GG-Role-Support
+    departments: [support]
+    entitlements: [remote-assist, ad-password-reset, fs-it-rw]
+    review: quarterly
+    justification: >-
+      Service desk resets passwords and assists users. The reset right is delegated only on
+      standard user OUs, so support cannot take over admin or service accounts.
+  - id: security-analyst
+    ad_group: GG-Role-SecurityAnalyst
+    departments: [security]
+    entitlements: [siem-analyst, jump-access, fs-security-rw]
+    review: quarterly
+    justification: Monitors and investigates alerts. Containment rights are held by admin accounts.
+  - id: security-lead
+    ad_group: GG-Role-SecurityLead
+    departments: [security]
+    entitlements: [siem-analyst, jump-access, fs-security-rw]
+    review: quarterly
+    justification: Leads the security function; SIEM administration is done with an admin account.
+
+# Privileged roles, assigned only to admin accounts in accounts.yaml (never to daily accounts).
+privileged_roles:
+  - id: tier0-domain-admin
+    tier: 0
+    entitlements: [priv-domain-admin]
+    review: monthly
+    justification: Administration of the domain itself. Kept to one named admin plus break-glass.
+  - id: server-admin
+    tier: 1
+    entitlements: [priv-server-admin, jump-access]
+    review: quarterly
+    justification: Administration of member servers from the jump host.
+  - id: network-admin
+    tier: 1
+    entitlements: [priv-network-admin, jump-access]
+    review: quarterly
+    justification: Administration of network devices from the jump host.
+  - id: endpoint-admin
+    tier: 2
+    entitlements: [priv-workstation-admin]
+    review: quarterly
+    justification: Workstation software and configuration management.
+  - id: siem-admin
+    tier: 1
+    entitlements: [priv-siem-admin, jump-access]
+    review: quarterly
+    justification: Maintains detections and the SIEM platform.
+  - id: soc-responder
+    tier: 1
+    entitlements: [priv-ad-disable-users, jump-access]
+    review: quarterly
+    justification: Allows the SOC to contain an incident by disabling a compromised user account.

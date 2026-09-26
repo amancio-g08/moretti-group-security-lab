@@ -4,9 +4,8 @@ This document describes the overall architecture of the Moretti Group Security L
 five projects form a single, integrated system. Decisions referenced here are recorded in
 [`docs/adr/`](adr/).
 
-> **Scope of this version:** architecture agreed in Phase 0. Detailed company data, the full
-> communication matrix, asset inventory and threat model are produced in Phase 1 and linked here
-> once they exist.
+> Company data, the full communication matrix, the asset inventory and the roles live in
+> [`data/`](../data/). This document explains how they fit together.
 
 ---
 
@@ -90,23 +89,25 @@ flowchart TB
 
 Both environments use the same segment identifiers and address plan so that a flow in the matrix
 means the same thing everywhere. The table below is the **segment plan**; the flows between
-segments are defined in `data/network-matrix.yaml` (Phase 1).
+segments are defined in [`data/network-matrix.yaml`](../data/network-matrix.yaml).
 
 | ID | Segment | CIDR | Packet Tracer | AWS lab |
 |---|---|---|---|---|
 | 10 | NET-MGMT (network device management) | 10.10.10.0/24 | VLAN 10 | — (SSM replaces it) |
 | 20 | FINANCE | 10.10.20.0/24 | VLAN 20 | Subnet |
 | 30 | HR | 10.10.30.0/24 | VLAN 30 | — |
-| 40 | SALES | 10.10.40.0/24 | VLAN 40 | — |
+| 40 | INVESTOR-RELATIONS | 10.10.40.0/24 | VLAN 40 | — |
 | 50 | DEVELOPMENT | 10.10.50.0/24 | VLAN 50 | Subnet |
 | 60 | IT (IT + Support) | 10.10.60.0/24 | VLAN 60 | — |
 | 70 | SECURITY | 10.10.70.0/24 | VLAN 70 | Subnet |
 | 80 | SERVERS | 10.10.80.0/24 | VLAN 80 | Subnet |
 | 90 | GUEST (internet only) | 10.10.90.0/24 | VLAN 90 | Subnet |
 | 100 | EXECUTIVE | 10.10.100.0/24 | VLAN 100 | — |
-| 110 | OPERATIONS | 10.10.110.0/24 | VLAN 110 | — |
+| 110 | OPERATIONS (fund back office) | 10.10.110.0/24 | VLAN 110 | — |
+| 120 | INVESTMENTS | 10.10.120.0/24 | VLAN 120 | — |
 | 999 | BLACKHOLE (native / unused ports) | — | VLAN 999 | — |
 | DMZ | Public services | 172.16.100.0/24 | Firewall DMZ | — |
+| TRANSIT | Core ↔ firewall ↔ edge router links | 10.10.255.0/24 | Routed /30 links | — |
 
 Notes:
 
@@ -213,5 +214,7 @@ Known constraints for this correlation (documented, not hidden):
 ## 8. Related documents
 
 - [Roadmap](roadmap.md)
+- [Threat model](threat-model.md)
+- [Data classification](data-classification.md)
 - [Lab safety and rules of engagement](lab-safety.md)
 - [Architecture Decision Records](adr/)

@@ -1,0 +1,152 @@
+# Moretti Group — company profile (FICTITIOUS)
+#
+# Source of truth for business structure, departments and data ownership (ADR-001).
+# Consumed by: IAM provisioning (P04), Python enrichment (P05), threat model, documentation.
+
+company:
+  name: Moretti Group
+  tagline: Private Investment & Technology
+  fictional: true
+  description: >-
+    Private investment firm with an in-house technology arm that builds and operates the
+    platforms used by the investment business (deal management, fund operations, investor
+    reporting).
+  ad_domain: corp.moretti.internal
+  entra_tenant: moretti-lab.onmicrosoft.com   # placeholder; confirmed when the tenant is created (Phase 8)
+  employee_id_format: "MG-NNNN"
+  username_format: "firstname.lastname (lowercase, ASCII)"
+
+business_units:
+  - id: private-investments
+    name: Private Investments
+    description: Investment decisions, fund finance, investor relationships and back office.
+  - id: technology
+    name: Technology
+    description: Builds and operates the group's platforms and corporate IT.
+  - id: security
+    name: Security
+    description: Information security, SOC and identity governance for the whole group.
+
+# Each department maps to exactly one network segment (see network-matrix.yaml).
+# `head` is the department head's employee_id (see employees.csv).
+departments:
+  - id: executive
+    name: Executive Board
+    business_unit: private-investments
+    segment: executive
+    head: MG-0001
+  - id: investments
+    name: Investments
+    business_unit: private-investments
+    segment: investments
+    head: MG-0010
+  - id: finance
+    name: Finance
+    business_unit: private-investments
+    segment: finance
+    head: MG-0020
+  - id: investor-relations
+    name: Investor Relations
+    business_unit: private-investments
+    segment: investor-relations
+    head: MG-0030
+  - id: operations
+    name: Fund Operations
+    business_unit: private-investments
+    segment: operations
+    head: MG-0040
+  - id: hr
+    name: Human Resources
+    business_unit: private-investments
+    segment: hr
+    head: MG-0050
+  - id: development
+    name: Software Development
+    business_unit: technology
+    segment: development
+    head: MG-0060
+  - id: it
+    name: IT Infrastructure
+    business_unit: technology
+    segment: it
+    head: MG-0080
+  - id: support
+    name: IT Support
+    business_unit: technology
+    segment: it            # shares segment 60 with IT; separated by identity, not by network
+    head: MG-0090
+  - id: security
+    name: Information Security
+    business_unit: security
+    segment: security
+    head: MG-0100
+
+# Data classification levels. Handling rules: docs/data-classification.md
+classification_levels:
+  - id: public
+    rank: 0
+  - id: internal
+    rank: 1
+  - id: confidential
+    rank: 2
+  - id: restricted
+    rank: 3
+
+# Business data domains ("crown jewels" are the restricted ones).
+# owner = accountable department; systems = asset IDs from assets.yaml.
+data_domains:
+  - id: deal-pipeline
+    name: Deal pipeline and investment memos
+    classification: restricted
+    owner: investments
+    systems: [APP-INV01, FS01]
+  - id: portfolio-data
+    name: Portfolio company financials and board materials
+    classification: restricted
+    owner: investments
+    systems: [APP-INV01, FS01]
+  - id: investor-records
+    name: Investor (LP) records, commitments and KYC documents
+    classification: restricted
+    owner: investor-relations
+    systems: [APP-CRM01, FS01]
+  - id: general-ledger
+    name: General ledger, payments and treasury
+    classification: restricted
+    owner: finance
+    systems: [APP-FIN01, DB-FIN01]
+  - id: fund-operations
+    name: Fund administration, capital calls and settlements
+    classification: confidential
+    owner: operations
+    systems: [APP-FIN01]
+  - id: hr-records
+    name: Employee records, payroll and performance data
+    classification: restricted
+    owner: hr
+    systems: [APP-HR01, FS01]
+  - id: source-code
+    name: Platform source code and CI/CD configuration
+    classification: confidential
+    owner: development
+    systems: [GIT01]
+  - id: directory
+    name: Identity directory and credentials
+    classification: restricted
+    owner: it
+    systems: [DC01, DC02]
+  - id: security-telemetry
+    name: Security logs, alerts and incident records
+    classification: restricted
+    owner: security
+    systems: [SIEM01]
+  - id: corporate-internal
+    name: Policies, procedures and internal communications
+    classification: internal
+    owner: executive
+    systems: [FS01]
+  - id: public-website
+    name: Public website content
+    classification: public
+    owner: investor-relations
+    systems: [WEB01]

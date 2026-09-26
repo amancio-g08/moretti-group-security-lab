@@ -1,0 +1,482 @@
+# Moretti Group — network communication policy (FICTITIOUS)
+#
+# Single source of truth for "who may talk to whom" (ADR-001). The same policy is enforced with
+# different controls in each environment (ADR-005):
+#   - Packet Tracer: VLANs, extended ACLs on the core switch, ASA rules at the perimeter
+#   - AWS: subnets, Security Groups (allow-only, stateful) and Network ACLs where needed
+#
+# Model
+#   segments        network zones (VLAN in PT, subnet in AWS)
+#   segment_groups  named sets of segments, to keep rules short
+#   services        protocol/port sets (like firewall service objects); no hosts here
+#   rules           source -> destination : service -> action
+#
+# References used in rules
+#   seg:<segment-id>     a whole segment
+#   grp:<group-id>       a segment group
+#   asset:<ASSET-ID>     one host from assets.yaml
+#   internet             anything outside the organization
+#
+# Evaluation: rules are evaluated in order; first match wins. Anything not matched is denied by
+# the implicit default rule at the end. DENY rules are written explicitly when they document an
+# important security boundary. In AWS, a DENY is implemented as the absence of an allow rule
+# (Security Groups cannot deny), or as a Network ACL rule when an explicit deny is required.
+
+version: 1
+default_action: deny
+
+segments:
+  - id: mgmt
+    name: NET-MGMT
+    vlan: 10
+    cidr: 10.10.10.0/24
+    trust: management
+    description: Network device management interfaces and the administrative jump host.
+    environments: [pt]
+  - id: finance
+    name: FINANCE
+    vlan: 20
+    cidr: 10.10.20.0/24
+    trust: user-restricted
+    description: Finance workstations.
+    environments: [pt, aws]
+  - id: hr
+    name: HR
+    vlan: 30
+    cidr: 10.10.30.0/24
+    trust: user-restricted
+    description: Human resources workstations.
+    environments: [pt]
+  - id: investor-relations
+    name: INVESTOR-RELATIONS
+    vlan: 40
+    cidr: 10.10.40.0/24
+    trust: user
+    description: Investor relations and business development workstations.
+    environments: [pt]
+  - id: development
+    name: DEVELOPMENT
+    vlan: 50
+    cidr: 10.10.50.0/24
+    trust: user
+    description: Developer workstations.
+    environments: [pt, aws]
+  - id: it
+    name: IT
+    vlan: 60
+    cidr: 10.10.60.0/24
+    trust: user
+    description: IT infrastructure and support staff workstations (separated by identity, not network).
+    environments: [pt]
+  - id: security
+    name: SECURITY
+    vlan: 70
+    cidr: 10.10.70.0/24
+    trust: security
+    description: SIEM and SOC workstations.
+    environments: [pt, aws]
+  - id: servers
+    name: SERVERS
+    vlan: 80
+    cidr: 10.10.80.0/24
+    trust: server
+    description: Internal servers and business applications.
+    environments: [pt, aws]
+  - id: guest
+    name: GUEST
+    vlan: 90
+    cidr: 10.10.90.0/24
+    trust: untrusted
+    description: Visitor devices; internet access only.
+    environments: [pt, aws]
+  - id: executive
+    name: EXECUTIVE
+    vlan: 100
+    cidr: 10.10.100.0/24
+    trust: user-restricted
+    description: Executive board workstations.
+    environments: [pt]
+  - id: operations
+    name: OPERATIONS
+    vlan: 110
+    cidr: 10.10.110.0/24
+    trust: user
+    description: Fund operations (back office) workstations.
+    environments: [pt]
+  - id: investments
+    name: INVESTMENTS
+    vlan: 120
+    cidr: 10.10.120.0/24
+    trust: user-restricted
+    description: Investment team workstations.
+    environments: [pt]
+  - id: dmz
+    name: DMZ
+    vlan: null
+    cidr: 172.16.100.0/24
+    trust: dmz
+    description: Internet-facing services behind the perimeter firewall.
+    environments: [pt]
+  - id: transit
+    name: TRANSIT
+    vlan: null
+    cidr: 10.10.255.0/24
+    trust: infrastructure
+    description: Point-to-point links core <-> firewall (10.10.255.0/30) and firewall <-> edge router (10.10.255.4/30).
+    environments: [pt]
+  - id: blackhole
+    name: BLACKHOLE
+    vlan: 999
+    cidr: null
+    trust: none
+    description: Native VLAN and unused switch ports. No IP interface; carries no traffic.
+    environments: [pt]
+
+segment_groups:
+  - id: corporate-users
+    description: All workstation segments of employees.
+    segments: [executive, investments, finance, investor-relations, operations, hr, development, it, security]
+  - id: internal
+    description: Every internal segment except guest and DMZ.
+    segments: [mgmt, executive, investments, finance, investor-relations, operations, hr, development, it, security, servers]
+
+services:
+  - id: ad-services
+    description: Active Directory authentication, directory, DNS, time and Group Policy
+    ports:
+      - {proto: tcp, port: 53}
+      - {proto: udp, port: 53}
+      - {proto: tcp, port: 88}
+      - {proto: udp, port: 88}
+      - {proto: tcp, port: 135}
+      - {proto: tcp, port: 389}
+      - {proto: udp, port: 389}
+      - {proto: tcp, port: 445}
+      - {proto: tcp, port: 464}
+      - {proto: udp, port: 464}
+      - {proto: tcp, port: 636}
+      - {proto: tcp, port: 3268-3269}
+      - {proto: udp, port: 123}
+      - {proto: tcp, port: 49152-65535}
+    notes: >-
+      The dynamic RPC range is required by Windows domain members. In production it would be
+      narrowed through registry configuration on the domain controllers.
+  - id: dhcp
+    description: DHCP relayed by the core switch (ip helper-address)
+    ports:
+      - {proto: udp, port: 67}
+  - id: ntp
+    description: Network Time Protocol
+    ports:
+      - {proto: udp, port: 123}
+  - id: https
+    description: Web applications over TLS
+    ports:
+      - {proto: tcp, port: 443}
+  - id: web
+    description: Web browsing
+    ports:
+      - {proto: tcp, port: 80}
+      - {proto: tcp, port: 443}
+  - id: dns
+    description: DNS resolution
+    ports:
+      - {proto: udp, port: 53}
+      - {proto: tcp, port: 53}
+  - id: smb
+    description: File sharing
+    ports:
+      - {proto: tcp, port: 445}
+  - id: git
+    description: Git over HTTPS and SSH
+    ports:
+      - {proto: tcp, port: 443}
+      - {proto: tcp, port: 22}
+  - id: postgresql
+    description: PostgreSQL database
+    ports:
+      - {proto: tcp, port: 5432}
+  - id: server-admin
+    description: Server administration (RDP, SSH, WinRM)
+    ports:
+      - {proto: tcp, port: 3389}
+      - {proto: tcp, port: 22}
+      - {proto: tcp, port: 5985-5986}
+  - id: rdp
+    description: Remote Desktop
+    ports:
+      - {proto: tcp, port: 3389}
+  - id: device-admin
+    description: Network device administration (SSHv2 only; Telnet is disabled)
+    ports:
+      - {proto: tcp, port: 22}
+  - id: wazuh-agent
+    description: Wazuh agent communication and enrollment
+    ports:
+      - {proto: tcp, port: 1514}
+      - {proto: tcp, port: 1515}
+  - id: syslog
+    description: Syslog from network devices
+    ports:
+      - {proto: udp, port: 514}
+  - id: backup-agent
+    description: Backup file daemon on protected servers
+    ports:
+      - {proto: tcp, port: 9102}
+  - id: any
+    description: Any protocol and port
+    ports:
+      - {proto: any, port: any}
+
+rules:
+  # ------------------------------------------------------------------ perimeter
+  - id: NM-001
+    source: [internet]
+    destination: [asset:WEB01]
+    service: https
+    action: allow
+    applies_to: [pt]
+    justification: Public website is the only internet-facing service.
+  - id: NM-002
+    source: [internet]
+    destination: [grp:internal, seg:guest]
+    service: any
+    action: deny
+    log: true
+    applies_to: [pt, aws]
+    justification: No inbound internet access to internal networks. In AWS, no Security Group allows inbound traffic from 0.0.0.0/0 and administration uses SSM.
+  - id: NM-003
+    source: [seg:dmz]
+    destination: [grp:internal]
+    service: any
+    action: deny
+    log: true
+    applies_to: [pt]
+    justification: A compromised public web server must not become a path into the internal network.
+
+  # ------------------------------------------------------------------ guest isolation
+  - id: NM-004
+    source: [seg:guest]
+    destination: [grp:internal, seg:dmz]
+    service: any
+    action: deny
+    log: true
+    applies_to: [pt, aws]
+    justification: Visitor devices are untrusted and get internet access only. Denied attempts are the evidence source for scenario SCN-04.
+  - id: NM-005
+    source: [seg:guest]
+    destination: [internet]
+    service: web
+    action: allow
+    applies_to: [pt, aws]
+    justification: Guest internet access. DNS is resolved by a public resolver, never by the internal DCs.
+  - id: NM-006
+    source: [seg:guest]
+    destination: [internet]
+    service: dns
+    action: allow
+    applies_to: [pt, aws]
+    justification: Guest DNS goes to a public resolver so guests learn nothing about internal names.
+
+  # ------------------------------------------------------------------ identity and core infrastructure
+  - id: NM-010
+    source: [grp:corporate-users, seg:servers, seg:mgmt]
+    destination: [asset:DC01, asset:DC02]
+    service: ad-services
+    action: allow
+    applies_to: [pt, aws]
+    justification: Every domain-joined device must authenticate, resolve names, sync time and apply Group Policy.
+  - id: NM-011
+    source: [grp:corporate-users]
+    destination: [asset:DC01]
+    service: dhcp
+    action: allow
+    applies_to: [pt]
+    justification: Address assignment for corporate workstations, relayed by the core switch. In AWS, addressing is provided by the VPC.
+  - id: NM-012
+    source: [seg:mgmt]
+    destination: [asset:DC01]
+    service: ntp
+    action: allow
+    applies_to: [pt]
+    justification: Network devices synchronize time with the PDC emulator so log timestamps are comparable.
+  - id: NM-013
+    source: [asset:DC01, asset:DC02]
+    destination: [internet]
+    service: dns
+    action: allow
+    applies_to: [pt, aws]
+    justification: Domain controllers forward external DNS queries; clients never query the internet directly.
+
+  # ------------------------------------------------------------------ business applications (least privilege)
+  - id: NM-020
+    source: [seg:finance, seg:executive, seg:operations]
+    destination: [asset:APP-FIN01]
+    service: https
+    action: allow
+    applies_to: [pt, aws]
+    justification: Finance uses the ledger and payments; executives read reports; operations use the fund administration module. Module-level access is controlled by role (roles.yaml).
+  - id: NM-021
+    source: [asset:APP-FIN01]
+    destination: [asset:DB-FIN01]
+    service: postgresql
+    action: allow
+    applies_to: [pt]
+    justification: Only the application talks to its database. Users never connect to the database directly.
+  - id: NM-022
+    source: [seg:investments, seg:executive]
+    destination: [asset:APP-INV01]
+    service: https
+    action: allow
+    applies_to: [pt]
+    justification: Deal pipeline and portfolio monitoring are restricted to the investment team and the board.
+  - id: NM-023
+    source: [seg:hr]
+    destination: [asset:APP-HR01]
+    service: https
+    action: allow
+    applies_to: [pt]
+    justification: Employee records are accessed only by HR.
+  - id: NM-024
+    source: [seg:investor-relations, seg:executive]
+    destination: [asset:APP-CRM01]
+    service: https
+    action: allow
+    applies_to: [pt]
+    justification: Investor records are managed by investor relations; executives read dashboards.
+  - id: NM-025
+    source: [seg:development]
+    destination: [asset:GIT01]
+    service: git
+    action: allow
+    applies_to: [pt]
+    justification: Developers push and pull code and trigger CI.
+  - id: NM-026
+    source: [seg:development]
+    destination: [asset:APP-FIN01, asset:DB-FIN01, asset:APP-INV01, asset:APP-HR01, asset:APP-CRM01]
+    service: any
+    action: deny
+    log: true
+    applies_to: [pt, aws]
+    justification: Developers have no business need to reach production business systems; separation between building and operating the platforms.
+  - id: NM-027
+    source: [grp:corporate-users]
+    destination: [asset:FS01]
+    service: smb
+    action: allow
+    applies_to: [pt]
+    justification: Every employee uses file shares. Which folders each person can open is decided by identity (share and NTFS permissions bound to AD groups), not by the network.
+
+  # ------------------------------------------------------------------ authorized scanning
+  - id: NM-028
+    source: [asset:SEC-WS01]
+    destination: [grp:internal]
+    service: any
+    action: allow
+    log: true
+    applies_to: [pt]
+    justification: Authorized vulnerability scanning by the security team, restricted to one host and to approved change windows. Placed before the administration rules so that scanning of management ports is not shadowed by NM-033. Expected source of the false-positive scenario FP-01.
+
+  # ------------------------------------------------------------------ administration
+  - id: NM-030
+    source: [seg:it, seg:security]
+    destination: [asset:JUMP01]
+    service: rdp
+    action: allow
+    applies_to: [pt]
+    justification: Administrators reach the jump host from their workstations, using their separate admin accounts.
+  - id: NM-031
+    source: [asset:JUMP01]
+    destination: [seg:servers, seg:security]
+    service: server-admin
+    action: allow
+    applies_to: [pt]
+    justification: All server administration originates from the jump host, where it is logged and controlled. In AWS, this role is taken by SSM Session Manager.
+  - id: NM-032
+    source: [asset:JUMP01]
+    destination: [seg:mgmt, seg:transit]
+    service: device-admin
+    action: allow
+    applies_to: [pt]
+    justification: Network devices accept SSH only from the jump host.
+  - id: NM-033
+    source: [grp:corporate-users, seg:guest]
+    destination: [seg:servers, seg:security, seg:mgmt, seg:transit]
+    service: server-admin
+    action: deny
+    log: true
+    applies_to: [pt, aws]
+    justification: Administrative protocols are never accepted directly from workstations, including IT workstations; this forces use of the jump host (PT) or SSM (AWS).
+  - id: NM-034
+    source: [seg:it]
+    destination: [grp:corporate-users]
+    service: rdp
+    action: allow
+    applies_to: [pt]
+    justification: Remote assistance by IT support. Only members of the support and IT groups can log on remotely (enforced by Group Policy), because IT and support share the segment.
+
+  # ------------------------------------------------------------------ security monitoring
+  - id: NM-040
+    source: [grp:internal]
+    destination: [asset:SIEM01]
+    service: wazuh-agent
+    action: allow
+    applies_to: [pt, aws]
+    justification: Every endpoint and server sends logs to the SIEM.
+  - id: NM-041
+    source: [seg:mgmt, seg:transit]
+    destination: [asset:SIEM01]
+    service: syslog
+    action: allow
+    applies_to: [pt]
+    justification: Switches, the firewall and the edge router send syslog to the SIEM.
+  - id: NM-042
+    source: [seg:security]
+    destination: [asset:SIEM01]
+    service: https
+    action: allow
+    applies_to: [pt]
+    justification: SOC analysts use the Wazuh dashboard. In AWS, the dashboard is reached through SSM port forwarding.
+  - id: NM-043
+    source: [grp:internal]
+    destination: [asset:SIEM01]
+    service: any
+    action: deny
+    log: true
+    applies_to: [pt, aws]
+    justification: Apart from agent, syslog and SOC dashboard traffic (rules above), nothing reaches the SIEM. A compromised host must not be able to tamper with the SIEM.
+
+  # ------------------------------------------------------------------ backup
+  - id: NM-050
+    source: [asset:BKP01]
+    destination: [seg:servers]
+    service: backup-agent
+    action: allow
+    applies_to: [pt]
+    justification: The backup server pulls data from protected servers; servers never push to it.
+
+  # ------------------------------------------------------------------ lateral movement between departments
+  - id: NM-060
+    source: [grp:corporate-users]
+    destination: [grp:corporate-users]
+    service: any
+    action: deny
+    log: true
+    applies_to: [pt, aws]
+    justification: Workstations never need to talk to workstations in other departments. Blocks lateral movement after a phishing compromise (e.g. HR <-> Finance, Development -> Finance).
+
+  # ------------------------------------------------------------------ outbound
+  - id: NM-070
+    source: [grp:corporate-users]
+    destination: [internet]
+    service: web
+    action: allow
+    applies_to: [pt, aws]
+    justification: Employees need web access. In production this would pass through a filtering proxy.
+  - id: NM-071
+    source: [asset:DC01, asset:SIEM01]
+    destination: [internet]
+    service: https
+    action: allow
+    applies_to: [pt, aws]
+    justification: Updates, Wazuh packages and Entra Cloud Sync. Other servers get no direct internet access. In AWS, only while egress is enabled (ADR-004).
