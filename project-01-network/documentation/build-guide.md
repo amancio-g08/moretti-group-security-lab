@@ -62,15 +62,27 @@ repository. PTBuilder scripts can control the whole Packet Tracer workspace, so 
 6. Click **Run**. The script creates 33 devices and 32 cables, sets the IP of every PC and server,
    and configures the switches, firewall and routers. It can take a few minutes.
 7. A message box shows how many steps succeeded and **lists every failed step**. Send that list
-   back so the script can be fixed. Known risk: if the 3650 power supply could not be added
-   automatically, add it by hand (see the note in [step 2](#step-2--place-the-devices)).
-8. Server services are not automated: do the **Services** part of
+   back so the script can be fixed.
+8. **CORE-SW01 power supply.** The script cannot yet install it, so the core is reported as
+   powered off and is not configured. Add the power supply by hand (see the note in
+   [step 2](#step-2--place-the-devices)), wait for the switch to boot, then run the script again
+   with `RUN_TOPOLOGY = false`, `RUN_HOST_IP = false` and `ONLY_DEVICES = ["CORE-SW01"]`.
+
+> **Why configuration is sent line by line in global mode.** When commands arrive through the
+> Packet Tracer API, the CLI rejects a context change (`interface ...`, `vlan ...`, `line ...`)
+> while it is inside another sub-mode. PTBuilder's own `configureIosDevice` therefore applied
+> every interface's settings to the first interface (observed on CORE-SW01: all SVI settings
+> ended on `Vlan10`). The script sends top-level lines in global mode and indented lines in the
+> current sub-mode. A synthetic test reproduces the failure and checks the fix:
+> `node project-01-network/tools/tests/mock_ptbuilder_cli.test.js`.
+9. Server services are not automated: do the **Services** part of
    [step 7](#step-7--configure-the-servers) (DC01 DHCP/DNS/NTP, HTTPS servers, SIEM01 syslog,
    INTERNET-SRV).
-9. Run **Stage 1** of the [validation plan](validation-plan.md).
-10. Apply the ACLs: in the script set `RUN_TOPOLOGY`, `RUN_HOST_IP` and `RUN_DEVICE_CONFIG` to
-    `false` and `RUN_CORE_ACLS` to `true`, fill in the passwords again and click **Run**.
-11. Continue with [step 10](#step-10--validate) and [step 11](#step-11--version-the-result).
+10. Run **Stage 1** of the [validation plan](validation-plan.md).
+11. Apply the ACLs: in the script set `RUN_TOPOLOGY`, `RUN_HOST_IP` and `RUN_DEVICE_CONFIG` to
+    `false`, `ONLY_DEVICES = []` and `RUN_CORE_ACLS` to `true`, fill in the passwords again and
+    click **Run**.
+12. Continue with [step 10](#step-10--validate) and [step 11](#step-11--version-the-result).
 
 Running the script again is safe for devices (existing ones are skipped); cables that already
 exist are reported as failed and can be ignored.

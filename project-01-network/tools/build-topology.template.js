@@ -22,6 +22,10 @@ var RUN_HOST_IP = true; /* IP settings of PCs and servers */
 var RUN_DEVICE_CONFIG = true; /* configure switches, firewall and routers */
 var RUN_CORE_ACLS = false; /* inter-VLAN ACLs on CORE-SW01 (after stage 1 tests pass) */
 
+/* ---- 3. Optional: limit device configuration to some devices, e.g. ["CORE-SW01"]. ---- */
+/*         Empty list = all devices. */
+var ONLY_DEVICES = [];
+
 /* ------------------------------------------------------------------------------------ */
 var DEVICES = __DEVICES__;
 var LINKS = __LINKS__;
@@ -72,6 +76,30 @@ function keyCommand(kind) {
     return [];
 }
 
+/* Send configuration lines to a device.
+   Packet Tracer does not accept a context change ("interface ...", "line ...", "vlan ...")
+   while the CLI is inside another sub-mode when commands arrive through the API. Top-level
+   lines (no leading space) are therefore sent in global configuration mode, and indented
+   lines in the current sub-mode. */
+function sendConfig(name, lines) {
+    var device = ipc.network().getDevice(name);
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (!line.trim()) { continue; }
+        if (line.charAt(0) === " ") { device.enterCommand(line, ""); }
+        else { device.enterCommand(line, "global"); }
+    }
+    device.enterCommand("write memory", "enable");
+}
+
+function isPowered(name) {
+    try { return ipc.network().getDevice(name).getPower() !== false; } catch (e) { return true; }
+}
+
+function selected(name) {
+    return ONLY_DEVICES.length === 0 || ONLY_DEVICES.indexOf(name) !== -1;
+}
+
 function buildTopology() {
     for (var i = 0; i < DEVICES.length; i++) {
         var d = DEVICES[i];
@@ -109,14 +137,18 @@ function configureHosts() {
 
 function configureDevices() {
     for (var name in CONFIGS) {
+        if (!selected(name)) { continue; }
+        if (!isPowered(name)) {
+            fail("config " + name, "device is powered off (add AC-POWER-SUPPLY), then run again with ONLY_DEVICES = [\"" + name + "\"]");
+            continue;
+        }
         var c = CONFIGS[name];
         var commands = credentialCommands(c.credentials)
             .concat(c.commands)
-            .concat(keyCommand(c.credentials))
-            .concat(["end"]);
+            .concat(keyCommand(c.credentials));
         try {
             try { ipc.network().getDevice(name).skipBoot(); } catch (e) { /* not all devices boot */ }
-            configureIosDevice(name, commands.join("\n"));
+            sendConfig(name, commands);
             done("config " + name, commands.length + " commands sent");
         } catch (e) { fail("config " + name, e); }
     }
@@ -124,7 +156,8 @@ function configureDevices() {
 
 function applyCoreAcls() {
     try {
-        configureIosDevice("CORE-SW01", CORE_ACLS.concat(["end"]).join("\n"));
+        if (!isPowered("CORE-SW01")) { fail("core ACLs", "CORE-SW01 is powered off"); return; }
+        sendConfig("CORE-SW01", CORE_ACLS);
         done("core ACLs", CORE_ACLS.length + " commands sent");
     } catch (e) { fail("core ACLs", e); }
 }
