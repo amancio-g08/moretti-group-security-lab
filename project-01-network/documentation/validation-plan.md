@@ -7,6 +7,25 @@ Tests to run in Packet Tracer after the topology is built
 > in Packet Tracer. Static verification of the generated ACLs is a separate check (see
 > [ACL design](acl-design.md#5-verification)) and is not a substitute for these tests.
 
+## Scope: representative sample
+
+Decision of 2026-09-26 (owner): to keep the lab moving, stages 2–4 are run as a representative
+sample instead of the full list. The sample covers every kind of rule at least once: an allowed
+application flow per role, the default deny between departments, an explicit deny, guest
+isolation, management access only from JUMP01, the ICMP policy, internet egress and the main
+layer 2 controls.
+
+| Kind | Sample tests |
+|---|---|
+| Allowed | V-01, V-05, V-10, V-14, V-17 |
+| Denied | D-01, D-02, D-04, D-06, D-08, D-11 |
+| Layer 2 | L-01, L-05 |
+
+**Trade-off:** the remaining tests stay "Not executed" and are not claimed as passed. Full
+coverage of the matrix is provided only by the static verifier
+([ACL design](acl-design.md#5-verification)), which checks the generated rules, not the running
+devices. A flow outside the sample could still behave differently in Packet Tracer.
+
 ## How to run each method
 
 | Method | Where in Packet Tracer |

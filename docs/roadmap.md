@@ -39,7 +39,10 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
   baseline, build guide, validation test plan.
 - **[USER ACTION REQUIRED]:** build the `.pkt` topology in Cisco Packet Tracer (the binary file
   cannot be generated outside the application) and run the validation tests.
-- **Exit criteria:** every ALLOW/DENY row marked `pt` is tested in simulation and the result recorded.
+- **Exit criteria:** stage 1 and the representative sample of the
+  [validation plan](../project-01-network/documentation/validation-plan.md#scope-representative-sample)
+  are run and their results recorded (owner decision, 2026-09-26: a sample instead of every
+  `pt` row; full matrix coverage comes from the static ACL verifier).
 
 ### Phase 3 — P05 Python core
 - **Creates:** modular package (parsers, normalization, enrichment, timeline, report generation),
