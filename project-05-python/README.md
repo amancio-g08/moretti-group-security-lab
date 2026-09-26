@@ -1,17 +1,19 @@
-# Project 05 — Security Automation (Python)
+# Projeto 05 — Automação de segurança (Python)
 
-Modular toolkit that automates repetitive analyst tasks across the lab: log parsing and
-normalization, failed-authentication analysis, IOC extraction, enrichment from `data/`, timeline
-generation, PCAP metadata extraction and report generation.
+**Português** | [English](README.en.md)
 
-**Status:** planned for Phase 3 (core) and extended in later phases.
+Ferramentas para automatizar o trabalho repetitivo de um analista no laboratório: parsing e
+normalização de logs, análise de falhas de login, extração de IOCs, enriquecimento com os dados de
+`data/`, montagem de timeline, extração de metadados de PCAP e geração de relatórios.
 
-Planned layout:
+**Status:** previsto para a fase 3 (base) e ampliado nas fases seguintes.
+
+Estrutura planejada:
 
 ```
 project-05-python/
-├── src/             # package source
-├── tests/           # unit tests (fixtures labeled as synthetic)
-├── examples/        # usage examples
-└── reports/         # sample generated reports
+├── src/             # código do pacote
+├── tests/           # testes (dados de teste marcados como sintéticos)
+├── examples/        # exemplos de uso
+└── reports/         # exemplos de relatórios gerados
 ```

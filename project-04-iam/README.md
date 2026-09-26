@@ -1,16 +1,19 @@
-# Project 04 — Identity and Access Management
+# Projeto 04 — Gestão de identidades e acessos (IAM)
 
-RBAC and least privilege for Moretti Group, evolving from Active Directory to hybrid identity
-and Entra ID ([ADR-006](../docs/adr/ADR-006-identity-evolution.md)).
+**Português** | [English](README.en.md)
 
-**Status:** planned for Phase 5 (AD) and Phase 8 (Entra ID).
+Controle de acesso por função e menor privilégio na Moretti Group, começando no Active Directory,
+passando por identidade híbrida e chegando no Entra ID
+([ADR-006](../docs/adr/ADR-006-identity-evolution.md)).
 
-Planned layout:
+**Status:** previsto para a fase 5 (AD) e para a fase 8 (Entra ID).
+
+Estrutura planejada:
 
 ```
 project-04-iam/
-├── users/           # provisioning from data/employees.csv
-├── groups/          # group model and role mapping
-├── policies/        # password, lockout, GPOs, Conditional Access
-└── documentation/   # IAM matrix, Joiner/Mover/Leaver, access reviews
+├── users/           # criação de usuários a partir do data/employees.csv
+├── groups/          # modelo de grupos e ligação com as funções
+├── policies/        # senha, bloqueio de conta, GPOs, Conditional Access
+└── documentation/   # matriz de IAM, entrada/mudança/saída de funcionários, revisão de acessos
 ```

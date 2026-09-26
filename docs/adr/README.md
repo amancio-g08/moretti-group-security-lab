@@ -1,19 +1,23 @@
-# Architecture Decision Records
+# Registros de decisão de arquitetura (ADRs)
 
-An ADR captures one significant decision: its context, the options that were considered, the
-decision, and its consequences. ADRs are immutable once accepted; a changed decision is recorded
-in a new ADR that supersedes the old one.
+**Português** | [English](README.en.md)
 
-| ADR | Title | Status |
+Cada ADR registra uma decisão importante do projeto: o contexto, as opções que eu considerei, a
+escolha e as consequências. Depois de aceita, uma ADR não é editada; se a decisão mudar, uma ADR
+nova substitui a antiga.
+
+As ADRs em si estão em inglês.
+
+| ADR | Decisão | Status |
 |---|---|---|
-| [001](ADR-001-source-of-truth.md) | Policy files are the single source of truth | Accepted |
-| [002](ADR-002-cloud-platform.md) | AWS for infrastructure, Entra ID for cloud identity | Accepted |
-| [003](ADR-003-single-az.md) | Single-AZ deployment | Accepted |
-| [004](ADR-004-egress-strategy.md) | Terraform-controlled egress; NAT choice deferred until measured | Accepted |
-| [005](ADR-005-lab-vs-enterprise.md) | Packet Tracer is the enterprise design; AWS is the operational lab | Accepted |
-| [006](ADR-006-identity-evolution.md) | Identity evolves on-prem → hybrid → cloud | Accepted |
-| [007](ADR-007-minimum-footprint.md) | Minimum VM footprint, grown per phase | Accepted |
+| [001](ADR-001-source-of-truth.md) | A pasta `data/` é a fonte única de verdade | Aceita |
+| [002](ADR-002-cloud-platform.md) | AWS para infraestrutura, Entra ID para identidade na nuvem | Aceita |
+| [003](ADR-003-single-az.md) | Uma única zona de disponibilidade | Aceita |
+| [004](ADR-004-egress-strategy.md) | Saída para a internet controlada pelo Terraform; NAT decidido depois de medir | Aceita |
+| [005](ADR-005-lab-vs-enterprise.md) | Packet Tracer é o desenho da empresa; AWS é o laboratório | Aceita |
+| [006](ADR-006-identity-evolution.md) | Identidade evolui de AD para híbrido e depois nuvem | Aceita |
+| [007](ADR-007-minimum-footprint.md) | Começar com poucas máquinas e crescer por fase | Aceita |
 
-**Statuses:** Proposed → Accepted → (Superseded by ADR-xxx | Deprecated).
+**Status possíveis:** Proposta → Aceita → (Substituída pela ADR-xxx | Descontinuada).
 
-New ADRs start from [TEMPLATE.md](TEMPLATE.md).
+Novas ADRs partem do [TEMPLATE.md](TEMPLATE.md).

@@ -1,18 +1,21 @@
-# scenarios/ — End-to-end lab scenarios
+# scenarios/ — Cenários de ponta a ponta
 
-Each scenario (`SCN-xx`) is traced across every relevant evidence source: network captures,
-VPC Flow Logs, Wazuh alerts, Python reports, IAM actions and the incident report. The scenario ID
-is reused in filenames and references so that one event can be followed through the whole lab.
+**Português** | [English](README.en.md)
 
-**Status:** planned for Phase 7.
+Cada cenário (`SCN-xx`) é um evento que eu provoco no laboratório e depois sigo por todas as
+fontes onde ele deixa rastro: captura de tráfego, VPC Flow Logs, alertas do Wazuh, relatórios do
+Python, ações de IAM e o relatório do incidente. O ID do cenário aparece no nome dos arquivos e nas
+referências, então dá para acompanhar o mesmo evento pelo laboratório inteiro.
 
-| ID | Scenario (draft) |
+**Status:** previsto para a fase 7.
+
+| ID | Cenário (rascunho) |
 |---|---|
-| SCN-01 | Password-guessing attempts from GUEST01 against lab hosts |
-| SCN-02 | Authentication attempt with a terminated employee account |
-| SCN-03 | Unexpected addition to a privileged group |
-| SCN-04 | Segmentation violation: GUEST → FINANCE |
-| SCN-05 | Unauthorized configuration change on the finance application |
-| FP-01 | Authorized activity that triggers an alert and becomes a documented exception |
+| SCN-01 | Tentativas de adivinhar senha a partir do GUEST01 contra máquinas do lab |
+| SCN-02 | Tentativa de login com a conta de um funcionário desligado |
+| SCN-03 | Alguém adicionado a um grupo privilegiado sem estar previsto |
+| SCN-04 | Violação de segmentação: GUEST tentando chegar no FINANCE |
+| SCN-05 | Alteração não autorizada de configuração na aplicação financeira |
+| FP-01 | Atividade autorizada que gera alerta e vira exceção documentada |
 
-Offensive activity follows [docs/lab-safety.md](../docs/lab-safety.md).
+Tudo que envolve ataque segue as regras de [docs/lab-safety.md](../docs/lab-safety.md).

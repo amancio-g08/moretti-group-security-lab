@@ -1,16 +1,18 @@
-# Project 03 — SOC with Wazuh
+# Projeto 03 — SOC com Wazuh
 
-Log centralization, detection engineering, alert triage and incident response for the lab.
+**Português** | [English](README.en.md)
 
-**Status:** planned for Phase 6 (deployment) and Phase 7 (scenarios).
+Centralização de logs, criação de regras de detecção, triagem de alertas e resposta a incidentes.
 
-Planned layout:
+**Status:** previsto para a fase 6 (instalação) e para a fase 7 (cenários).
+
+Estrutura planejada:
 
 ```
 project-03-soc/
-├── wazuh/           # deployment notes, agent configuration, decoders
-├── detections/      # custom rules and CDB lists
-├── alerts/          # triaged alerts (true / false positive)
-├── incidents/       # incident reports following the IR lifecycle
-└── documentation/   # playbooks and procedures
+├── wazuh/           # notas de instalação, configuração dos agentes, decoders
+├── detections/      # regras customizadas e listas (CDB)
+├── alerts/          # alertas analisados (verdadeiro ou falso positivo)
+├── incidents/       # relatórios de incidente seguindo o ciclo de resposta
+└── documentation/   # playbooks e procedimentos
 ```

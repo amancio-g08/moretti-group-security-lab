@@ -1,20 +1,23 @@
-# Project 02 — Network Traffic Analysis
+# Projeto 02 — Análise de tráfego de rede
 
-Structured investigations of captures produced by lab scenarios, answering who, what, when,
-where and how, with a timeline, Wireshark filters and the reasoning behind each conclusion.
+**Português** | [English](README.en.md)
 
-**Status:** planned for Phase 7.
+Investigações feitas em cima das capturas geradas pelos cenários do laboratório. Cada uma responde
+quem, o quê, quando, onde e como, com timeline, os filtros do Wireshark usados e o raciocínio por
+trás de cada conclusão.
 
-Planned layout:
+**Status:** previsto para a fase 7.
+
+Estrutura planejada:
 
 ```
 project-02-pcap/
 ├── pcaps/
-│   └── curated/     # reviewed captures that back a published report (committed)
-├── analysis/        # filters, notes and reasoning per investigation
-├── evidence/        # extracted evidence with hashes
-└── reports/         # investigation reports
+│   └── curated/     # capturas revisadas que sustentam um relatório publicado (vão para o Git)
+├── analysis/        # filtros, anotações e raciocínio de cada investigação
+├── evidence/        # evidências extraídas, com hash
+└── reports/         # relatórios de investigação
 ```
 
-Raw captures are git-ignored by default; only curated captures are committed. Evidence is never
-invented — anything the capture cannot show is stated explicitly.
+As capturas brutas ficam fora do Git; só as revisadas entram. Nenhuma evidência é inventada: o que
+a captura não mostra fica escrito como não determinado.

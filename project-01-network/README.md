@@ -1,17 +1,20 @@
-# Project 01 — Enterprise Network Design (Packet Tracer)
+# Projeto 01 — Rede corporativa (Packet Tracer)
 
-Complete corporate network for Moretti Group: VLAN segmentation, inter-VLAN ACLs, perimeter
-firewall, DMZ and device hardening, implementing `data/network-matrix.yaml`.
+**Português** | [English](README.en.md)
 
-**Status:** planned for Phase 2.
+A rede completa da Moretti Group: segmentação em VLANs, ACLs entre VLANs, firewall de perímetro,
+DMZ e hardening dos equipamentos, tudo seguindo o `data/network-matrix.yaml`.
 
-Planned layout:
+**Status:** previsto para a fase 2.
+
+Estrutura planejada:
 
 ```
 project-01-network/
-├── packet-tracer/   # .pkt topology (built by the owner in Packet Tracer)
-├── configs/         # device configurations (switches, core, firewall, router)
-└── documentation/   # addressing, VLANs, ACL rationale, hardening, attack surface, validation
+├── packet-tracer/   # arquivo .pkt da topologia
+├── configs/         # configurações dos equipamentos (switches, core, firewall, roteador)
+└── documentation/   # endereçamento, VLANs, justificativa das ACLs, hardening, pontos de ataque, testes
 ```
 
-See [ADR-005](../docs/adr/ADR-005-lab-vs-enterprise.md) for how this relates to the AWS lab.
+A relação entre esta rede e o laboratório na AWS está explicada na
+[ADR-005](../docs/adr/ADR-005-lab-vs-enterprise.md).
