@@ -23,7 +23,9 @@ commit locally → **the owner reviews and decides whether to push.**
 
 ## Conventions
 
-- Documentation, code, filenames and identifiers are in English.
+- The main `README.md` is in Portuguese, written in the owner's own voice; `README.en.md` is the
+  English version and must be kept in sync. All other documentation, code, filenames and
+  identifiers are in English.
 - Significant decisions are recorded as ADRs in `docs/adr/`, including their trade-offs.
 - `data/` is the source of truth (ADR-001); do not duplicate policy elsewhere.
 - Work phase by phase following [docs/roadmap.md](docs/roadmap.md).

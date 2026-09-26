@@ -1,129 +1,116 @@
 # Moretti Group Security Lab
 
-> **Moretti Group — Private Investment & Technology** is a **fictional** company.
-> Every person, credential, asset, and dataset in this repository is fictitious and exists
-> only for learning. No real personal data, real credentials, or third-party systems are used.
+**Português** | [English](README.en.md)
 
-An integrated cybersecurity laboratory that models a ~70-employee company end to end:
-enterprise network design, cloud security implementation, identity and access management,
-security monitoring, network forensics, incident response, and security automation.
+Laboratório de cibersegurança que eu estou montando em cima de uma empresa fictícia, a
+Moretti Group (Private Investment & Technology), com uns 70 funcionários, setores, servidores e
+níveis de acesso diferentes.
 
-The lab is built as **one system, not five separate exercises**. A single set of policy
-files (the *source of truth*) drives the network design, the cloud controls, the identity
-model, and the detection logic, and every lab scenario can be traced across all of them.
+A ideia surgiu porque eu queria praticar segurança de um jeito mais parecido com o dia a dia de
+uma empresa de verdade, e não com exercícios soltos. Então tudo aqui faz parte do mesmo ambiente:
+a rede que eu desenho no Packet Tracer, as máquinas que sobem na AWS, os usuários no Active
+Directory, os logs que vão para o Wazuh e os scripts em Python que eu uso para analisar tudo isso.
 
----
+Nada aqui é real. Nomes, usuários, senhas e dados são inventados, e qualquer teste de ataque
+acontece só dentro do próprio laboratório.
 
-## Architecture at a glance
+## Como o laboratório funciona
 
 ```mermaid
 flowchart TB
-    SOT["data/ — source of truth<br/>network-matrix.yaml · company data · IAM roles"]
+    SOT["data/<br/>política de rede, funcionários, ativos, perfis de acesso"]
 
-    SOT --> PT["Packet Tracer<br/>Enterprise network design<br/>VLANs · ACLs · hardening"]
-    SOT --> AWS["AWS<br/>Operational lab (minimum footprint)<br/>VPC · Security Groups · Flow Logs · CloudTrail"]
-    SOT --> IAM["Identity<br/>Active Directory → Hybrid → Entra ID"]
+    SOT --> PT["Packet Tracer<br/>rede corporativa completa"]
+    SOT --> AWS["AWS<br/>laboratório com as máquinas reais"]
+    SOT --> IAM["Identidade<br/>Active Directory e depois Entra ID"]
 
-    AWS -->|endpoint logs, cloud logs| WAZUH["Wazuh SIEM/XDR"]
-    IAM -->|auth & directory events| WAZUH
-    AWS -->|tcpdump / pktmon| PCAP["Network evidence<br/>PCAP · Wireshark"]
+    AWS -->|logs| WAZUH["Wazuh"]
+    IAM -->|eventos de login| WAZUH
+    AWS -->|capturas| PCAP["PCAP / Wireshark"]
 
-    WAZUH --> SOC["SOC<br/>Triage · Investigation · Incident Response"]
+    WAZUH --> SOC["Investigação e resposta a incidentes"]
     PCAP --> SOC
-    SOC --> PY["Python toolkit<br/>parsing · enrichment · timelines · reports"]
-    PY -.->|lists & enrichment| WAZUH
-    SOC -.->|response actions| IAM
+    SOC --> PY["Python"]
+    PY -.-> WAZUH
+    SOC -.-> IAM
 ```
 
-| Layer | Role in the lab |
+O ponto central é a pasta `data/`. É lá que fica definido quem pode falar com quem na rede, quem
+trabalha em qual setor e quais acessos cada função tem. O Packet Tracer, a AWS, o AD e os scripts
+leem desse mesmo lugar, então se eu mudo uma regra, ela muda em todo o laboratório.
+
+Uma decisão que eu tomei logo no começo: a AWS não é uma cópia da rede do Packet Tracer. No Packet
+Tracer eu desenho a rede inteira da empresa, com VLANs, ACLs e firewall. Na AWS eu subo só as
+máquinas necessárias para gerar log e tráfego de verdade. As duas seguem a mesma política de
+comunicação, cada uma com os controles que fazem sentido no seu ambiente (ACL de um lado, Security
+Group do outro).
+
+## Os cinco projetos
+
+| | Projeto | O que tem |
+|---|---|---|
+| 01 | [Rede](project-01-network/) | Segmentação, VLANs, ACLs, firewall, hardening dos equipamentos |
+| 02 | [Análise de tráfego](project-02-pcap/) | Investigações em PCAP com timeline e relatório |
+| 03 | [SOC](project-03-soc/) | Wazuh, regras de detecção, triagem de alertas, resposta a incidentes |
+| 04 | [IAM](project-04-iam/) | AD, Entra ID, RBAC, MFA, entrada/mudança/saída de funcionários, revisão de acessos |
+| 05 | [Python](project-05-python/) | Parser de logs, extração de IOCs, enriquecimento e geração de relatórios |
+
+Estou construindo por fases, e o andamento fica em [docs/roadmap.md](docs/roadmap.md).
+
+## Decisões de arquitetura
+
+Anotei cada decisão importante em [docs/adr/](docs/adr/), com as opções que considerei e o motivo
+da escolha. Isso inclui as limitações que aceitei de propósito, como rodar tudo em uma única zona
+de disponibilidade para economizar.
+
+| ADR | Decisão |
 |---|---|
-| **Packet Tracer** | Complete enterprise network design (the "headquarters") |
-| **AWS** | Minimum viable operational lab — real hosts, real logs, real traffic |
-| **Entra ID** | Cloud identity: MFA, Conditional Access, identity lifecycle |
-| **Wazuh** | Log centralization and detection |
-| **Wireshark / tcpdump** | Network evidence |
-| **Python** | The glue: parsing, enrichment, timelines, report generation |
+| [001](docs/adr/ADR-001-source-of-truth.md) | A pasta `data/` é a fonte única de verdade |
+| [002](docs/adr/ADR-002-cloud-platform.md) | AWS para infraestrutura, Entra ID para identidade |
+| [003](docs/adr/ADR-003-single-az.md) | Uma única zona de disponibilidade, por custo |
+| [004](docs/adr/ADR-004-egress-strategy.md) | Saída para internet controlada pelo Terraform |
+| [005](docs/adr/ADR-005-lab-vs-enterprise.md) | Packet Tracer para o desenho, AWS para o laboratório |
+| [006](docs/adr/ADR-006-identity-evolution.md) | Identidade evoluindo de AD para híbrido e depois nuvem |
+| [007](docs/adr/ADR-007-minimum-footprint.md) | Começar com poucas máquinas e crescer por fase |
 
-**Key design principle:** AWS is *not* a copy of the Packet Tracer network. Both environments
-implement **the same communication policy** (`network-matrix.yaml`) using the controls that are
-appropriate to each environment — VLANs and ACLs on-premises, VPC subnets and Security Groups in
-the cloud. See [ADR-005](docs/adr/ADR-005-lab-vs-enterprise.md).
+A documentação técnica (ADRs, arquitetura, relatórios) está em inglês.
 
-Full details: [docs/architecture.md](docs/architecture.md).
+## Segurança do próprio laboratório
 
----
+Como o lab gera ataques de propósito, tomei alguns cuidados para ele não virar um problema:
 
-## Projects
+- nenhuma porta de administração fica aberta para a internet, o acesso às máquinas é pelo AWS SSM;
+- os testes de ataque ficam restritos à rede do laboratório;
+- senhas e chaves nunca vão para o Git, e o gitleaks bloqueia o commit se algo escapar;
+- o ambiente na AWS pode ser destruído e recriado pelo Terraform a qualquer momento.
 
-| # | Project | Focus | Status |
-|---|---|---|---|
-| 01 | [Network](project-01-network/) | Segmentation, VLANs, ACLs, firewalling, device hardening | Planned |
-| 02 | [PCAP Analysis](project-02-pcap/) | Structured network forensics and investigation reports | Planned |
-| 03 | [SOC](project-03-soc/) | Wazuh, detection engineering, alert triage, incident response | Planned |
-| 04 | [IAM](project-04-iam/) | AD, Entra ID, RBAC, MFA, Joiner/Mover/Leaver, access reviews | Planned |
-| 05 | [Python Automation](project-05-python/) | Log parsing, IOC extraction, enrichment, reporting | Planned |
+As regras completas estão em [docs/lab-safety.md](docs/lab-safety.md).
 
-Implementation follows a phased roadmap: [docs/roadmap.md](docs/roadmap.md).
-
-## Architecture decisions
-
-Every significant decision — including deliberate limitations — is recorded as an
-Architecture Decision Record in [docs/adr/](docs/adr/).
-
-| ADR | Decision |
-|---|---|
-| [001](docs/adr/ADR-001-source-of-truth.md) | Policy files in `data/` are the single source of truth |
-| [002](docs/adr/ADR-002-cloud-platform.md) | AWS for infrastructure, Entra ID for cloud identity |
-| [003](docs/adr/ADR-003-single-az.md) | Single-AZ deployment as an intentional cost optimization |
-| [004](docs/adr/ADR-004-egress-strategy.md) | Terraform-controlled egress; NAT choice deferred until measured |
-| [005](docs/adr/ADR-005-lab-vs-enterprise.md) | Packet Tracer = enterprise design; AWS = operational lab |
-| [006](docs/adr/ADR-006-identity-evolution.md) | Identity evolves on-prem → hybrid → cloud |
-| [007](docs/adr/ADR-007-minimum-footprint.md) | Minimum VM footprint, grown per phase |
-
-## Safety
-
-This lab is designed so that it **cannot** accidentally become an exposed, vulnerable
-environment:
-
-- No administrative service is exposed to the internet; access is brokered (AWS SSM).
-- All offensive testing stays inside the lab's own address space and AWS account.
-- No real credentials or secrets in Git — enforced by `gitleaks` via `pre-commit`.
-- Only fictitious identities and data.
-- The entire cloud environment can be destroyed and recreated from code.
-
-Read [docs/lab-safety.md](docs/lab-safety.md) before running anything.
-
-## Repository layout
+## Estrutura
 
 ```
-.
-├── data/                  # Source of truth (policy, company, assets, IAM roles)
-├── docs/                  # Cross-project documentation and ADRs
-├── scenarios/             # End-to-end lab scenarios (SCN-xx) traced across projects
-├── project-01-network/    # Packet Tracer design, device configs, network docs
-├── project-02-pcap/       # Captures, analysis, investigation reports
-├── project-03-soc/        # Wazuh config, detections, alerts, incidents, playbooks
-├── project-04-iam/        # Users, groups, policies, lifecycle, access reviews
-├── project-05-python/     # Automation toolkit (src, tests, examples)
-└── infrastructure/        # Terraform and operational scripts
+data/                 política de rede, empresa, ativos e perfis de acesso
+docs/                 arquitetura, roadmap, regras do lab e ADRs
+scenarios/            cenários de ponta a ponta (SCN-01, SCN-02...)
+project-01-network/   Packet Tracer e configurações
+project-02-pcap/      capturas e relatórios de investigação
+project-03-soc/       Wazuh, detecções, alertas e incidentes
+project-04-iam/       usuários, grupos, políticas e ciclo de vida
+project-05-python/    ferramentas de automação
+infrastructure/       Terraform e scripts
 ```
 
-## Getting started (contributors)
+## Rodando localmente
 
 ```bash
-# 1. Install the Git hooks that block secrets and malformed files
 pip install pre-commit
 pre-commit install
-
-# 2. Create a local environment file (never committed)
 cp .env.example .env
-
-# 3. Run all checks manually
 pre-commit run --all-files
 ```
 
-Cloud deployment instructions will be added in Phase 4 (see the roadmap).
+O passo a passo para subir o ambiente na AWS entra quando eu chegar na fase 4.
 
-## License
+## Licença
 
 [MIT](LICENSE)
