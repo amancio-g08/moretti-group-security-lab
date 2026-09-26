@@ -12,7 +12,7 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 |---|---|---|---|
 | 0 | Repository foundation and ADRs | None | Done |
 | 1 | Company data: departments, employees, assets, data classification, `network-matrix.yaml`, IAM roles, threat model v1 | None | Done |
-| 2 | P01 — Packet Tracer enterprise design | None | In review (build pending) |
+| 2 | P01 — Packet Tracer enterprise design | None | Paused (validation in progress, see below) |
 | 3 | P05 — Python core (parsers, reports, matrix translation) | None | Planned |
 | 4 | Minimal AWS lab: VPC, 5 VMs, SGs from the matrix, Flow Logs, CloudTrail, Budgets | Starts here | Planned |
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | Planned |
@@ -43,6 +43,19 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
   [validation plan](../project-01-network/documentation/validation-plan.md#scope-representative-sample)
   are run and their results recorded (owner decision, 2026-09-26: a sample instead of every
   `pt` row; full matrix coverage comes from the static ACL verifier).
+
+- **Status (2026-09-26): paused by the owner** to continue with later phases. Built and partly
+  validated in Packet Tracer 9.0.1: C-01, C-02, C-05 pass; C-03 fails (cause not determined).
+  To resume:
+  1. C-04 — FINANCE DHCP pool on DC01, then renew on PC-DHCP-TEST.
+  2. C-06 — FW01 still lacks the WEB01 rule in Packet Tracer (the first run rejected port
+     names); re-apply FW01 from `configs/FW01.txt` after clearing its ACLs, turn on HTTPS on
+     WEB01. The manual test entries added to OUTSIDE_IN during C-05/C-03 are not in the
+     repository.
+  3. Apply the core ACLs (`RUN_CORE_ACLS = true`) and turn on HTTPS on APP-FIN01 and APP-HR01.
+  4. Run the representative sample of the validation plan and commit the `.pkt` and evidence.
+
+  Later phases do not depend on Packet Tracer: they use `data/` as the source of truth (ADR-001).
 
 ### Phase 3 — P05 Python core
 - **Creates:** modular package (parsers, normalization, enrichment, timeline, report generation),
