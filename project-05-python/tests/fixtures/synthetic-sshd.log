@@ -1,0 +1,8 @@
+# SYNTHETIC test log - fictitious lab
+Sep 26 09:00:00 app-fin01 sshd[1100]: Invalid user admin from 198.51.100.66 port 40000
+Sep 26 09:00:01 app-fin01 sshd[1100]: Failed password for invalid user admin from 198.51.100.66 port 40000 ssh2
+Sep 26 09:00:05 app-fin01 sshd[1101]: Failed password for root from 198.51.100.66 port 40001 ssh2
+Sep  6 09:00:09 app-fin01 sshd[1102]: Accepted publickey for ADM-ANA.COSTA from 10.10.10.20 port 50122 ssh2: ED25519 SHA256:synthetic
+2026-09-26T10:00:00.500+02:00 app-fin01 sshd[1103]: Accepted password for joao.silva from 10.10.20.10 port 50410 ssh2
+Sep 26 09:00:12 app-fin01 CRON[99]: pam_unix(cron:session): session opened for user root
+Sep 26 09:00:13 app-fin01 sshd[1104]: Connection closed by 10.10.20.10 port 50410

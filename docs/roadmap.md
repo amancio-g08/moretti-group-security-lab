@@ -13,7 +13,7 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 | 0 | Repository foundation and ADRs | None | Done |
 | 1 | Company data: departments, employees, assets, data classification, `network-matrix.yaml`, IAM roles, threat model v1 | None | Done |
 | 2 | P01 — Packet Tracer enterprise design | None | Paused (validation in progress, see below) |
-| 3 | P05 — Python core (parsers, reports, matrix translation) | None | Planned |
+| 3 | P05 — Python core (parsers, enrichment, detections, reports) | None | Done |
 | 4 | Minimal AWS lab: VPC, 5 VMs, SGs from the matrix, Flow Logs, CloudTrail, Budgets | Starts here | Planned |
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | Planned |
 | 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | Planned |
@@ -59,11 +59,18 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 
 ### Phase 3 — P05 Python core
 - **Creates:** modular package (parsers, normalization, enrichment, timeline, report generation),
-  unit tests with fixtures that are clearly labeled as synthetic, matrix → ACL/SG renderers.
+  unit tests with fixtures that are clearly labeled as synthetic. The matrix → ACL renderer
+  already lives in P01; the matrix → Security Group renderer moved to phase 4 (owner decision,
+  2026-09-26), next to the Terraform that consumes it.
 - **Exit criteria:** tests and linters pass in CI and locally.
+- **Status (2026-09-26):** `moretti-sec` package with sshd and Windows parsers, enrichment from
+  `data/`, detections BF-01/02 and ACC-01…06, IOC extraction, timeline and Markdown report;
+  19 tests and ruff pass locally and in `pre-commit`. CI workflow added
+  (`.github/workflows/ci.yml`); its first run on GitHub is still to be observed.
 
 ### Phase 4 — Minimal AWS lab
-- **Creates:** Terraform for VPC, subnets, Security Groups generated from the matrix, SSM access,
+- **Creates:** matrix → Security Group renderer (moved from phase 3), Terraform for VPC,
+  subnets, Security Groups generated from the matrix, SSM access,
   Flow Logs, CloudTrail, Budgets, scheduled shutdown, egress toggle; start/stop/destroy scripts.
 - **[USER ACTION REQUIRED]:** AWS account, MFA on root, IAM Identity Center user, `terraform apply`.
 - **Exit criteria:** no inbound internet rules exist; SSM access works; measured costs recorded in

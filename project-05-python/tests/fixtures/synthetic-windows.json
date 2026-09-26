@@ -1,0 +1,6 @@
+[
+  {"TimeCreated": "2026-09-26T08:02:11Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "adm-marcio.guimaraes", "TargetDomainName": "CORP", "IpAddress": "10.10.10.20", "LogonType": 10},
+  {"TimeCreated": "2026-09-26T08:03:00", "EventID": "4625", "Computer": "DC01", "TargetUserName": "CORP\\Alan.Moreira", "IpAddress": "-", "LogonType": "3"},
+  {"TimeCreated": "2026-09-26T08:04:00Z", "EventID": 4634, "Computer": "DC01", "TargetUserName": "joao.silva"},
+  {"TimeCreated": "2026-09-26T08:05:00Z", "EventID": 4624, "Computer": "DC01", "TargetUserName": "joao.silva@corp.moretti.internal", "IpAddress": "::1", "LogonType": 2}
+]

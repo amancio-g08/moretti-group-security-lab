@@ -1,0 +1,12 @@
+# SYNTHETIC sample log - Moretti Group lab (fictitious). Not captured from any real system.
+{"TimeCreated": "2026-09-26T08:02:11Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "adm-marcio.guimaraes", "TargetDomainName": "CORP", "IpAddress": "10.10.10.20", "LogonType": 10}
+{"TimeCreated": "2026-09-26T08:15:30Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "svc-app-fin", "TargetDomainName": "CORP", "IpAddress": "10.10.80.30", "LogonType": 3}
+{"TimeCreated": "2026-09-26T09:40:02Z", "EventID": 4625, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "svc-vulnscan", "TargetDomainName": "CORP", "IpAddress": "10.10.70.20", "LogonType": 3}
+{"TimeCreated": "2026-09-26T09:40:05Z", "EventID": 4625, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "svc-vulnscan", "TargetDomainName": "CORP", "IpAddress": "10.10.70.20", "LogonType": 3}
+{"TimeCreated": "2026-09-26T09:40:09Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "svc-vulnscan", "TargetDomainName": "CORP", "IpAddress": "10.10.70.20", "LogonType": 3}
+{"TimeCreated": "2026-09-26T10:12:44Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "aline.barros", "TargetDomainName": "CORP", "IpAddress": "10.10.20.10", "LogonType": 3}
+{"TimeCreated": "2026-09-26T11:05:17Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "adm-rogerio.quintela", "TargetDomainName": "CORP", "IpAddress": "10.10.60.10", "LogonType": 10}
+{"TimeCreated": "2026-09-26T14:22:09Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "svc-app-fin", "TargetDomainName": "CORP", "IpAddress": "10.10.60.10", "LogonType": 10}
+{"TimeCreated": "2026-09-26T18:40:51Z", "EventID": 4625, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "alan.moreira", "TargetDomainName": "CORP", "IpAddress": "10.10.60.10", "LogonType": 3}
+{"TimeCreated": "2026-09-26T18:41:03Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "alan.moreira", "TargetDomainName": "CORP", "IpAddress": "10.10.60.10", "LogonType": 3}
+{"TimeCreated": "2026-09-26T22:03:30Z", "EventID": 4624, "Computer": "DC01.corp.moretti.internal", "TargetUserName": "bg-admin01", "TargetDomainName": "CORP", "IpAddress": "10.10.10.20", "LogonType": 10}

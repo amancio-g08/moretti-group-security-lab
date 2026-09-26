@@ -51,6 +51,15 @@ repos:
         files: ^data/accounts\.yaml$
         args: ["--schemafile", "data/schemas/accounts.schema.json"]
 
+  # Python lint and format for P05 (settings in project-05-python/pyproject.toml).
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.8
+    hooks:
+      - id: ruff-check
+        files: ^project-05-python/
+      - id: ruff-format
+        files: ^project-05-python/
+
   # Network policy as code (ADR-001, ADR-008): the core ACLs must match the matrix.
   - repo: local
     hooks:

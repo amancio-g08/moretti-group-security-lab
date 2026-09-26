@@ -1,0 +1,24 @@
+# SYNTHETIC sample log - Moretti Group lab (fictitious). Not captured from any real system.
+Sep 26 08:30:12 app-fin01 sshd[1021]: Accepted publickey for adm-ana.costa from 10.10.10.20 port 50122 ssh2: ED25519 SHA256:synthetic
+Sep 26 08:55:40 app-fin01 sshd[1030]: Accepted password for joao.silva from 10.10.20.10 port 50410 ssh2
+Sep 26 09:00:00 app-fin01 sshd[1100]: Invalid user root from 198.51.100.66 port 40000
+Sep 26 09:00:01 app-fin01 sshd[1100]: Failed password for root from 198.51.100.66 port 40000 ssh2
+Sep 26 09:00:20 app-fin01 sshd[1101]: Invalid user admin from 198.51.100.66 port 40001
+Sep 26 09:00:21 app-fin01 sshd[1101]: Failed password for invalid user admin from 198.51.100.66 port 40001 ssh2
+Sep 26 09:00:40 app-fin01 sshd[1102]: Invalid user oracle from 198.51.100.66 port 40002
+Sep 26 09:00:41 app-fin01 sshd[1102]: Failed password for invalid user oracle from 198.51.100.66 port 40002 ssh2
+Sep 26 09:01:00 app-fin01 sshd[1103]: Invalid user root from 198.51.100.66 port 40003
+Sep 26 09:01:01 app-fin01 sshd[1103]: Failed password for root from 198.51.100.66 port 40003 ssh2
+Sep 26 09:01:20 app-fin01 sshd[1104]: Invalid user test from 198.51.100.66 port 40004
+Sep 26 09:01:21 app-fin01 sshd[1104]: Failed password for invalid user test from 198.51.100.66 port 40004 ssh2
+Sep 26 09:01:40 app-fin01 sshd[1105]: Invalid user admin from 198.51.100.66 port 40005
+Sep 26 09:01:41 app-fin01 sshd[1105]: Failed password for invalid user admin from 198.51.100.66 port 40005 ssh2
+Sep 26 09:02:00 app-fin01 sshd[1106]: Invalid user postgres from 198.51.100.66 port 40006
+Sep 26 09:02:01 app-fin01 sshd[1106]: Failed password for invalid user postgres from 198.51.100.66 port 40006 ssh2
+Sep 26 13:10:05 app-fin01 sshd[1200]: Failed password for leandro.viana from 10.10.50.10 port 51000 ssh2
+Sep 26 13:10:35 app-fin01 sshd[1201]: Failed password for leandro.viana from 10.10.50.10 port 51001 ssh2
+Sep 26 13:11:05 app-fin01 sshd[1202]: Failed password for leandro.viana from 10.10.50.10 port 51002 ssh2
+Sep 26 13:11:35 app-fin01 sshd[1203]: Failed password for leandro.viana from 10.10.50.10 port 51003 ssh2
+Sep 26 13:12:05 app-fin01 sshd[1204]: Failed password for leandro.viana from 10.10.50.10 port 51004 ssh2
+Sep 26 13:12:35 app-fin01 sshd[1205]: Failed password for leandro.viana from 10.10.50.10 port 51005 ssh2
+Sep 26 13:13:48 app-fin01 sshd[1210]: Accepted password for leandro.viana from 10.10.50.10 port 51010 ssh2
