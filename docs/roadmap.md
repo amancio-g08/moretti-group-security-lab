@@ -66,7 +66,8 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 - **Status (2026-09-26):** `moretti-sec` package with sshd and Windows parsers, enrichment from
   `data/`, detections BF-01/02 and ACC-01…06, IOC extraction, timeline and Markdown report;
   19 tests and ruff pass locally and in `pre-commit`. CI workflow added
-  (`.github/workflows/ci.yml`); its first run on GitHub is still to be observed.
+  (`.github/workflows/ci.yml`); first run on GitHub (run #1, commit `a6c3498` on `main`)
+  passed all three jobs.
 
 ### Phase 4 — Minimal AWS lab
 - **Creates:** matrix → Security Group renderer (moved from phase 3), Terraform for VPC,
