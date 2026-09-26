@@ -1,0 +1,92 @@
+# =====================================================================
+# Secrets and credentials — must NEVER be committed
+# =====================================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.ppk
+*.pfx
+*.p12
+*.jks
+*.kdbx
+id_rsa*
+id_ed25519*
+!*.pub
+credentials
+credentials.*
+.aws/
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# =====================================================================
+# Terraform
+# =====================================================================
+# State files contain resource attributes and can contain secrets.
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# Note: .terraform.lock.hcl IS committed (pins provider versions).
+
+# =====================================================================
+# Network captures and raw logs
+# =====================================================================
+# Raw captures stay local by default. Curated, reviewed captures that are
+# part of a published investigation are committed explicitly under
+# project-02-pcap/pcaps/curated/ (see project-02-pcap/README.md).
+*.pcap
+*.pcapng
+*.cap
+*.etl
+!project-02-pcap/pcaps/curated/*.pcap
+!project-02-pcap/pcaps/curated/*.pcapng
+*.evtx
+raw-logs/
+
+# =====================================================================
+# Python
+# =====================================================================
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# =====================================================================
+# Packet Tracer
+# =====================================================================
+# .pkt files ARE committed. Only editor backups are ignored.
+*.pkt.bak
+*.pka.bak
+
+# =====================================================================
+# OS and editors
+# =====================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
