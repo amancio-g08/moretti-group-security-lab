@@ -60,6 +60,37 @@ def host_ip_settings() -> list[dict]:
     return hosts
 
 
+RANGE = re.compile(r"^interface range (.+)$")
+RANGE_PART = re.compile(r"^\s*([A-Za-z]+[\d/]*/)(\d+)\s*-\s*(\d+)\s*$")
+
+
+def expand_interface_ranges(lines: list[str]) -> list[str]:
+    """'interface range X/1 - 3' is not applied when sent through the Packet Tracer API
+    (observed: unused ports stayed up). Expand each range into one block per interface."""
+    out: list[str] = []
+    i = 0
+    while i < len(lines):
+        match = RANGE.match(lines[i])
+        if not match:
+            out.append(lines[i])
+            i += 1
+            continue
+        body = []
+        i += 1
+        while i < len(lines) and lines[i].startswith(" "):
+            body.append(lines[i])
+            i += 1
+        for part in match.group(1).split(","):
+            m = RANGE_PART.match(part)
+            if not m:
+                raise SystemExit(f"cannot expand interface range: {match.group(0)}")
+            prefix, first, last = m.group(1), int(m.group(2)), int(m.group(3))
+            for n in range(first, last + 1):
+                out.append(f"interface {prefix}{n}")
+                out.extend(body)
+    return out
+
+
 def config_lines(path: Path) -> list[str]:
     """Configuration commands without comments, blank lines and the final 'end'."""
     lines = []
@@ -70,7 +101,7 @@ def config_lines(path: Path) -> list[str]:
         lines.append(line)
     while lines and lines[-1].strip() == "end":
         lines.pop()
-    return lines
+    return expand_interface_ranges(lines)
 
 
 def render() -> str:
