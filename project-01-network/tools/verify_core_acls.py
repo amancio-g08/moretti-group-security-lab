@@ -121,6 +121,7 @@ def main() -> int:
     for k, g in gateways.items():
         endpoints.setdefault(f"gw-{k}", g)
     gateway_ips = set(gateways.values())
+    core_ip = ipaddress.ip_address(model.assets["CORE-SW01"]["ip"])
 
     probes = sorted(
         {("icmp", 0)}
@@ -146,7 +147,9 @@ def main() -> int:
                 continue  # intra-VLAN traffic is not routed by the core
             for proto, port in probes:
                 checked += 1
-                want, rule_id = matrix_decision(proto, s_ip, d_ip, port)
+                # The own gateway is the core itself: evaluate the matrix with the core's address.
+                target = core_ip if d_ip == gateways[s_seg] else d_ip
+                want, rule_id = matrix_decision(proto, s_ip, target, port)
                 if d_ip == gateways[s_seg] and proto == "icmp":
                     want, rule_id = "allow", "infrastructure: ping own gateway"
                 got = acl_decision(acl, proto, s_ip, 50000, d_ip, port)

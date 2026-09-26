@@ -276,6 +276,7 @@ def render(model: Model) -> str:
     internet = {s: [] for s in svi_segments}
     dhcp_clients = set()
     gateways = {s: next(ipaddress.ip_network(model.segments[s]["cidr"]).hosts()) for s in svi_segments}
+    core_ip = ipaddress.ip_address(model.assets["CORE-SW01"]["ip"])
 
     for rule in model.rules:
         ports = model.services[rule["service"]]
@@ -296,10 +297,11 @@ def render(model: Model) -> str:
                 continue
             for s_addr in collapse([n for seg, n in sources if seg == s_seg]):
                 # Destinations inside the source's own VLAN are never routed by the core, except
-                # the core itself (the VLAN gateway), which inbound ACLs also protect.
+                # the core itself: it answers on every VLAN gateway, and inbound ACLs protect it.
+                # The own gateway is added only when the rule targets the core (CORE-SW01).
                 gw = gateways[s_seg]
                 d_int = [n for seg, n in dests if seg is not None and seg != s_seg]
-                if any(seg == s_seg and gw in n for seg, n in dests):
+                if any(core_ip in n for _, n in dests if n is not None):
                     d_int.append(ipaddress.ip_network(f"{gw}/32"))
                 has_internet = any(seg is None for seg, _ in dests)
                 fwd_int = [a for d in collapse(d_int) for a in forward_aces(rule["action"], ports, s_addr, d)]

@@ -336,7 +336,6 @@ ip access-list extended ACL-IN-IT
  permit tcp 10.10.60.0 0.0.0.255 10.10.30.0 0.0.0.255 eq 3389
  permit tcp 10.10.60.0 0.0.0.255 10.10.40.0 0.0.0.255 eq 3389
  permit tcp 10.10.60.0 0.0.0.255 10.10.50.0 0.0.0.255 eq 3389
- permit tcp 10.10.60.0 0.0.0.255 host 10.10.60.1 eq 3389
  permit tcp 10.10.60.0 0.0.0.255 10.10.70.0 0.0.0.255 eq 3389
  permit tcp 10.10.60.0 0.0.0.255 10.10.100.0 0.0.0.255 eq 3389
  permit tcp 10.10.60.0 0.0.0.255 10.10.110.0 0.0.0.255 eq 3389
@@ -500,8 +499,6 @@ ip access-list extended ACL-IN-SERVERS
  permit tcp 10.10.80.0 0.0.0.255 host 10.10.70.10 eq 1514
  permit tcp 10.10.80.0 0.0.0.255 host 10.10.70.10 eq 1515
  remark NM-043 deny any (enforced by default deny)
- remark NM-050 allow backup-agent
- permit tcp host 10.10.80.90 host 10.10.80.1 eq 9102
  remark --- internet means non-private: block RFC 1918 first
  deny ip any 10.0.0.0 0.255.255.255
  deny ip any 172.16.0.0 0.15.255.255

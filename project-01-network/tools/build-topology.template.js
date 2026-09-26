@@ -1,27 +1,28 @@
-// =====================================================================================
-// Moretti Group network - Packet Tracer build script (FICTITIOUS LAB)
-//
-// GENERATED FILE - do not edit. Source: project-01-network/topology.yaml, data/*.yaml,
-// project-01-network/configs/. Regenerate with:
-//     python3 project-01-network/tools/build_ptbuilder_script.py --write
-//
-// Requires the PTBuilder extension (https://github.com/kimmknight/PTBuilder).
-// Run in Packet Tracer: Extensions -> Builder Code Editor -> paste this file -> Run.
-// See project-01-network/documentation/build-guide.md (automated build).
-// =====================================================================================
+/* ===================================================================================== */
+/* Moretti Group network - Packet Tracer build script (FICTITIOUS LAB) */
 
-// ---- 1. Credentials: fill in ONLY inside Packet Tracer. Never commit these values. ----
+/* GENERATED FILE - do not edit. Source: project-01-network/topology.yaml, data/*.yaml, */
+/* project-01-network/configs/. Regenerate with: */
+/*     python3 project-01-network/tools/build_ptbuilder_script.py --write */
+
+/* Requires the PTBuilder extension (https://github.com/kimmknight/PTBuilder). */
+/* Run in Packet Tracer: Extensions -> Builder Code Editor -> paste this file -> Run. */
+/* See project-01-network/documentation/build-guide.md (automated build). */
+/* PTBuilder removes line breaks before running: this file must only use block comments. */
+/* ===================================================================================== */
+
+/* ---- 1. Credentials: fill in ONLY inside Packet Tracer. Never commit these values. ---- */
 var ENABLE_SECRET = "";
 var ADMIN_SECRET = "";
 
-// ---- 2. What to run. Recommended: run once as-is, test (validation plan stage 1), then
-//         set everything to false except RUN_CORE_ACLS and run again. ----
-var RUN_TOPOLOGY = true;       // create devices and cables
-var RUN_HOST_IP = true;        // IP settings of PCs and servers
-var RUN_DEVICE_CONFIG = true;  // configure switches, firewall and routers
-var RUN_CORE_ACLS = false;     // inter-VLAN ACLs on CORE-SW01 (after stage 1 tests pass)
+/* ---- 2. What to run. Recommended: run once as-is, test (validation plan stage 1), then */
+/*         set everything to false except RUN_CORE_ACLS and run again. ---- */
+var RUN_TOPOLOGY = true; /* create devices and cables */
+var RUN_HOST_IP = true; /* IP settings of PCs and servers */
+var RUN_DEVICE_CONFIG = true; /* configure switches, firewall and routers */
+var RUN_CORE_ACLS = false; /* inter-VLAN ACLs on CORE-SW01 (after stage 1 tests pass) */
 
-// ------------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------------ */
 var DEVICES = __DEVICES__;
 var LINKS = __LINKS__;
 var HOSTS = __HOSTS__;
@@ -37,7 +38,7 @@ function deviceExists(name) {
     try { return getDevices().indexOf(name) !== -1; } catch (e) { return false; }
 }
 
-// The exact slot name of the 3650 power supply is not documented; try the likely ones.
+/* The exact slot name of the 3650 power supply is not documented; try the likely ones. */
 function addPowerSupply(name) {
     var slots = ["1", "0", "2", "0/1", "0/0", "1/0", "PS1", "PS-A"];
     for (var i = 0; i < slots.length; i++) {
@@ -138,7 +139,7 @@ function showReport() {
     } catch (e) { /* message box unavailable */ }
 }
 
-// ------------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------------ */
 if ((RUN_DEVICE_CONFIG || RUN_CORE_ACLS) && (!ENABLE_SECRET || !ADMIN_SECRET)) {
     throw new Error("Set ENABLE_SECRET and ADMIN_SECRET at the top of the script before configuring devices.");
 }

@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -93,6 +94,15 @@ def render() -> str:
     )
 
 
+def check_single_line_safe(text: str) -> None:
+    """PTBuilder deletes every line break before running the code, so a '//' comment would
+    swallow the rest of the script. Fail loudly if one appears outside a URL."""
+    for number, line in enumerate(text.splitlines(), 1):
+        for match in re.finditer(r"//", line):
+            if not line[: match.start()].endswith(("http:", "https:")):
+                raise SystemExit(f"line {number}: '//' would break PTBuilder (it strips newlines): {line.strip()}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     group = parser.add_mutually_exclusive_group()
@@ -100,6 +110,7 @@ def main() -> int:
     group.add_argument("--check", action="store_true")
     args = parser.parse_args()
     text = render()
+    check_single_line_safe(text)
     if args.write:
         OUTPUT.write_text(text, encoding="utf-8")
         print(f"wrote {OUTPUT.relative_to(ROOT)}")

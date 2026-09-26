@@ -1,27 +1,28 @@
-// =====================================================================================
-// Moretti Group network - Packet Tracer build script (FICTITIOUS LAB)
-//
-// GENERATED FILE - do not edit. Source: project-01-network/topology.yaml, data/*.yaml,
-// project-01-network/configs/. Regenerate with:
-//     python3 project-01-network/tools/build_ptbuilder_script.py --write
-//
-// Requires the PTBuilder extension (https://github.com/kimmknight/PTBuilder).
-// Run in Packet Tracer: Extensions -> Builder Code Editor -> paste this file -> Run.
-// See project-01-network/documentation/build-guide.md (automated build).
-// =====================================================================================
+/* ===================================================================================== */
+/* Moretti Group network - Packet Tracer build script (FICTITIOUS LAB) */
 
-// ---- 1. Credentials: fill in ONLY inside Packet Tracer. Never commit these values. ----
+/* GENERATED FILE - do not edit. Source: project-01-network/topology.yaml, data/*.yaml, */
+/* project-01-network/configs/. Regenerate with: */
+/*     python3 project-01-network/tools/build_ptbuilder_script.py --write */
+
+/* Requires the PTBuilder extension (https://github.com/kimmknight/PTBuilder). */
+/* Run in Packet Tracer: Extensions -> Builder Code Editor -> paste this file -> Run. */
+/* See project-01-network/documentation/build-guide.md (automated build). */
+/* PTBuilder removes line breaks before running: this file must only use block comments. */
+/* ===================================================================================== */
+
+/* ---- 1. Credentials: fill in ONLY inside Packet Tracer. Never commit these values. ---- */
 var ENABLE_SECRET = "";
 var ADMIN_SECRET = "";
 
-// ---- 2. What to run. Recommended: run once as-is, test (validation plan stage 1), then
-//         set everything to false except RUN_CORE_ACLS and run again. ----
-var RUN_TOPOLOGY = true;       // create devices and cables
-var RUN_HOST_IP = true;        // IP settings of PCs and servers
-var RUN_DEVICE_CONFIG = true;  // configure switches, firewall and routers
-var RUN_CORE_ACLS = false;     // inter-VLAN ACLs on CORE-SW01 (after stage 1 tests pass)
+/* ---- 2. What to run. Recommended: run once as-is, test (validation plan stage 1), then */
+/*         set everything to false except RUN_CORE_ACLS and run again. ---- */
+var RUN_TOPOLOGY = true; /* create devices and cables */
+var RUN_HOST_IP = true; /* IP settings of PCs and servers */
+var RUN_DEVICE_CONFIG = true; /* configure switches, firewall and routers */
+var RUN_CORE_ACLS = false; /* inter-VLAN ACLs on CORE-SW01 (after stage 1 tests pass) */
 
-// ------------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------------ */
 var DEVICES = [
  {
   "name": "INTERNET-SRV",
@@ -1961,7 +1962,6 @@ var CORE_ACLS = [
  " permit tcp 10.10.60.0 0.0.0.255 10.10.30.0 0.0.0.255 eq 3389",
  " permit tcp 10.10.60.0 0.0.0.255 10.10.40.0 0.0.0.255 eq 3389",
  " permit tcp 10.10.60.0 0.0.0.255 10.10.50.0 0.0.0.255 eq 3389",
- " permit tcp 10.10.60.0 0.0.0.255 host 10.10.60.1 eq 3389",
  " permit tcp 10.10.60.0 0.0.0.255 10.10.70.0 0.0.0.255 eq 3389",
  " permit tcp 10.10.60.0 0.0.0.255 10.10.100.0 0.0.0.255 eq 3389",
  " permit tcp 10.10.60.0 0.0.0.255 10.10.110.0 0.0.0.255 eq 3389",
@@ -2123,8 +2123,6 @@ var CORE_ACLS = [
  " permit tcp 10.10.80.0 0.0.0.255 host 10.10.70.10 eq 1514",
  " permit tcp 10.10.80.0 0.0.0.255 host 10.10.70.10 eq 1515",
  " remark NM-043 deny any (enforced by default deny)",
- " remark NM-050 allow backup-agent",
- " permit tcp host 10.10.80.90 host 10.10.80.1 eq 9102",
  " remark --- internet means non-private: block RFC 1918 first",
  " deny ip any 10.0.0.0 0.255.255.255",
  " deny ip any 172.16.0.0 0.15.255.255",
@@ -2347,7 +2345,7 @@ function deviceExists(name) {
     try { return getDevices().indexOf(name) !== -1; } catch (e) { return false; }
 }
 
-// The exact slot name of the 3650 power supply is not documented; try the likely ones.
+/* The exact slot name of the 3650 power supply is not documented; try the likely ones. */
 function addPowerSupply(name) {
     var slots = ["1", "0", "2", "0/1", "0/0", "1/0", "PS1", "PS-A"];
     for (var i = 0; i < slots.length; i++) {
@@ -2448,7 +2446,7 @@ function showReport() {
     } catch (e) { /* message box unavailable */ }
 }
 
-// ------------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------------ */
 if ((RUN_DEVICE_CONFIG || RUN_CORE_ACLS) && (!ENABLE_SECRET || !ADMIN_SECRET)) {
     throw new Error("Set ENABLE_SECRET and ADMIN_SECRET at the top of the script before configuring devices.");
 }
