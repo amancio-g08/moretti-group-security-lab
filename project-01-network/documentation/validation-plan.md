@@ -33,7 +33,7 @@ routing problems from filtering problems.
 | C-02 | WS-FIN01 | ping 10.10.80.10 | Replies | **Pass** (2026-09-26): 4/4 replies, TTL=127 (one routed hop through CORE-SW01) |
 | C-03 | JUMP01 | ping 10.10.255.6 | Replies | Not executed |
 | C-04 | PC-DHCP-TEST | dhcp | Gets 10.10.20.100 or higher, gateway 10.10.20.1 | Not executed |
-| C-05 | WS-FIN01 | browser `http://198.51.100.10` | INTERNET-SRV page loads (NAT works) | Not executed |
+| C-05 | WS-FIN01 | browser `http://198.51.100.10` | INTERNET-SRV page loads (NAT works) | **Pass** (2026-09-26): default Packet Tracer page loaded. Earlier timeouts were caused by a mistyped URL (`192.51.100.10`). At the time of the pass FW01 carried a manually added test entry `access-list OUTSIDE_IN extended permit tcp any eq 80 10.10.0.0 255.255.0.0` and `inspect http`/`inspect dns`; whether the PT ASA needs that return entry was **not determined** |
 | C-06 | INTERNET-SRV | browser `https://203.0.113.3` | WEB01 page loads (static NAT) | Not executed |
 
 ## Stage 2 — Allowed flows (after pasting the ACLs)
