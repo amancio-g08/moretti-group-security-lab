@@ -1,0 +1,86 @@
+# Packet Tracer topology: device models, canvas positions and cabling.
+#
+# Host addressing is NOT here: it comes from data/assets.yaml and data/network-matrix.yaml.
+# Device configurations come from configs/*.txt. The build script
+# packet-tracer/build-topology.js is generated from all of them by
+# tools/build_ptbuilder_script.py.
+
+devices:
+  # name, PTBuilder model, x, y, config file (network devices only), credentials type
+  - {name: INTERNET-SRV, model: Server-PT, x: 700, y: 40}
+  - {name: ISP-SIM,      model: ISR4331,   x: 700, y: 140, config: ISP-SIM.txt}
+  - {name: R-EDGE01,     model: ISR4331,   x: 700, y: 240, config: R-EDGE01.txt, credentials: ios}
+  - {name: FW01,         model: 5506-X,    x: 700, y: 340, config: FW01.txt, credentials: asa}
+  - {name: WEB01,        model: Server-PT, x: 950, y: 340}
+  - {name: CORE-SW01,    model: 3650-24PS, x: 700, y: 460, config: CORE-SW01.txt, credentials: ios, power_supply: true}
+  - {name: ACC-SW01,     model: 2960-24TT, x: 250, y: 600, config: ACC-SW01.txt, credentials: ios}
+  - {name: ACC-SW02,     model: 2960-24TT, x: 600, y: 600, config: ACC-SW02.txt, credentials: ios}
+  - {name: ACC-SW03,     model: 2960-24TT, x: 900, y: 600, config: ACC-SW03.txt, credentials: ios}
+  - {name: SRV-SW01,     model: 2960-24TT, x: 1250, y: 600, config: SRV-SW01.txt, credentials: ios}
+  # floor 1
+  - {name: WS-EXE01,     model: PC-PT, x: 90,  y: 760}
+  - {name: WS-INV01,     model: PC-PT, x: 170, y: 760}
+  - {name: WS-FIN01,     model: PC-PT, x: 250, y: 760}
+  - {name: PC-DHCP-TEST, model: PC-PT, x: 330, y: 760}
+  - {name: WS-HR01,      model: PC-PT, x: 410, y: 760}
+  # floor 2
+  - {name: WS-IR01,      model: PC-PT, x: 480, y: 760}
+  - {name: WS-OPS01,     model: PC-PT, x: 560, y: 760}
+  - {name: WS-DEV01,     model: PC-PT, x: 640, y: 760}
+  - {name: GUEST01,      model: PC-PT, x: 720, y: 760}
+  # IT and security
+  - {name: WS-IT01,      model: PC-PT, x: 860, y: 760}
+  - {name: SEC-WS01,     model: PC-PT, x: 940, y: 760}
+  # server farm
+  - {name: DC01,         model: Server-PT, x: 1050, y: 760}
+  - {name: DC02,         model: Server-PT, x: 1130, y: 760}
+  - {name: FS01,         model: Server-PT, x: 1210, y: 760}
+  - {name: APP-FIN01,    model: Server-PT, x: 1290, y: 760}
+  - {name: DB-FIN01,     model: Server-PT, x: 1370, y: 760}
+  - {name: APP-INV01,    model: Server-PT, x: 1450, y: 760}
+  - {name: APP-HR01,     model: Server-PT, x: 1050, y: 880}
+  - {name: APP-CRM01,    model: Server-PT, x: 1130, y: 880}
+  - {name: GIT01,        model: Server-PT, x: 1210, y: 880}
+  - {name: BKP01,        model: Server-PT, x: 1290, y: 880}
+  - {name: SIEM01,       model: Server-PT, x: 1370, y: 880}
+  - {name: JUMP01,       model: Server-PT, x: 1450, y: 880}
+
+links:
+  # [device A, interface A, device B, interface B, cable]
+  - [INTERNET-SRV, FastEthernet0,        ISP-SIM,   GigabitEthernet0/0/1, straight]
+  - [ISP-SIM,      GigabitEthernet0/0/0, R-EDGE01,  GigabitEthernet0/0/1, cross]
+  - [R-EDGE01,     GigabitEthernet0/0/0, FW01,      GigabitEthernet1/1,   straight]
+  - [FW01,         GigabitEthernet1/3,   WEB01,     FastEthernet0,        straight]
+  - [FW01,         GigabitEthernet1/2,   CORE-SW01, GigabitEthernet1/0/24, straight]
+  - [CORE-SW01,    GigabitEthernet1/0/1, ACC-SW01,  GigabitEthernet0/1,   straight]
+  - [CORE-SW01,    GigabitEthernet1/0/2, ACC-SW02,  GigabitEthernet0/1,   straight]
+  - [CORE-SW01,    GigabitEthernet1/0/3, ACC-SW03,  GigabitEthernet0/1,   straight]
+  - [CORE-SW01,    GigabitEthernet1/0/4, SRV-SW01,  GigabitEthernet0/1,   straight]
+  - [ACC-SW01, FastEthernet0/1, WS-EXE01,     FastEthernet0, straight]
+  - [ACC-SW01, FastEthernet0/2, WS-INV01,     FastEthernet0, straight]
+  - [ACC-SW01, FastEthernet0/3, WS-FIN01,     FastEthernet0, straight]
+  - [ACC-SW01, FastEthernet0/4, PC-DHCP-TEST, FastEthernet0, straight]
+  - [ACC-SW01, FastEthernet0/5, WS-HR01,      FastEthernet0, straight]
+  - [ACC-SW02, FastEthernet0/1, WS-IR01,      FastEthernet0, straight]
+  - [ACC-SW02, FastEthernet0/2, WS-OPS01,     FastEthernet0, straight]
+  - [ACC-SW02, FastEthernet0/3, WS-DEV01,     FastEthernet0, straight]
+  - [ACC-SW02, FastEthernet0/4, GUEST01,      FastEthernet0, straight]
+  - [ACC-SW03, FastEthernet0/1, WS-IT01,      FastEthernet0, straight]
+  - [ACC-SW03, FastEthernet0/2, SEC-WS01,     FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/1,  DC01,      FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/2,  DC02,      FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/3,  FS01,      FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/4,  APP-FIN01, FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/5,  DB-FIN01,  FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/6,  APP-INV01, FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/7,  APP-HR01,  FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/8,  APP-CRM01, FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/9,  GIT01,     FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/10, BKP01,     FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/20, SIEM01,    FastEthernet0, straight]
+  - [SRV-SW01, FastEthernet0/24, JUMP01,    FastEthernet0, straight]
+
+# Simulation fixtures that are not company assets (so not in data/assets.yaml).
+fixtures:
+  - {name: PC-DHCP-TEST, dhcp: true}
+  - {name: INTERNET-SRV, ip: 198.51.100.10, mask: 255.255.255.0, gateway: 198.51.100.1, dns: 198.51.100.10}

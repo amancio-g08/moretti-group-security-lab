@@ -6,7 +6,15 @@ workspace. No prior Packet Tracer experience is assumed.
 > **[USER ACTION REQUIRED]** Everything in this guide is executed by the lab owner in Packet
 > Tracer. The `.pkt` file cannot be generated outside the application.
 
-- **Estimated time:** 3 to 4 hours (can be split across sessions; save often).
+There are two ways to build it:
+
+- **Automated build (try this first):** a generated script creates the devices, cables, IP
+  settings and device configurations. See [Automated build](#automated-build-ptbuilder) below.
+  It is **experimental**: it was tested against a mock of the extension's API, not inside Packet
+  Tracer, so some steps may fail and need fixing.
+- **Manual build:** steps 1 to 11. Also the fallback for any step the script cannot do.
+
+- **Estimated time (manual):** 3 to 4 hours (can be split across sessions; save often).
 - **Output:** `project-01-network/packet-tracer/moretti-group-network.pkt`
 - **Configurations:** [`../configs/`](../configs/)
 - **Addresses and ports:** [addressing plan](addressing-plan.md)
@@ -29,6 +37,43 @@ flowchart TB
     A3 --- P3["WS-IT01 · SEC-WS01"]
     S1 --- P4["DC01 · DC02 · FS01 · APP-FIN01 · DB-FIN01 · APP-INV01<br/>APP-HR01 · APP-CRM01 · GIT01 · BKP01 · SIEM01 · JUMP01"]
 ```
+
+---
+
+## Automated build (PTBuilder)
+
+The script [`../packet-tracer/build-topology.js`](../packet-tracer/build-topology.js) is
+generated from `topology.yaml`, `data/` and `configs/` by
+[`../tools/build_ptbuilder_script.py`](../tools/build_ptbuilder_script.py). It runs inside Packet
+Tracer through **PTBuilder**, a third-party open-source extension
+([kimmknight/PTBuilder](https://github.com/kimmknight/PTBuilder)) that is not included in this
+repository. PTBuilder scripts can control the whole Packet Tracer workspace, so read
+`build-topology.js` before running it.
+
+1. **Install PTBuilder (once).** Download `Builder.pts` from the PTBuilder repository. In Packet
+   Tracer: **Extensions → Scripting → Configure PT Script Modules → Add...** → select
+   `Builder.pts`.
+2. **Start from an empty file** and save it as in [step 1](#step-1--create-and-save-the-file).
+3. **Open the editor:** **Extensions → Builder Code Editor**.
+4. Open `build-topology.js` in a text editor, copy everything and paste it into the Builder
+   Code Editor.
+5. At the top of the pasted script, fill in `ENABLE_SECRET` and `ADMIN_SECRET` with your own lab
+   passwords. Do this only inside Packet Tracer; never save these values in the repository.
+6. Click **Run**. The script creates 33 devices and 32 cables, sets the IP of every PC and server,
+   and configures the switches, firewall and routers. It can take a few minutes.
+7. A message box shows how many steps succeeded and **lists every failed step**. Send that list
+   back so the script can be fixed. Known risk: if the 3650 power supply could not be added
+   automatically, add it by hand (see the note in [step 2](#step-2--place-the-devices)).
+8. Server services are not automated: do the **Services** part of
+   [step 7](#step-7--configure-the-servers) (DC01 DHCP/DNS/NTP, HTTPS servers, SIEM01 syslog,
+   INTERNET-SRV).
+9. Run **Stage 1** of the [validation plan](validation-plan.md).
+10. Apply the ACLs: in the script set `RUN_TOPOLOGY`, `RUN_HOST_IP` and `RUN_DEVICE_CONFIG` to
+    `false` and `RUN_CORE_ACLS` to `true`, fill in the passwords again and click **Run**.
+11. Continue with [step 10](#step-10--validate) and [step 11](#step-11--version-the-result).
+
+Running the script again is safe for devices (existing ones are skipped); cables that already
+exist are reported as failed and can be ignored.
 
 ---
 

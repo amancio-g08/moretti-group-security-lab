@@ -22,7 +22,19 @@ não foram feitos.
 | [`documentation/acl-design.md`](documentation/acl-design.md) | Como a matriz vira ACL, e as limitações de ACL sem estado |
 | [`documentation/hardening.md`](documentation/hardening.md) | Proteções dos equipamentos, ataques de camada 2 e o que ficou de fora |
 | [`documentation/validation-plan.md`](documentation/validation-plan.md) | Testes a executar no Packet Tracer |
+| [`topology.yaml`](topology.yaml) | Modelos, posições na tela e cabos da topologia |
+| [`packet-tracer/build-topology.js`](packet-tracer/build-topology.js) | Script **gerado** que monta a rede dentro do Packet Tracer (extensão PTBuilder) |
+| [`tools/build_ptbuilder_script.py`](tools/build_ptbuilder_script.py) | Gera o script a partir de `topology.yaml`, `data/` e `configs/` |
 | `packet-tracer/` | Onde fica o arquivo `.pkt` depois de montado |
+
+## Montagem automática (experimental)
+
+Em vez de arrastar 33 equipamentos e ligar 32 cabos na mão, dá para rodar um script dentro do
+Packet Tracer usando a extensão open-source [PTBuilder](https://github.com/kimmknight/PTBuilder).
+O script cria a topologia, configura os IPs e aplica as configurações dos equipamentos. Ele foi
+testado só contra uma simulação da API da extensão, então o primeiro teste de verdade no Packet
+Tracer ainda vai mostrar o que precisa de ajuste. O passo a passo está no
+[build guide](documentation/build-guide.md#automated-build-ptbuilder).
 
 ## Por que as ACLs são geradas
 

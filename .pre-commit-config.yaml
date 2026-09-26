@@ -68,3 +68,10 @@ repos:
         additional_dependencies: ["pyyaml==6.0.2"]
         files: ^(data/(network-matrix|assets)\.yaml|project-01-network/(tools/.*|configs/generated/.*))$
         pass_filenames: false
+      - id: ptbuilder-script-in-sync
+        name: Packet Tracer build script regenerated from sources
+        entry: python project-01-network/tools/build_ptbuilder_script.py --check
+        language: python
+        additional_dependencies: ["pyyaml==6.0.2"]
+        files: ^(data/(network-matrix|assets)\.yaml|project-01-network/(topology\.yaml|tools/.*|configs/.*|packet-tracer/build-topology\.js))$
+        pass_filenames: false
