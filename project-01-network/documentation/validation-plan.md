@@ -3,7 +3,7 @@
 Tests to run in Packet Tracer after the topology is built
 ([build guide](build-guide.md)). Each test names the matrix rule it proves.
 
-> **Status: not executed.** The "Result" column is filled in only with what is actually observed
+> **Status: in progress.** Stage 1 started on 2026-09-26 in Packet Tracer 9.0.1. The "Result" column is filled in only with what is actually observed
 > in Packet Tracer. Static verification of the generated ACLs is a separate check (see
 > [ACL design](acl-design.md#5-verification)) and is not a substitute for these tests.
 
@@ -29,8 +29,8 @@ routing problems from filtering problems.
 
 | ID | From | Test | Expected | Result |
 |---|---|---|---|---|
-| C-01 | WS-FIN01 | ping 10.10.20.1 | Replies | Not executed |
-| C-02 | WS-FIN01 | ping 10.10.80.10 | Replies | Not executed |
+| C-01 | WS-FIN01 | ping 10.10.20.1 | Replies | **Pass** (2026-09-26): 4/4 replies, TTL=255 |
+| C-02 | WS-FIN01 | ping 10.10.80.10 | Replies | **Pass** (2026-09-26): 4/4 replies, TTL=127 (one routed hop through CORE-SW01) |
 | C-03 | JUMP01 | ping 10.10.255.6 | Replies | Not executed |
 | C-04 | PC-DHCP-TEST | dhcp | Gets 10.10.20.100 or higher, gateway 10.10.20.1 | Not executed |
 | C-05 | WS-FIN01 | browser `http://198.51.100.10` | INTERNET-SRV page loads (NAT works) | Not executed |
