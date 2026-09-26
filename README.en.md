@@ -59,7 +59,7 @@ Full details: [docs/architecture.md](docs/architecture.md).
 
 | # | Project | Focus | Status |
 |---|---|---|---|
-| 01 | [Network](project-01-network/) | Segmentation, VLANs, ACLs, firewalling, device hardening | Planned |
+| 01 | [Network](project-01-network/) | Segmentation, VLANs, ACLs, firewalling, device hardening | Configs ready, build pending |
 | 02 | [PCAP Analysis](project-02-pcap/) | Structured network forensics and investigation reports | Planned |
 | 03 | [SOC](project-03-soc/) | Wazuh, detection engineering, alert triage, incident response | Planned |
 | 04 | [IAM](project-04-iam/) | AD, Entra ID, RBAC, MFA, Joiner/Mover/Leaver, access reviews | Planned |
@@ -81,6 +81,7 @@ Architecture Decision Record in [docs/adr/](docs/adr/).
 | [005](docs/adr/ADR-005-lab-vs-enterprise.md) | Packet Tracer = enterprise design; AWS = operational lab |
 | [006](docs/adr/ADR-006-identity-evolution.md) | Identity evolves on-prem → hybrid → cloud |
 | [007](docs/adr/ADR-007-minimum-footprint.md) | Minimum VM footprint, grown per phase |
+| [008](docs/adr/ADR-008-network-enforcement-points.md) | Core switch ACLs east-west, ASA at the perimeter, NAT at the edge |
 
 ## Safety
 

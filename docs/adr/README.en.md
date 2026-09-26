@@ -15,6 +15,7 @@ in a new ADR that supersedes the old one.
 | [005](ADR-005-lab-vs-enterprise.md) | Packet Tracer is the enterprise design; AWS is the operational lab | Accepted |
 | [006](ADR-006-identity-evolution.md) | Identity evolves on-prem → hybrid → cloud | Accepted |
 | [007](ADR-007-minimum-footprint.md) | Minimum VM footprint, grown per phase | Accepted |
+| [008](ADR-008-network-enforcement-points.md) | Core switch ACLs east-west, ASA at the perimeter, NAT at the edge router | Proposed |
 
 **Statuses:** Proposed → Accepted → (Superseded by ADR-xxx | Deprecated).
 

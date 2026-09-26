@@ -1,0 +1,21 @@
+! =====================================================================
+! ISP-SIM - Cisco ISR 4331 (Packet Tracer)
+! Role: SIMULATED internet. Not a Moretti Group asset.
+!
+! Uses RFC 5737 documentation ranges only:
+!   203.0.113.0/29   link to R-EDGE01 (Moretti Group public addresses)
+!   198.51.100.0/24  "internet" server INTERNET-SRV (web + public DNS resolver)
+! The ISP knows nothing about private networks, exactly like the real internet.
+! =====================================================================
+hostname ISP-SIM
+no ip domain-lookup
+interface GigabitEthernet0/0/0
+ description to R-EDGE01 Gi0/0/1
+ ip address 203.0.113.1 255.255.255.248
+ no shutdown
+interface GigabitEthernet0/0/1
+ description to INTERNET-SRV
+ ip address 198.51.100.1 255.255.255.0
+ no shutdown
+exit
+end

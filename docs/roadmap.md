@@ -11,8 +11,8 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 | Phase | Deliverable | Cloud cost | Status |
 |---|---|---|---|
 | 0 | Repository foundation and ADRs | None | Done |
-| 1 | Company data: departments, employees, assets, data classification, `network-matrix.yaml`, IAM roles, threat model v1 | None | In review |
-| 2 | P01 — Packet Tracer enterprise design | None | Planned |
+| 1 | Company data: departments, employees, assets, data classification, `network-matrix.yaml`, IAM roles, threat model v1 | None | Done |
+| 2 | P01 — Packet Tracer enterprise design | None | In review (build pending) |
 | 3 | P05 — Python core (parsers, reports, matrix translation) | None | Planned |
 | 4 | Minimal AWS lab: VPC, 5 VMs, SGs from the matrix, Flow Logs, CloudTrail, Budgets | Starts here | Planned |
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | Planned |

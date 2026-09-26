@@ -223,6 +223,10 @@ services:
     description: Backup file daemon on protected servers
     ports:
       - {proto: tcp, port: 9102}
+  - id: icmp-echo
+    description: ICMP echo (ping) for troubleshooting and monitoring
+    ports:
+      - {proto: icmp, port: any}
   - id: any
     description: Any protocol and port
     ports:
@@ -294,12 +298,12 @@ rules:
     applies_to: [pt]
     justification: Address assignment for corporate workstations, relayed by the core switch. In AWS, addressing is provided by the VPC.
   - id: NM-012
-    source: [seg:mgmt]
+    source: [seg:mgmt, seg:transit]
     destination: [asset:DC01]
     service: ntp
     action: allow
     applies_to: [pt]
-    justification: Network devices synchronize time with the PDC emulator so log timestamps are comparable.
+    justification: Network devices (switches in NET-MGMT, edge router in TRANSIT) synchronize time with the PDC emulator so log timestamps are comparable.
   - id: NM-013
     source: [asset:DC01, asset:DC02]
     destination: [internet]
@@ -480,3 +484,12 @@ rules:
     action: allow
     applies_to: [pt, aws]
     justification: Updates, Wazuh packages and Entra Cloud Sync. Other servers get no direct internet access. In AWS, only while egress is enabled (ADR-004).
+
+  # ------------------------------------------------------------------ troubleshooting
+  - id: NM-080
+    source: [seg:it, seg:security, seg:mgmt]
+    destination: [grp:internal, seg:guest, seg:transit]
+    service: icmp-echo
+    action: allow
+    applies_to: [pt]
+    justification: IT, security and the jump host may ping any internal address for troubleshooting and monitoring. Other segments cannot map the network with ICMP.

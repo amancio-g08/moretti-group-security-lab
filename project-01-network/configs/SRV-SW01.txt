@@ -1,0 +1,242 @@
+! =====================================================================
+! SRV-SW01 - Cisco Catalyst 2960-24TT (Packet Tracer)
+! Role: server farm switch (servers, SIEM, jump host)
+!
+! Paste in global configuration mode (enable -> configure terminal).
+! Credentials are NOT in this file: set them first (build guide, step 4).
+! =====================================================================
+hostname SRV-SW01
+no ip domain-lookup
+ip domain-name corp.moretti.internal
+service password-encryption
+service timestamps log datetime msec
+banner motd ^Moretti Group lab (FICTITIOUS). Authorized access only. Activity is logged.^
+!
+! ---------------------------------------------------------------- VLANs used on this switch
+vlan 10
+ name NET-MGMT
+vlan 70
+ name SECURITY
+vlan 80
+ name SERVERS
+vlan 999
+ name BLACKHOLE
+exit
+spanning-tree mode rapid-pvst
+!
+! ---------------------------------------------------------------- uplink trunk to CORE-SW01
+interface GigabitEthernet0/1
+ description TRUNK to CORE-SW01
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,70,80
+ switchport nonegotiate
+ ip dhcp snooping trust
+ no shutdown
+!
+! ---------------------------------------------------------------- access ports
+! Access mode only, PortFast + BPDU Guard (a switch plugged in here shuts the port),
+! port security (max 2 MACs, sticky, restrict), no CDP towards end devices.
+interface FastEthernet0/1
+ description DC01 (SERVERS) - authorized DHCP server
+ ip dhcp snooping trust
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/2
+ description DC02 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/3
+ description FS01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/4
+ description APP-FIN01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/5
+ description DB-FIN01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/6
+ description APP-INV01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/7
+ description APP-HR01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/8
+ description APP-CRM01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/9
+ description GIT01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/10
+ description BKP01 (SERVERS)
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/20
+ description SIEM01 (SECURITY)
+ switchport mode access
+ switchport access vlan 70
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+interface FastEthernet0/24
+ description JUMP01 (NET-MGMT)
+ switchport mode access
+ switchport access vlan 10
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no cdp enable
+ no shutdown
+!
+! ---------------------------------------------------------------- unused ports
+interface range FastEthernet0/11 - 19 , FastEthernet0/21 - 23
+ description UNUSED
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+interface GigabitEthernet0/2
+ description UNUSED
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+exit
+!
+! ---------------------------------------------------------------- DHCP snooping
+! Only the uplink may answer DHCP; a rogue DHCP server on an access port is blocked.
+ip dhcp snooping
+ip dhcp snooping vlan 80
+no ip dhcp snooping information option
+!
+! ---------------------------------------------------------------- management (VLAN 10)
+interface Vlan1
+ no ip address
+ shutdown
+interface Vlan10
+ description NET-MGMT
+ ip address 10.10.10.14 255.255.255.0
+ no shutdown
+exit
+ip default-gateway 10.10.10.1
+!
+! SSH only, only from JUMP01 (NM-032).
+ip access-list standard ACL-VTY-MGMT
+ remark NM-032 device administration only from JUMP01
+ permit host 10.10.10.20
+ deny any
+exit
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+login block-for 120 attempts 3 within 60
+no ip http server
+no ip http secure-server
+line con 0
+ exec-timeout 5 0
+ logging synchronous
+ login local
+line vty 0 15
+ access-class ACL-VTY-MGMT in
+ transport input ssh
+ exec-timeout 10 0
+ login local
+exit
+!
+logging host 10.10.70.10
+logging trap informational
+ntp server 10.10.80.10
+end

@@ -17,6 +17,7 @@ As ADRs em si estão em inglês.
 | [005](ADR-005-lab-vs-enterprise.md) | Packet Tracer é o desenho da empresa; AWS é o laboratório | Aceita |
 | [006](ADR-006-identity-evolution.md) | Identidade evolui de AD para híbrido e depois nuvem | Aceita |
 | [007](ADR-007-minimum-footprint.md) | Começar com poucas máquinas e crescer por fase | Aceita |
+| [008](ADR-008-network-enforcement-points.md) | ACLs no switch core entre VLANs, ASA no perímetro, NAT no roteador de borda | Proposta |
 
 **Status possíveis:** Proposta → Aceita → (Substituída pela ADR-xxx | Descontinuada).
 

@@ -1,0 +1,205 @@
+! =====================================================================
+! CORE-SW01 - Cisco Catalyst 3650-24PS (Packet Tracer)
+! Role: core Layer 3 switch - inter-VLAN routing, inter-VLAN ACLs (ADR-008)
+!
+! Paste in global configuration mode (enable -> configure terminal).
+! Credentials are NOT in this file: set them first (build guide, step 4).
+! Inter-VLAN ACLs are in generated/CORE-SW01-acls.txt - paste that file after this one.
+! =====================================================================
+hostname CORE-SW01
+no ip domain-lookup
+ip domain-name corp.moretti.internal
+service password-encryption
+service timestamps log datetime msec
+banner motd ^Moretti Group lab (FICTITIOUS). Authorized access only. Activity is logged.^
+!
+! ---------------------------------------------------------------- VLANs
+vlan 10
+ name NET-MGMT
+vlan 20
+ name FINANCE
+vlan 30
+ name HR
+vlan 40
+ name INVESTOR-RELATIONS
+vlan 50
+ name DEVELOPMENT
+vlan 60
+ name IT
+vlan 70
+ name SECURITY
+vlan 80
+ name SERVERS
+vlan 90
+ name GUEST
+vlan 100
+ name EXECUTIVE
+vlan 110
+ name OPERATIONS
+vlan 120
+ name INVESTMENTS
+vlan 999
+ name BLACKHOLE
+exit
+!
+! ---------------------------------------------------------------- spanning tree
+! The core is the root bridge for every VLAN, so a rogue switch cannot take over the topology.
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10,20,30,40,50,60,70,80,90,100,110,120 root primary
+!
+! ---------------------------------------------------------------- routing
+ip routing
+!
+! ---------------------------------------------------------------- SVIs (gateways)
+! Corporate VLANs relay DHCP to DC01. Servers use static addresses. Guest uses a local pool.
+interface Vlan10
+ description NET-MGMT
+ ip address 10.10.10.1 255.255.255.0
+ no shutdown
+interface Vlan20
+ description FINANCE
+ ip address 10.10.20.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan30
+ description HR
+ ip address 10.10.30.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan40
+ description INVESTOR-RELATIONS
+ ip address 10.10.40.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan50
+ description DEVELOPMENT
+ ip address 10.10.50.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan60
+ description IT
+ ip address 10.10.60.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan70
+ description SECURITY
+ ip address 10.10.70.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan80
+ description SERVERS
+ ip address 10.10.80.1 255.255.255.0
+ no shutdown
+interface Vlan90
+ description GUEST
+ ip address 10.10.90.1 255.255.255.0
+ no shutdown
+interface Vlan100
+ description EXECUTIVE
+ ip address 10.10.100.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan110
+ description OPERATIONS
+ ip address 10.10.110.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+interface Vlan120
+ description INVESTMENTS
+ ip address 10.10.120.1 255.255.255.0
+ ip helper-address 10.10.80.10
+ no shutdown
+exit
+!
+! ---------------------------------------------------------------- guest DHCP (local)
+! Guests get addresses from the core itself and a public DNS resolver, so they never
+! need to reach an internal server (NM-004, NM-006).
+ip dhcp excluded-address 10.10.90.1 10.10.90.99
+ip dhcp excluded-address 10.10.90.200 10.10.90.254
+ip dhcp pool GUEST
+ network 10.10.90.0 255.255.255.0
+ default-router 10.10.90.1
+ dns-server 198.51.100.10
+exit
+!
+! ---------------------------------------------------------------- trunks to access switches
+! Only the VLANs each switch needs are allowed; native VLAN is the unused VLAN 999;
+! DTP is disabled so a connected device cannot negotiate a trunk.
+interface GigabitEthernet1/0/1
+ description TRUNK to ACC-SW01 Gi0/1 (floor 1)
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,100,120
+ switchport nonegotiate
+ no shutdown
+interface GigabitEthernet1/0/2
+ description TRUNK to ACC-SW02 Gi0/1 (floor 2)
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,40,50,90,110
+ switchport nonegotiate
+ no shutdown
+interface GigabitEthernet1/0/3
+ description TRUNK to ACC-SW03 Gi0/1 (IT and security)
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,60,70
+ switchport nonegotiate
+ no shutdown
+interface GigabitEthernet1/0/4
+ description TRUNK to SRV-SW01 Gi0/1 (server farm)
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,70,80
+ switchport nonegotiate
+ no shutdown
+!
+! ---------------------------------------------------------------- routed link to the firewall
+interface GigabitEthernet1/0/24
+ description ROUTED to FW01 Gi1/2 (inside)
+ no switchport
+ ip address 10.10.255.1 255.255.255.252
+ no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 10.10.255.2
+!
+! ---------------------------------------------------------------- unused ports
+interface range GigabitEthernet1/0/5 - 23
+ description UNUSED
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+interface range GigabitEthernet1/1/1 - 4
+ description UNUSED
+ shutdown
+exit
+!
+! ---------------------------------------------------------------- management plane
+! SSH only, only from JUMP01 (NM-032). Telnet and HTTP are disabled.
+ip access-list standard ACL-VTY-MGMT
+ remark NM-032 device administration only from JUMP01
+ permit host 10.10.10.20
+ deny any
+exit
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+login block-for 120 attempts 3 within 60
+no ip http server
+no ip http secure-server
+line con 0
+ exec-timeout 5 0
+ logging synchronous
+ login local
+line vty 0 15
+ access-class ACL-VTY-MGMT in
+ transport input ssh
+ exec-timeout 10 0
+ login local
+exit
+!
+! ---------------------------------------------------------------- logging and time
+logging host 10.10.70.10
+logging trap informational
+ntp server 10.10.80.10
+end

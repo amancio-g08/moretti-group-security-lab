@@ -72,6 +72,7 @@ de disponibilidade para economizar.
 | [005](docs/adr/ADR-005-lab-vs-enterprise.md) | Packet Tracer para o desenho, AWS para o laboratório |
 | [006](docs/adr/ADR-006-identity-evolution.md) | Identidade evoluindo de AD para híbrido e depois nuvem |
 | [007](docs/adr/ADR-007-minimum-footprint.md) | Começar com poucas máquinas e crescer por fase |
+| [008](docs/adr/ADR-008-network-enforcement-points.md) | ACLs no switch core entre VLANs, ASA no perímetro, NAT na borda |
 
 A documentação técnica (ADRs, arquitetura, relatórios) está em inglês.
 

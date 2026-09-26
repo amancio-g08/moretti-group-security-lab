@@ -1,0 +1,90 @@
+! =====================================================================
+! R-EDGE01 - Cisco ISR 4331 (Packet Tracer)
+! Role: internet edge router - NAT, anti-spoofing, default route to the ISP (ADR-008)
+!
+! Paste in global configuration mode (enable -> configure terminal).
+! Credentials are NOT in this file: set them first (build guide, step 4).
+!
+! Public addressing uses 203.0.113.0/29 (RFC 5737 documentation range) so the lab can never
+! collide with a real network.
+! =====================================================================
+hostname R-EDGE01
+no ip domain-lookup
+ip domain-name corp.moretti.internal
+service password-encryption
+service timestamps log datetime msec
+banner motd ^Moretti Group lab (FICTITIOUS). Authorized access only. Activity is logged.^
+!
+! ---------------------------------------------------------------- interfaces
+interface GigabitEthernet0/0/0
+ description to FW01 Gi1/1 (outside)
+ ip address 10.10.255.6 255.255.255.252
+ ip nat inside
+ no shutdown
+interface GigabitEthernet0/0/1
+ description to ISP-SIM Gi0/0/0 (internet)
+ ip address 203.0.113.2 255.255.255.248
+ ip nat outside
+ ip access-group ACL-INTERNET-IN in
+ no shutdown
+interface GigabitEthernet0/0/2
+ description UNUSED
+ shutdown
+exit
+!
+! ---------------------------------------------------------------- routing
+ip route 10.10.0.0 255.255.0.0 10.10.255.5
+ip route 172.16.100.0 255.255.255.0 10.10.255.5
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+!
+! ---------------------------------------------------------------- NAT
+! Internal users share the router's public address (PAT). WEB01 is published on 203.0.113.3.
+ip access-list standard ACL-NAT-INSIDE
+ permit 10.10.0.0 0.0.255.255
+exit
+ip nat inside source list ACL-NAT-INSIDE interface GigabitEthernet0/0/1 overload
+ip nat inside source static tcp 172.16.100.10 443 203.0.113.3 443
+!
+! ---------------------------------------------------------------- anti-spoofing (internet -> inside)
+! Packets from the internet can never carry private, loopback or our own public source addresses.
+ip access-list extended ACL-INTERNET-IN
+ remark Anti-spoofing: private, special-use and our own public sources
+ deny ip 10.0.0.0 0.255.255.255 any
+ deny ip 172.16.0.0 0.15.255.255 any
+ deny ip 192.168.0.0 0.0.255.255 any
+ deny ip 127.0.0.0 0.255.255.255 any
+ deny ip 0.0.0.0 0.255.255.255 any
+ deny ip host 203.0.113.2 any
+ deny ip host 203.0.113.3 any
+ remark Everything else continues to FW01, which enforces the policy
+ permit ip any any
+exit
+!
+! ---------------------------------------------------------------- management plane
+! SSH only from JUMP01 (NM-032). The source is not translated inside the organization.
+ip access-list standard ACL-VTY-MGMT
+ remark NM-032 device administration only from JUMP01
+ permit host 10.10.10.20
+ deny any
+exit
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+login block-for 120 attempts 3 within 60
+no ip http server
+no ip http secure-server
+line con 0
+ exec-timeout 5 0
+ logging synchronous
+ login local
+line vty 0 4
+ access-class ACL-VTY-MGMT in
+ transport input ssh
+ exec-timeout 10 0
+ login local
+exit
+!
+logging host 10.10.70.10
+logging trap informational
+ntp server 10.10.80.10
+end

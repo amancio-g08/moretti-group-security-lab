@@ -1,0 +1,720 @@
+! =====================================================================
+! GENERATED FILE - do not edit by hand.
+! Source:     data/network-matrix.yaml (version 1)
+! Generator:  project-01-network/tools/render_core_acls.py
+! Regenerate: python3 project-01-network/tools/render_core_acls.py --write
+! Paste in global configuration mode on CORE-SW01 (configure terminal).
+! =====================================================================
+!
+no ip access-list extended ACL-IN-NET-MGMT
+ip access-list extended ACL-IN-NET-MGMT
+ remark Inbound filter for VLAN 10 NET-MGMT 10.10.10.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-030, NM-080
+ permit tcp 10.10.10.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.10.0 0.0.0.255 10.10.60.0 0.0.0.255 echo-reply
+ permit icmp 10.10.10.0 0.0.0.255 10.10.70.0 0.0.0.255 echo-reply
+ permit tcp host 10.10.10.20 10.10.60.0 0.0.0.255 established
+ permit tcp host 10.10.10.20 10.10.70.0 0.0.0.255 established
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.10.0 0.0.0.255 host 10.10.10.1 echo
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.10.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-012 allow ntp
+ remark NM-031 allow server-admin
+ permit tcp host 10.10.10.20 10.10.70.0 0.0.0.255 eq 3389
+ permit tcp host 10.10.10.20 10.10.70.0 0.0.0.255 eq 22
+ permit tcp host 10.10.10.20 10.10.70.0 0.0.0.255 range 5985 5986
+ permit tcp host 10.10.10.20 10.10.80.0 0.0.0.255 eq 3389
+ permit tcp host 10.10.10.20 10.10.80.0 0.0.0.255 eq 22
+ permit tcp host 10.10.10.20 10.10.80.0 0.0.0.255 range 5985 5986
+ remark NM-032 allow device-admin
+ permit tcp host 10.10.10.20 host 10.10.10.1 eq 22
+ permit tcp host 10.10.10.20 10.10.255.0 0.0.0.255 eq 22
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.10.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.10.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-041 allow syslog
+ permit udp 10.10.10.0 0.0.0.255 host 10.10.70.10 eq 514
+ remark NM-043 deny any
+ deny ip 10.10.10.0 0.0.0.255 host 10.10.70.10
+ remark NM-080 allow icmp-echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.20.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.30.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.40.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.50.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.60.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.70.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.80.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.90.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.100.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.110.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.120.0 0.0.0.255 echo
+ permit icmp 10.10.10.0 0.0.0.255 10.10.255.0 0.0.0.255 echo
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan10
+ ip access-group ACL-IN-NET-MGMT in
+exit
+!
+no ip access-list extended ACL-IN-FINANCE
+ip access-list extended ACL-IN-FINANCE
+ remark Inbound filter for VLAN 20 FINANCE 10.10.20.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-034, NM-080
+ permit tcp 10.10.20.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp 10.10.20.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.20.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.20.0 0.0.0.255 host 10.10.20.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.20.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.20.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.20.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-020 allow https
+ permit tcp 10.10.20.0 0.0.0.255 host 10.10.80.30 eq 443
+ remark NM-027 allow smb
+ permit tcp 10.10.20.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.20.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.20.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.20.0 0.0.0.255 any eq 80
+ permit tcp 10.10.20.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan20
+ ip access-group ACL-IN-FINANCE in
+exit
+!
+no ip access-list extended ACL-IN-HR
+ip access-list extended ACL-IN-HR
+ remark Inbound filter for VLAN 30 HR 10.10.30.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-034, NM-080
+ permit tcp 10.10.30.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp 10.10.30.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.30.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.30.0 0.0.0.255 host 10.10.30.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.30.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.30.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.30.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-023 allow https
+ permit tcp 10.10.30.0 0.0.0.255 host 10.10.80.50 eq 443
+ remark NM-027 allow smb
+ permit tcp 10.10.30.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.30.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.30.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.30.0 0.0.0.255 any eq 80
+ permit tcp 10.10.30.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan30
+ ip access-group ACL-IN-HR in
+exit
+!
+no ip access-list extended ACL-IN-INVESTOR-RELATIONS
+ip access-list extended ACL-IN-INVESTOR-RELATIONS
+ remark Inbound filter for VLAN 40 INVESTOR-RELATIONS 10.10.40.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-034, NM-080
+ permit tcp 10.10.40.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp 10.10.40.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.40.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.40.0 0.0.0.255 host 10.10.40.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.40.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.40.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.40.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-024 allow https
+ permit tcp 10.10.40.0 0.0.0.255 host 10.10.80.60 eq 443
+ remark NM-027 allow smb
+ permit tcp 10.10.40.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.40.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.40.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.40.0 0.0.0.255 any eq 80
+ permit tcp 10.10.40.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan40
+ ip access-group ACL-IN-INVESTOR-RELATIONS in
+exit
+!
+no ip access-list extended ACL-IN-DEVELOPMENT
+ip access-list extended ACL-IN-DEVELOPMENT
+ remark Inbound filter for VLAN 50 DEVELOPMENT 10.10.50.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-034, NM-080
+ permit tcp 10.10.50.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp 10.10.50.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.50.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.50.0 0.0.0.255 host 10.10.50.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.50.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.50.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.50.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-025 allow git
+ permit tcp 10.10.50.0 0.0.0.255 host 10.10.80.70 eq 443
+ permit tcp 10.10.50.0 0.0.0.255 host 10.10.80.70 eq 22
+ remark NM-026 deny any (enforced by default deny)
+ remark NM-027 allow smb
+ permit tcp 10.10.50.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.50.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.50.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.50.0 0.0.0.255 any eq 80
+ permit tcp 10.10.50.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan50
+ ip access-group ACL-IN-DEVELOPMENT in
+exit
+!
+no ip access-list extended ACL-IN-IT
+ip access-list extended ACL-IN-IT
+ remark Inbound filter for VLAN 60 IT 10.10.60.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-080
+ permit tcp 10.10.60.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.60.0 0.0.0.255 10.10.10.0 0.0.0.255 echo-reply
+ permit icmp 10.10.60.0 0.0.0.255 10.10.70.0 0.0.0.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.60.0 0.0.0.255 host 10.10.60.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.60.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.60.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.60.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-027 allow smb
+ permit tcp 10.10.60.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-030 allow rdp
+ permit tcp 10.10.60.0 0.0.0.255 host 10.10.10.20 eq 3389
+ remark NM-033 deny server-admin
+ deny tcp 10.10.60.0 0.0.0.255 10.10.70.0 0.0.0.255 eq 3389
+ remark NM-034 allow rdp
+ permit tcp 10.10.60.0 0.0.0.255 10.10.20.0 0.0.0.255 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.30.0 0.0.0.255 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.40.0 0.0.0.255 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.50.0 0.0.0.255 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 host 10.10.60.1 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.70.0 0.0.0.255 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.100.0 0.0.0.255 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.110.0 0.0.0.255 eq 3389
+ permit tcp 10.10.60.0 0.0.0.255 10.10.120.0 0.0.0.255 eq 3389
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.60.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.60.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any
+ deny ip 10.10.60.0 0.0.0.255 10.10.20.0 0.0.0.255
+ deny ip 10.10.60.0 0.0.0.255 10.10.30.0 0.0.0.255
+ deny ip 10.10.60.0 0.0.0.255 10.10.40.0 0.0.0.255
+ deny ip 10.10.60.0 0.0.0.255 10.10.50.0 0.0.0.255
+ deny ip 10.10.60.0 0.0.0.255 10.10.70.0 0.0.0.255
+ deny ip 10.10.60.0 0.0.0.255 10.10.100.0 0.0.0.255
+ deny ip 10.10.60.0 0.0.0.255 10.10.110.0 0.0.0.255
+ deny ip 10.10.60.0 0.0.0.255 10.10.120.0 0.0.0.255
+ remark NM-080 allow icmp-echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.10.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.20.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.30.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.40.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.50.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.70.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.80.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.90.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.100.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.110.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.120.0 0.0.0.255 echo
+ permit icmp 10.10.60.0 0.0.0.255 10.10.255.0 0.0.0.255 echo
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.60.0 0.0.0.255 any eq 80
+ permit tcp 10.10.60.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan60
+ ip access-group ACL-IN-IT in
+exit
+!
+no ip access-list extended ACL-IN-SECURITY
+ip access-list extended ACL-IN-SECURITY
+ remark Inbound filter for VLAN 70 SECURITY 10.10.70.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-031, NM-034, NM-040, NM-041, NM-080
+ permit tcp 10.10.70.0 0.0.0.255 host 10.10.10.20 established
+ permit tcp 10.10.70.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp host 10.10.70.10 10.10.0.0 0.0.255.255 established
+ permit udp host 10.10.70.10 eq 514 10.10.10.0 0.0.0.255
+ permit udp host 10.10.70.10 eq 514 10.10.255.0 0.0.0.255
+ permit icmp 10.10.70.0 0.0.0.255 10.10.10.0 0.0.0.255 echo-reply
+ permit icmp 10.10.70.0 0.0.0.255 10.10.60.0 0.0.0.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.70.0 0.0.0.255 host 10.10.70.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.70.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.70.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.70.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-027 allow smb
+ permit tcp 10.10.70.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-028 allow any
+ permit ip host 10.10.70.20 10.10.10.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.20.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.30.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.40.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.50.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.60.0 0.0.0.255
+ permit ip host 10.10.70.20 host 10.10.70.1
+ permit ip host 10.10.70.20 10.10.80.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.100.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.110.0 0.0.0.255
+ permit ip host 10.10.70.20 10.10.120.0 0.0.0.255
+ remark NM-030 allow rdp
+ permit tcp 10.10.70.0 0.0.0.255 host 10.10.10.20 eq 3389
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-060 deny any
+ deny ip 10.10.70.0 0.0.0.255 10.10.20.0 0.0.0.255
+ deny ip 10.10.70.0 0.0.0.255 10.10.30.0 0.0.0.255
+ deny ip 10.10.70.0 0.0.0.255 10.10.40.0 0.0.0.255
+ deny ip 10.10.70.0 0.0.0.255 10.10.50.0 0.0.0.255
+ deny ip 10.10.70.0 0.0.0.255 10.10.60.0 0.0.0.255
+ deny ip 10.10.70.0 0.0.0.255 10.10.100.0 0.0.0.255
+ deny ip 10.10.70.0 0.0.0.255 10.10.110.0 0.0.0.255
+ deny ip 10.10.70.0 0.0.0.255 10.10.120.0 0.0.0.255
+ remark NM-080 allow icmp-echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.10.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.20.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.30.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.40.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.50.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.60.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.80.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.90.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.100.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.110.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.120.0 0.0.0.255 echo
+ permit icmp 10.10.70.0 0.0.0.255 10.10.255.0 0.0.0.255 echo
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.70.0 0.0.0.255 any eq 80
+ permit tcp 10.10.70.0 0.0.0.255 any eq 443
+ remark NM-071 allow https
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan70
+ ip access-group ACL-IN-SECURITY in
+exit
+!
+no ip access-list extended ACL-IN-SERVERS
+ip access-list extended ACL-IN-SERVERS
+ remark Inbound filter for VLAN 80 SERVERS 10.10.80.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-010, NM-011, NM-012, NM-020, NM-022, NM-023, NM-024, NM-025, NM-027, NM-028, NM-031, NM-080
+ permit tcp 10.10.80.10 0.0.0.1 10.10.0.0 0.0.255.255 established
+ permit udp 10.10.80.10 0.0.0.1 eq 53 10.10.0.0 0.0.255.255
+ permit udp 10.10.80.10 0.0.0.1 eq 88 10.10.0.0 0.0.255.255
+ permit udp 10.10.80.10 0.0.0.1 eq 389 10.10.0.0 0.0.255.255
+ permit udp 10.10.80.10 0.0.0.1 eq 464 10.10.0.0 0.0.255.255
+ permit udp 10.10.80.10 0.0.0.1 eq 123 10.10.0.0 0.0.255.255
+ permit udp host 10.10.80.10 eq 67 10.10.0.0 0.0.255.255
+ permit tcp host 10.10.80.30 10.10.0.0 0.0.255.255 established
+ permit tcp host 10.10.80.40 10.10.100.0 0.0.0.255 established
+ permit tcp host 10.10.80.40 10.10.120.0 0.0.0.255 established
+ permit tcp host 10.10.80.50 10.10.30.0 0.0.0.255 established
+ permit tcp host 10.10.80.60 10.10.40.0 0.0.0.255 established
+ permit tcp host 10.10.80.60 10.10.100.0 0.0.0.255 established
+ permit tcp host 10.10.80.70 10.10.50.0 0.0.0.255 established
+ permit tcp host 10.10.80.20 10.10.0.0 0.0.255.255 established
+ permit tcp 10.10.80.0 0.0.0.255 host 10.10.10.20 established
+ permit tcp 10.10.80.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.80.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.80.0 0.0.0.255 host 10.10.80.1 echo
+ remark --- internal flows from the matrix
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.80.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.80.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-050 allow backup-agent
+ permit tcp host 10.10.80.90 host 10.10.80.1 eq 9102
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-013 allow dns
+ permit udp 10.10.80.10 0.0.0.1 any eq 53
+ permit tcp 10.10.80.10 0.0.0.1 any eq 53
+ remark NM-071 allow https
+ permit tcp host 10.10.80.10 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan80
+ ip access-group ACL-IN-SERVERS in
+exit
+!
+no ip access-list extended ACL-IN-GUEST
+ip access-list extended ACL-IN-GUEST
+ remark Inbound filter for VLAN 90 GUEST 10.10.90.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-080
+ permit icmp 10.10.90.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.90.0 0.0.0.255 host 10.10.90.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.90.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-004 deny any (enforced by default deny)
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-005 allow web
+ permit tcp 10.10.90.0 0.0.0.255 any eq 80
+ permit tcp 10.10.90.0 0.0.0.255 any eq 443
+ remark NM-006 allow dns
+ permit udp 10.10.90.0 0.0.0.255 any eq 53
+ permit tcp 10.10.90.0 0.0.0.255 any eq 53
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan90
+ ip access-group ACL-IN-GUEST in
+exit
+!
+no ip access-list extended ACL-IN-EXECUTIVE
+ip access-list extended ACL-IN-EXECUTIVE
+ remark Inbound filter for VLAN 100 EXECUTIVE 10.10.100.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-034, NM-080
+ permit tcp 10.10.100.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp 10.10.100.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.100.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.100.0 0.0.0.255 host 10.10.100.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.100.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.100.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.100.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-020 allow https
+ permit tcp 10.10.100.0 0.0.0.255 host 10.10.80.30 eq 443
+ remark NM-022 allow https
+ permit tcp 10.10.100.0 0.0.0.255 host 10.10.80.40 eq 443
+ remark NM-024 allow https
+ permit tcp 10.10.100.0 0.0.0.255 host 10.10.80.60 eq 443
+ remark NM-027 allow smb
+ permit tcp 10.10.100.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.100.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.100.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.100.0 0.0.0.255 any eq 80
+ permit tcp 10.10.100.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan100
+ ip access-group ACL-IN-EXECUTIVE in
+exit
+!
+no ip access-list extended ACL-IN-OPERATIONS
+ip access-list extended ACL-IN-OPERATIONS
+ remark Inbound filter for VLAN 110 OPERATIONS 10.10.110.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-034, NM-080
+ permit tcp 10.10.110.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp 10.10.110.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.110.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.110.0 0.0.0.255 host 10.10.110.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.110.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.110.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.110.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-020 allow https
+ permit tcp 10.10.110.0 0.0.0.255 host 10.10.80.30 eq 443
+ remark NM-027 allow smb
+ permit tcp 10.10.110.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.110.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.110.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.110.0 0.0.0.255 any eq 80
+ permit tcp 10.10.110.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan110
+ ip access-group ACL-IN-OPERATIONS in
+exit
+!
+no ip access-list extended ACL-IN-INVESTMENTS
+ip access-list extended ACL-IN-INVESTMENTS
+ remark Inbound filter for VLAN 120 INVESTMENTS 10.10.120.0/24
+ remark --- return traffic (core ACLs are stateless)
+ remark return traffic for NM-028, NM-034, NM-080
+ permit tcp 10.10.120.0 0.0.0.255 10.10.60.0 0.0.0.255 established
+ permit tcp 10.10.120.0 0.0.0.255 host 10.10.70.20 established
+ permit icmp 10.10.120.0 0.0.0.255 10.10.0.0 0.0.255.255 echo-reply
+ remark --- infrastructure: ping own gateway
+ permit icmp 10.10.120.0 0.0.0.255 host 10.10.120.1 echo
+ remark --- infrastructure: DHCP broadcasts (relay or local pool)
+ permit udp host 0.0.0.0 eq 68 host 255.255.255.255 eq 67
+ permit udp 10.10.120.0 0.0.0.255 eq 68 host 255.255.255.255 eq 67
+ remark --- internal flows from the matrix
+ remark NM-010 allow ad-services
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit udp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 53
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit udp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 88
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 135
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit udp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 389
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 445
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit udp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 464
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 636
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 range 3268 3269
+ permit udp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 eq 123
+ permit tcp 10.10.120.0 0.0.0.255 10.10.80.10 0.0.0.1 range 49152 65535
+ remark NM-011 allow dhcp
+ permit udp 10.10.120.0 0.0.0.255 host 10.10.80.10 eq 67
+ remark NM-022 allow https
+ permit tcp 10.10.120.0 0.0.0.255 host 10.10.80.40 eq 443
+ remark NM-027 allow smb
+ permit tcp 10.10.120.0 0.0.0.255 host 10.10.80.20 eq 445
+ remark NM-033 deny server-admin (enforced by default deny)
+ remark NM-040 allow wazuh-agent
+ permit tcp 10.10.120.0 0.0.0.255 host 10.10.70.10 eq 1514
+ permit tcp 10.10.120.0 0.0.0.255 host 10.10.70.10 eq 1515
+ remark NM-043 deny any (enforced by default deny)
+ remark NM-060 deny any (enforced by default deny)
+ remark --- internet means non-private: block RFC 1918 first
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark NM-070 allow web
+ permit tcp 10.10.120.0 0.0.0.255 any eq 80
+ permit tcp 10.10.120.0 0.0.0.255 any eq 443
+ remark --- default deny (matrix default_action)
+ deny ip any any
+exit
+interface Vlan120
+ ip access-group ACL-IN-INVESTMENTS in
+exit
+end

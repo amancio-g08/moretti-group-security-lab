@@ -1,0 +1,133 @@
+! =====================================================================
+! FW01 - Cisco ASA 5506-X (Packet Tracer)
+! Role: perimeter firewall between the internal network, the DMZ and the edge router (ADR-008)
+!
+! Paste in global configuration mode (enable -> configure terminal).
+! Credentials are NOT in this file: set them first (build guide, step 4).
+!
+! Security levels: inside 100, dmz 50, outside 0. The ASA is stateful, so return traffic of
+! permitted connections is allowed automatically. Every interface has an explicit ACL so
+! nothing relies on the default "higher to lower security level" behaviour.
+! NAT is done by R-EDGE01 (ADR-008), not here.
+! =====================================================================
+hostname FW01
+domain-name corp.moretti.internal
+!
+! ---------------------------------------------------------------- remove the factory defaults
+! The Packet Tracer ASA starts with a DHCP server and NAT on "inside". This lab does not use
+! them: NAT is done by R-EDGE01 and internal addresses come from DC01.
+clear configure dhcpd
+clear configure nat
+clear configure object
+!
+! ---------------------------------------------------------------- interfaces
+! Interface roles follow the factory default (Gi1/1 outside, Gi1/2 inside) to avoid
+! renaming conflicts.
+interface GigabitEthernet1/1
+ description to R-EDGE01 Gi0/0/0
+ nameif outside
+ security-level 0
+ ip address 10.10.255.5 255.255.255.252
+ no shutdown
+interface GigabitEthernet1/2
+ description to CORE-SW01 Gi1/0/24
+ nameif inside
+ security-level 100
+ ip address 10.10.255.2 255.255.255.252
+ no shutdown
+interface GigabitEthernet1/3
+ description to WEB01 (DMZ)
+ nameif dmz
+ security-level 50
+ ip address 172.16.100.1 255.255.255.0
+ no shutdown
+exit
+!
+! ---------------------------------------------------------------- routing
+route inside 10.10.0.0 255.255.0.0 10.10.255.1
+route outside 0.0.0.0 0.0.0.0 10.10.255.6
+!
+! ---------------------------------------------------------------- inside -> outside / dmz
+access-list INSIDE_IN remark Internal hosts never initiate to the DMZ (default deny)
+access-list INSIDE_IN extended deny ip 10.10.0.0 255.255.0.0 172.16.100.0 255.255.255.0
+access-list INSIDE_IN remark NM-032 JUMP01 -> R-EDGE01 SSH
+access-list INSIDE_IN extended permit tcp host 10.10.10.20 host 10.10.255.6 eq 22
+access-list INSIDE_IN remark NM-080 IT, security, jump host -> transit ping
+access-list INSIDE_IN extended permit icmp 10.10.60.0 255.255.255.0 10.10.255.4 255.255.255.252 echo
+access-list INSIDE_IN extended permit icmp 10.10.70.0 255.255.255.0 10.10.255.4 255.255.255.252 echo
+access-list INSIDE_IN extended permit icmp 10.10.10.0 255.255.255.0 10.10.255.4 255.255.255.252 echo
+access-list INSIDE_IN remark Internet means non-private addresses
+access-list INSIDE_IN extended deny ip any 10.0.0.0 255.0.0.0
+access-list INSIDE_IN extended deny ip any 172.16.0.0 255.240.0.0
+access-list INSIDE_IN extended deny ip any 192.168.0.0 255.255.0.0
+access-list INSIDE_IN remark NM-005 NM-006 guest web and DNS
+access-list INSIDE_IN extended permit tcp 10.10.90.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.90.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit udp 10.10.90.0 255.255.255.0 any eq domain
+access-list INSIDE_IN extended permit tcp 10.10.90.0 255.255.255.0 any eq domain
+access-list INSIDE_IN remark NM-013 domain controllers forward external DNS
+access-list INSIDE_IN extended permit udp 10.10.80.10 255.255.255.254 any eq domain
+access-list INSIDE_IN extended permit tcp 10.10.80.10 255.255.255.254 any eq domain
+access-list INSIDE_IN remark NM-071 DC01 and SIEM01 updates
+access-list INSIDE_IN extended permit tcp host 10.10.80.10 any eq https
+access-list INSIDE_IN extended permit tcp host 10.10.70.10 any eq https
+access-list INSIDE_IN remark NM-070 corporate users web
+access-list INSIDE_IN extended permit tcp 10.10.20.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.20.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.30.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.30.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.40.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.40.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.50.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.50.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.60.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.60.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.70.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.70.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.100.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.100.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.110.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.110.0 255.255.255.0 any eq https
+access-list INSIDE_IN extended permit tcp 10.10.120.0 255.255.255.0 any eq www
+access-list INSIDE_IN extended permit tcp 10.10.120.0 255.255.255.0 any eq https
+access-list INSIDE_IN remark Default deny (matrix default_action)
+access-list INSIDE_IN extended deny ip any any
+access-group INSIDE_IN in interface inside
+!
+! ---------------------------------------------------------------- outside -> dmz / inside
+access-list OUTSIDE_IN remark NM-001 public website
+access-list OUTSIDE_IN extended permit tcp any host 172.16.100.10 eq https
+access-list OUTSIDE_IN remark NM-041 R-EDGE01 syslog to SIEM01
+access-list OUTSIDE_IN extended permit udp host 10.10.255.6 host 10.10.70.10 eq syslog
+access-list OUTSIDE_IN remark NM-012 R-EDGE01 time sync with DC01
+access-list OUTSIDE_IN extended permit udp host 10.10.255.6 host 10.10.80.10 eq ntp
+access-list OUTSIDE_IN remark NM-002 nothing else from outside reaches internal networks
+access-list OUTSIDE_IN extended deny ip any any
+access-group OUTSIDE_IN in interface outside
+!
+! ---------------------------------------------------------------- dmz -> anywhere
+access-list DMZ_IN remark NM-003 the DMZ never initiates connections inward
+access-list DMZ_IN extended deny ip any 10.10.0.0 255.255.0.0
+access-list DMZ_IN remark Default deny: WEB01 only answers connections it receives
+access-list DMZ_IN extended deny ip any any
+access-group DMZ_IN in interface dmz
+!
+! ---------------------------------------------------------------- inspection
+! Lets ICMP echo replies back through the stateful firewall.
+policy-map global_policy
+ class inspection_default
+  inspect icmp
+exit
+exit
+!
+! ---------------------------------------------------------------- management plane
+! SSH only from JUMP01 (NM-032). Generate the RSA key manually (build guide).
+aaa authentication ssh console LOCAL
+ssh 10.10.10.20 255.255.255.255 inside
+ssh timeout 10
+!
+! ---------------------------------------------------------------- logging
+logging enable
+logging trap informational
+logging host inside 10.10.70.10
+end
