@@ -41,3 +41,27 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - run: pytest
+
+  terraform:
+    name: Terraform (fmt, validate, offline plan tests)
+    runs-on: ubuntu-latest
+    env:
+      TF_VERSION: 1.9.8
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Terraform
+        run: |
+          curl -sSfL -o /tmp/terraform.zip \
+            "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
+          sudo unzip -o -q /tmp/terraform.zip -d /usr/local/bin
+          terraform version
+      - run: terraform fmt -check -recursive infrastructure/terraform
+      - name: Validate bootstrap
+        run: |
+          terraform -chdir=infrastructure/terraform/bootstrap init -backend=false -input=false
+          terraform -chdir=infrastructure/terraform/bootstrap validate
+      - name: Validate and test lab (AWS provider mocked, no credentials)
+        run: |
+          terraform -chdir=infrastructure/terraform/lab init -backend=false -input=false
+          terraform -chdir=infrastructure/terraform/lab validate
+          terraform -chdir=infrastructure/terraform/lab test

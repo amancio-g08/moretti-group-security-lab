@@ -60,6 +60,13 @@ repos:
       - id: ruff-format
         files: ^project-05-python/
 
+  # Lab scripts (infrastructure/scripts).
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        args: ["-x", "-P", "SCRIPTDIR"]
+
   # Network policy as code (ADR-001, ADR-008): the core ACLs must match the matrix.
   - repo: local
     hooks:
@@ -83,4 +90,11 @@ repos:
         language: python
         additional_dependencies: ["pyyaml==6.0.2"]
         files: ^(data/(network-matrix|assets)\.yaml|project-01-network/(topology\.yaml|tools/.*|configs/.*|packet-tracer/build-topology\.js))$
+        pass_filenames: false
+      - id: security-groups-in-sync
+        name: AWS Security Groups regenerated from the matrix
+        entry: python infrastructure/tools/render_security_groups.py --check
+        language: python
+        additional_dependencies: ["pyyaml==6.0.2"]
+        files: ^(data/(network-matrix|assets)\.yaml|project-05-python/src/moretti_sec/(render/.*|company\.py)|infrastructure/(tools/.*|terraform/lab/generated/.*))$
         pass_filenames: false

@@ -1,0 +1,6 @@
+# Copy to terraform.tfvars (ignored by Git) and fill in. Never commit the real file.
+alert_email = "you@example.com"
+
+# Optional overrides
+# monthly_budget_usd = 30
+# log_retention_days = 30

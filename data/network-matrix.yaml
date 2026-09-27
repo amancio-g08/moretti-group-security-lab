@@ -483,7 +483,14 @@ rules:
     service: https
     action: allow
     applies_to: [pt, aws]
-    justification: Updates, Wazuh packages and Entra Cloud Sync. Other servers get no direct internet access. In AWS, only while egress is enabled (ADR-004).
+    justification: Updates, Wazuh packages and Entra Cloud Sync. Other servers get no direct internet access in PT; in AWS see NM-072. In AWS, only while egress is enabled (ADR-004).
+  - id: NM-072
+    source: [grp:internal, seg:guest]
+    destination: [internet]
+    service: https
+    action: allow
+    applies_to: [aws]
+    justification: AWS hosts are managed only through AWS Systems Manager, whose endpoints are public HTTPS services. Security Groups cannot filter by hostname, so this opens HTTPS to any address for every AWS host (ADR-009). The narrower alternative is VPC interface endpoints (ADR-004, option C).
 
   # ------------------------------------------------------------------ troubleshooting
   - id: NM-080

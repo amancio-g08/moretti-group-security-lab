@@ -1,0 +1,1530 @@
+{
+  "_generated": "GENERATED from data/network-matrix.yaml and data/assets.yaml by infrastructure/tools/render_security_groups.py. Do not edit.",
+  "segments": {
+    "finance": {
+      "name": "FINANCE",
+      "cidr": "10.10.20.0/24"
+    },
+    "development": {
+      "name": "DEVELOPMENT",
+      "cidr": "10.10.50.0/24"
+    },
+    "security": {
+      "name": "SECURITY",
+      "cidr": "10.10.70.0/24"
+    },
+    "servers": {
+      "name": "SERVERS",
+      "cidr": "10.10.80.0/24"
+    },
+    "guest": {
+      "name": "GUEST",
+      "cidr": "10.10.90.0/24"
+    }
+  },
+  "hosts": {
+    "DC01": {
+      "segment": "servers",
+      "ip": "10.10.80.10",
+      "platform": "windows",
+      "aws_phase": 5,
+      "ingress": [
+        {
+          "key": "tcp-53-53-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-88-88-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-135-135-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-389-389-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-445-445-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-464-464-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-636-636-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "udp-53-53-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "udp-88-88-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "udp-123-123-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "udp-389-389-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "udp-464-464-10.10.20.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-53-53-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-88-88-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-135-135-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-389-389-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-445-445-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-464-464-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-636-636-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "udp-53-53-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "udp-88-88-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "udp-123-123-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "udp-389-389-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "udp-464-464-10.10.50.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-53-53-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-88-88-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-135-135-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-389-389-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-445-445-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-464-464-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-636-636-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "udp-53-53-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "udp-88-88-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "udp-123-123-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "udp-389-389-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "udp-464-464-10.10.70.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-53-53-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-88-88-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-135-135-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-389-389-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-445-445-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-464-464-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-636-636-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "udp-53-53-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "udp-88-88-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "udp-123-123-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "udp-389-389-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "udp-464-464-10.10.80.0/24",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.0/24"
+        }
+      ],
+      "egress": [
+        {
+          "key": "tcp-53-53-0.0.0.0/0",
+          "rules": [
+            "NM-013"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "udp-53-53-0.0.0.0/0",
+          "rules": [
+            "NM-013"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "tcp-1514-1514-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-443-443-0.0.0.0/0",
+          "rules": [
+            "NM-071",
+            "NM-072"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "0.0.0.0/0"
+        }
+      ]
+    },
+    "APP-FIN01": {
+      "segment": "servers",
+      "ip": "10.10.80.30",
+      "platform": "linux",
+      "aws_phase": 7,
+      "ingress": [
+        {
+          "key": "tcp-443-443-10.10.20.0/24",
+          "rules": [
+            "NM-020"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "10.10.20.0/24"
+        }
+      ],
+      "egress": [
+        {
+          "key": "tcp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-135-135-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-445-445-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-636-636-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-123-123-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-1514-1514-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-443-443-0.0.0.0/0",
+          "rules": [
+            "NM-072"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "0.0.0.0/0"
+        }
+      ]
+    },
+    "SIEM01": {
+      "segment": "security",
+      "ip": "10.10.70.10",
+      "platform": "linux",
+      "aws_phase": 6,
+      "ingress": [
+        {
+          "key": "tcp-1514-1514-10.10.20.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.20.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.20.0/24"
+        },
+        {
+          "key": "tcp-1514-1514-10.10.50.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.50.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.50.0/24"
+        },
+        {
+          "key": "tcp-1514-1514-10.10.70.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.70.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.70.0/24"
+        },
+        {
+          "key": "tcp-1514-1514-10.10.80.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.80.0/24"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.80.0/24",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.80.0/24"
+        }
+      ],
+      "egress": [
+        {
+          "key": "tcp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-135-135-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-445-445-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-636-636-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-123-123-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-80-80-0.0.0.0/0",
+          "rules": [
+            "NM-070"
+          ],
+          "protocol": "tcp",
+          "from_port": 80,
+          "to_port": 80,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "tcp-443-443-0.0.0.0/0",
+          "rules": [
+            "NM-070",
+            "NM-071",
+            "NM-072"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "0.0.0.0/0"
+        }
+      ]
+    },
+    "WS-FIN01": {
+      "segment": "finance",
+      "ip": "10.10.20.10",
+      "platform": "windows",
+      "aws_phase": 5,
+      "ingress": [],
+      "egress": [
+        {
+          "key": "tcp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-135-135-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-445-445-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-636-636-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-123-123-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-443-443-10.10.80.30/32",
+          "rules": [
+            "NM-020"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "10.10.80.30/32"
+        },
+        {
+          "key": "tcp-1514-1514-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-80-80-0.0.0.0/0",
+          "rules": [
+            "NM-070"
+          ],
+          "protocol": "tcp",
+          "from_port": 80,
+          "to_port": 80,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "tcp-443-443-0.0.0.0/0",
+          "rules": [
+            "NM-070",
+            "NM-072"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "0.0.0.0/0"
+        }
+      ]
+    },
+    "WS-DEV01": {
+      "segment": "development",
+      "ip": "10.10.50.10",
+      "platform": "linux",
+      "aws_phase": 4,
+      "ingress": [],
+      "egress": [
+        {
+          "key": "tcp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-135-135-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 135,
+          "to_port": 135,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-445-445-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 445,
+          "to_port": 445,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-636-636-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 636,
+          "to_port": 636,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-3268-3269-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 3268,
+          "to_port": 3269,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-49152-65535-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "tcp",
+          "from_port": 49152,
+          "to_port": 65535,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-53-53-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-88-88-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 88,
+          "to_port": 88,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-123-123-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 123,
+          "to_port": 123,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-389-389-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 389,
+          "to_port": 389,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "udp-464-464-10.10.80.10/32",
+          "rules": [
+            "NM-010"
+          ],
+          "protocol": "udp",
+          "from_port": 464,
+          "to_port": 464,
+          "cidr": "10.10.80.10/32"
+        },
+        {
+          "key": "tcp-1514-1514-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1514,
+          "to_port": 1514,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-1515-1515-10.10.70.10/32",
+          "rules": [
+            "NM-040"
+          ],
+          "protocol": "tcp",
+          "from_port": 1515,
+          "to_port": 1515,
+          "cidr": "10.10.70.10/32"
+        },
+        {
+          "key": "tcp-80-80-0.0.0.0/0",
+          "rules": [
+            "NM-070"
+          ],
+          "protocol": "tcp",
+          "from_port": 80,
+          "to_port": 80,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "tcp-443-443-0.0.0.0/0",
+          "rules": [
+            "NM-070",
+            "NM-072"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "0.0.0.0/0"
+        }
+      ]
+    },
+    "GUEST01": {
+      "segment": "guest",
+      "ip": "10.10.90.10",
+      "platform": "linux",
+      "aws_phase": 4,
+      "ingress": [],
+      "egress": [
+        {
+          "key": "tcp-80-80-0.0.0.0/0",
+          "rules": [
+            "NM-005"
+          ],
+          "protocol": "tcp",
+          "from_port": 80,
+          "to_port": 80,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "tcp-443-443-0.0.0.0/0",
+          "rules": [
+            "NM-005",
+            "NM-072"
+          ],
+          "protocol": "tcp",
+          "from_port": 443,
+          "to_port": 443,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "tcp-53-53-0.0.0.0/0",
+          "rules": [
+            "NM-006"
+          ],
+          "protocol": "tcp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "0.0.0.0/0"
+        },
+        {
+          "key": "udp-53-53-0.0.0.0/0",
+          "rules": [
+            "NM-006"
+          ],
+          "protocol": "udp",
+          "from_port": 53,
+          "to_port": 53,
+          "cidr": "0.0.0.0/0"
+        }
+      ]
+    }
+  }
+}

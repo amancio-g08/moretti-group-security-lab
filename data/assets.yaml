@@ -26,7 +26,7 @@ assets:
     criticality: critical
     classification: restricted
     environments: [pt, aws]
-    aws_phase: 4
+    aws_phase: 5
   - id: DC02
     type: server
     role: Secondary domain controller, DNS
@@ -131,7 +131,7 @@ assets:
     criticality: critical
     classification: restricted
     environments: [pt, aws]
-    aws_phase: 4
+    aws_phase: 6
   - id: SEC-WS01
     type: workstation
     role: SOC analyst workstation and authorized vulnerability scanner
@@ -200,7 +200,7 @@ assets:
     criticality: high
     classification: restricted
     environments: [pt, aws]
-    aws_phase: 4
+    aws_phase: 5
   - id: WS-IR01
     type: workstation
     role: Investor relations workstation
@@ -255,7 +255,7 @@ assets:
   - id: GUEST01
     type: workstation
     role: Untrusted visitor device; simulated attacker in lab scenarios
-    os: Kali Linux (AWS) / generic laptop (PT)
+    os: Ubuntu Server 24.04 LTS with offensive tools (AWS, see ADR-009) / generic laptop (PT)
     segment: guest
     ip: 10.10.90.10
     owner: security

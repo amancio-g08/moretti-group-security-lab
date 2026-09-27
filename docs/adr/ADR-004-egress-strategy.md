@@ -1,6 +1,6 @@
 # ADR-004: Terraform-controlled egress; NAT choice deferred until measured
 
-- **Status:** Accepted (NAT option pending cost measurement in Phase 4)
+- **Status:** Accepted (NAT option decided in [ADR-009](ADR-009-cost-optimized-aws-lab.md): NAT instance; measurements pending)
 - **Date:** 2026-09-26
 - **Related:** ADR-002, ADR-007
 

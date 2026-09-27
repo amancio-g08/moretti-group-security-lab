@@ -143,7 +143,7 @@ flowchart TB
         SEC["SECURITY 10.10.70.0/24<br/>SIEM01 (Wazuh)"]
         SRV["SERVERS 10.10.80.0/24<br/>DC01 (AD DS / DNS)<br/>APP-FIN01 (Phase 7)"]
         GST["GUEST 10.10.90.0/24<br/>GUEST01 (untrusted / simulated attacker)"]
-        EG["Egress (Terraform toggle, ADR-004)"]
+        EG["TRANSIT 10.10.255.0/28<br/>NAT instance, Terraform toggle (ADR-004, ADR-009)"]
     end
 
     VPC --> FL["VPC Flow Logs"] --> S3["S3 (encrypted)"]
@@ -164,7 +164,8 @@ flowchart TB
 | Scheduled shutdown | Instances do not run when the lab is not in use |
 | Egress toggle | Outbound access exists only when a phase needs it |
 
-Initial footprint (ADR-007): **DC01, SIEM01, WS-FIN01, WS-DEV01, GUEST01**. APP-FIN01 is added in
+Footprint (ADR-007): **DC01, SIEM01, WS-FIN01, WS-DEV01, GUEST01**, deployed per phase on Spot and
+Graviton where possible, with a NAT instance for egress (ADR-009). APP-FIN01 is added in
 the scenarios phase. SEC-WS01 is deferred; PCAP analysis runs on the operator's workstation.
 
 ## 6. Identity architecture

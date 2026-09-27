@@ -1,0 +1,3 @@
+# Copy to terraform.tfvars (ignored by Git) to change the defaults.
+# lab_phase     = 4      # 5 adds DC01 and WS-FIN01, 6 adds SIEM01, 7 adds APP-FIN01
+# enable_egress = true   # false deletes the NAT instance (hosts lose internet and SSM)

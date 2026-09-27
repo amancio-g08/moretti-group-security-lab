@@ -14,7 +14,7 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 | 1 | Company data: departments, employees, assets, data classification, `network-matrix.yaml`, IAM roles, threat model v1 | None | Done |
 | 2 | P01 — Packet Tracer enterprise design | None | Paused (validation in progress, see below) |
 | 3 | P05 — Python core (parsers, enrichment, detections, reports) | None | Done |
-| 4 | Minimal AWS lab: VPC, 5 VMs, SGs from the matrix, Flow Logs, CloudTrail, Budgets | Starts here | Planned |
+| 4 | Minimal AWS lab: VPC, SGs from the matrix, Flow Logs, CloudTrail, Budgets; hosts per phase (ADR-009) | Starts here | In progress (code ready, not applied) |
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | Planned |
 | 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | Planned |
 | 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | Planned |
@@ -76,6 +76,13 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
 - **[USER ACTION REQUIRED]:** AWS account, MFA on root, IAM Identity Center user, `terraform apply`.
 - **Exit criteria:** no inbound internet rules exist; SSM access works; measured costs recorded in
   ADR-004.
+- **Status (2026-09-27):** design approved with the cost-optimized package (ADR-009), region
+  us-east-1, Terraform state on the operator's machine. Code ready: Security Group renderer in
+  P05 (with tests), `bootstrap` and `lab` stacks, offline plan tests with a mocked provider,
+  scripts, [deployment guide](../infrastructure/docs/deployment-guide.md) and
+  [validation plan](../infrastructure/docs/validation-plan.md). Checked here: `terraform
+  validate` and `terraform test` (4 passing), renderer tests, shellcheck. **Not yet applied** to an
+  AWS account: [USER ACTION REQUIRED] steps 1–5 of the deployment guide.
 
 ### Phase 5 — P04a Active Directory
 - **Creates:** OU design, group model, GPOs, password and lockout policies, PowerShell provisioning
