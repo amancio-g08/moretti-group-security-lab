@@ -77,7 +77,38 @@ Details: [AD design](../project-04-iam/documentation/ad-design.md) and the
       built-in `Administrator` account and record it (AD-07).
 - [ ] D9. `infrastructure/scripts/lab-down.sh`.
 
+## E. SOC with Wazuh (phase 6)
+
+Details: [SOC design](../project-03-soc/documentation/soc-design.md) and the
+[SOC validation plan](../project-03-soc/documentation/validation-plan.md). Needs section D done.
+
+- [ ] E1. Deploy SIEM01: `terraform -chdir=infrastructure/terraform/lab apply -var lab_phase=6`.
+- [ ] E2. Open the Wazuh quickstart and note the current release (for example `4.12`).
+- [ ] E3. On SIEM01 (`aws ssm start-session --target <SIEM01 id>`, then `sudo -i`):
+      ```bash
+      git clone --depth 1 https://github.com/amancio-g08/moretti-group-security-lab /opt/moretti-lab
+      WAZUH_RELEASE=<release> /opt/moretti-lab/project-03-soc/wazuh/install-wazuh.sh
+      /var/ossec/bin/wazuh-control info    # note WAZUH_VERSION for the agents
+      ```
+- [ ] E4. WS-DEV01 (`sudo -i`): clone the repository the same way, then
+      `WAZUH_VERSION=<version> /opt/moretti-lab/project-03-soc/agents/install-agent-linux.sh`.
+- [ ] E5. DC01 and WS-FIN01 (PowerShell): download `project-03-soc/agents/Install-WazuhAgent.ps1`
+      as in D2, then `.\Install-WazuhAgent.ps1 -Version <version>`; on DC01 add
+      `-Groups 'windows,domain-controllers'`.
+- [ ] E6. Dashboard from the Mac:
+      `aws ssm start-session --target <SIEM01 id> --document-name AWS-StartPortForwardingSession --parameters portNumber=443,localPortNumber=8443`,
+      then `https://localhost:8443`, user `admin`, password from
+      `aws ssm get-parameter --with-decryption --name /moretti-group-lab/wazuh/admin-password --query Parameter.Value --output text`.
+- [ ] E7. Rule tests on SIEM01:
+      ```bash
+      export WAZUH_API_PASSWORD="$(aws ssm get-parameter --with-decryption --name /moretti-group-lab/wazuh/api-password --query Parameter.Value --output text)"
+      python3 /opt/moretti-lab/project-03-soc/detections/tests/run_logtest.py
+      ```
+- [ ] E8. Run W-01 … W-11 and record the results.
+- [ ] E9. After any change to `data/` or the rules: `git -C /opt/moretti-lab pull` and
+      `/opt/moretti-lab/project-03-soc/wazuh/deploy-ruleset.sh` on SIEM01.
+- [ ] E10. `infrastructure/scripts/lab-down.sh`.
+
 ## Later phases
 
-Items are added here as the code of each phase is written (6 — Wazuh, 7 — scenarios,
-8 — Entra ID).
+Items are added here as the code of each phase is written (7 — scenarios, 8 — Entra ID).

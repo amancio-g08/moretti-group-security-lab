@@ -1,0 +1,177 @@
+<!--
+  Moretti Group lab: custom Wazuh rules, IDs 100100-100199.
+
+  The tags in the descriptions (ACC-01, BF-01, ...) are the same detections that moretti-sec
+  implements (project-05-python) and that the playbooks describe
+  (project-03-soc/documentation/playbooks.md). Account lists are generated from data/
+  (project-03-soc/tools/render_wazuh_lists.py).
+
+  Parent rules and groups come from the Wazuh 4.x default ruleset: authentication_success and
+  authentication_failed (Windows Security channel), 60204 (multiple Windows logon failures),
+  5712 and 5720 (sshd brute force), 80200 (events from the AWS module). Validation tests W-05 to
+  W-07 confirm them with wazuh-logtest on SIEM01 (detections/tests/run_logtest.py).
+-->
+
+<group name="moretti,windows,">
+
+  <!-- ACC-01: account of a terminated employee (it is disabled in AD, so a success is critical) -->
+  <rule id="100100" level="13">
+    <if_group>authentication_success</if_group>
+    <field name="win.system.eventID">^4624$</field>
+    <list field="win.eventdata.targetUserName" lookup="match_key">etc/lists/moretti-terminated-accounts</list>
+    <description>ACC-01: logon with the account of a terminated employee ($(win.eventdata.targetUserName))</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+
+  <rule id="100101" level="8">
+    <if_group>authentication_failed</if_group>
+    <field name="win.system.eventID">^4625$</field>
+    <list field="win.eventdata.targetUserName" lookup="match_key">etc/lists/moretti-terminated-accounts</list>
+    <description>ACC-01: logon attempt with the account of a terminated employee ($(win.eventdata.targetUserName))</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+
+  <!-- ACC-02: employee on leave (account disabled while away) -->
+  <rule id="100102" level="8">
+    <if_group>authentication_success</if_group>
+    <field name="win.system.eventID">^4624$</field>
+    <list field="win.eventdata.targetUserName" lookup="match_key">etc/lists/moretti-on-leave-accounts</list>
+    <description>ACC-02: logon by an employee on leave ($(win.eventdata.targetUserName))</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+
+  <!-- ACC-03: expired account, e.g. a contractor after the contract end date (AD expires it) -->
+  <rule id="100103" level="8">
+    <if_group>authentication_failed</if_group>
+    <field name="win.system.eventID">^4625$</field>
+    <field name="win.eventdata.subStatus" type="pcre2">(?i)^0xc0000193$</field>
+    <description>ACC-03: logon attempt with an expired account ($(win.eventdata.targetUserName))</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+
+  <!-- ACC-04: break-glass account: any use needs an incident record -->
+  <rule id="100104" level="15">
+    <if_group>authentication_success</if_group>
+    <field name="win.system.eventID">^4624$</field>
+    <list field="win.eventdata.targetUserName" lookup="match_key">etc/lists/moretti-break-glass-accounts</list>
+    <description>ACC-04: break-glass account used ($(win.eventdata.targetUserName))</description>
+    <mitre>
+      <id>T1078.002</id>
+    </mitre>
+  </rule>
+
+  <rule id="100105" level="12">
+    <if_group>authentication_failed</if_group>
+    <field name="win.system.eventID">^4625$</field>
+    <list field="win.eventdata.targetUserName" lookup="match_key">etc/lists/moretti-break-glass-accounts</list>
+    <description>ACC-04: failed logon with the break-glass account ($(win.eventdata.targetUserName))</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+  <!-- ACC-05: service account at a keyboard (interactive, RDP or cached interactive logon) -->
+  <rule id="100106" level="12">
+    <if_group>authentication_success</if_group>
+    <field name="win.system.eventID">^4624$</field>
+    <field name="win.eventdata.logonType">^2$|^10$|^11$</field>
+    <list field="win.eventdata.targetUserName" lookup="match_key">etc/lists/moretti-service-accounts</list>
+    <description>ACC-05: interactive logon with service account $(win.eventdata.targetUserName)</description>
+    <mitre>
+      <id>T1078.002</id>
+    </mitre>
+  </rule>
+
+  <!-- ACC-06: logon type not granted: the tiering GPO stopped Domain Admins or a service account -->
+  <rule id="100107" level="10">
+    <if_group>authentication_failed</if_group>
+    <field name="win.system.eventID">^4625$</field>
+    <field name="win.eventdata.status" type="pcre2">(?i)^0xc000015b$</field>
+    <description>ACC-06: logon type not granted to $(win.eventdata.targetUserName) on $(win.system.computer) (tiering or service-account restriction)</description>
+    <mitre>
+      <id>T1078.002</id>
+    </mitre>
+  </rule>
+
+  <!-- BF-01: repeated failures from the untrusted guest network -->
+  <rule id="100110" level="12">
+    <if_sid>60204</if_sid>
+    <field name="win.eventdata.ipAddress">^10.10.90.</field>
+    <description>BF-01: multiple Windows logon failures from the guest network ($(win.eventdata.ipAddress))</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+</group>
+
+<group name="moretti,sshd,">
+
+  <rule id="100111" level="12">
+    <if_sid>5712, 5720</if_sid>
+    <srcip>10.10.90.0/24</srcip>
+    <description>BF-01: SSH brute force from the guest network ($(srcip))</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+</group>
+
+<group name="moretti,amazon,">
+
+  <!-- NET-01: segmentation violation (SCN-04): a Security Group rejected guest traffic to internal hosts -->
+  <rule id="100120" level="10">
+    <if_sid>80200</if_sid>
+    <field name="aws.source">^vpc$</field>
+    <field name="aws.action">^REJECT$</field>
+    <field name="aws.srcaddr">^10.10.90.</field>
+    <field name="aws.dstaddr">^10.10.</field>
+    <description>NET-01: traffic from the guest network to $(aws.dstaddr):$(aws.dstport) rejected by a Security Group</description>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+  </rule>
+
+  <!-- CT-01: firewall change in the lab account -->
+  <rule id="100130" level="10">
+    <if_sid>80200</if_sid>
+    <field name="aws.source">^cloudtrail$</field>
+    <field name="aws.eventName">^AuthorizeSecurityGroupIngress$|^AuthorizeSecurityGroupEgress$|^RevokeSecurityGroupIngress$|^RevokeSecurityGroupEgress$|^ModifySecurityGroupRules$</field>
+    <description>CT-01: Security Group changed ($(aws.eventName)); expected only from Terraform</description>
+    <mitre>
+      <id>T1562.007</id>
+    </mitre>
+  </rule>
+
+  <!-- CT-02: root user activity (the root user is for account-level tasks only) -->
+  <rule id="100131" level="12">
+    <if_sid>80200</if_sid>
+    <field name="aws.source">^cloudtrail$</field>
+    <field name="aws.userIdentity.type">^Root$</field>
+    <description>CT-02: AWS root user activity ($(aws.eventName))</description>
+    <mitre>
+      <id>T1078.004</id>
+    </mitre>
+  </rule>
+
+  <!-- CT-03: someone blinding the audit trail -->
+  <rule id="100132" level="14">
+    <if_sid>80200</if_sid>
+    <field name="aws.source">^cloudtrail$</field>
+    <field name="aws.eventName">^StopLogging$|^DeleteTrail$|^UpdateTrail$|^DeleteFlowLogs$</field>
+    <description>CT-03: audit logging changed or disabled ($(aws.eventName))</description>
+    <mitre>
+      <id>T1562.008</id>
+    </mitre>
+  </rule>
+
+</group>

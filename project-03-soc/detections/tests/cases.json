@@ -1,0 +1,112 @@
+{
+  "_synthetic": "SYNTHETIC test events written by hand for the Moretti Group lab (fictitious). Account IDs and addresses are placeholders or documentation ranges.",
+  "cases": [
+    {
+      "id": "acc01-success",
+      "expect": 100100,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4624\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"An account was successfully logged on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"alan.moreira\", \"targetDomainName\": \"CORP\", \"logonType\": \"3\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\"}}}"
+    },
+    {
+      "id": "acc01-failure",
+      "expect": 100101,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4625\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8010000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_FAILURE\", \"message\": \"\\\"An account failed to log on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"alan.moreira\", \"targetDomainName\": \"CORP\", \"logonType\": \"3\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\", \"status\": \"0xc000006d\", \"subStatus\": \"0xc000006a\"}}}"
+    },
+    {
+      "id": "acc02-success",
+      "expect": 100102,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4624\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"An account was successfully logged on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"aline.barros\", \"targetDomainName\": \"CORP\", \"logonType\": \"3\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\"}}}"
+    },
+    {
+      "id": "acc03-expired",
+      "expect": 100103,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4625\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8010000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_FAILURE\", \"message\": \"\\\"An account failed to log on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"leandro.viana\", \"targetDomainName\": \"CORP\", \"logonType\": \"3\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\", \"status\": \"0xc000006e\", \"subStatus\": \"0xc0000193\"}}}"
+    },
+    {
+      "id": "acc04-success",
+      "expect": 100104,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4624\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"An account was successfully logged on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"bg-admin01\", \"targetDomainName\": \"CORP\", \"logonType\": \"10\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\"}}}"
+    },
+    {
+      "id": "acc04-failure",
+      "expect": 100105,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4625\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8010000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_FAILURE\", \"message\": \"\\\"An account failed to log on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"bg-admin01\", \"targetDomainName\": \"CORP\", \"logonType\": \"3\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\", \"status\": \"0xc000006d\", \"subStatus\": \"0xc000006a\"}}}"
+    },
+    {
+      "id": "acc05-rdp",
+      "expect": 100106,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4624\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"An account was successfully logged on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"svc-app-fin\", \"targetDomainName\": \"CORP\", \"logonType\": \"10\", \"ipAddress\": \"10.10.60.10\", \"workstationName\": \"WS-FIN01\"}}}"
+    },
+    {
+      "id": "acc05-network-is-normal",
+      "expect_not": 100106,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4624\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"An account was successfully logged on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"svc-app-fin\", \"targetDomainName\": \"CORP\", \"logonType\": \"3\", \"ipAddress\": \"10.10.80.30\", \"workstationName\": \"WS-FIN01\"}}}"
+    },
+    {
+      "id": "acc06-not-granted",
+      "expect": 100107,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4625\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8010000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"WS-FIN01.corp.moretti.internal\", \"severityValue\": \"AUDIT_FAILURE\", \"message\": \"\\\"An account failed to log on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"adm-marcio.guimaraes\", \"targetDomainName\": \"CORP\", \"logonType\": \"10\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\", \"status\": \"0xc000015b\", \"subStatus\": \"0x0\"}}}"
+    },
+    {
+      "id": "bf01-windows-guest",
+      "expect": 100110,
+      "repeat": 10,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4625\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8010000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_FAILURE\", \"message\": \"\\\"An account failed to log on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"joao.silva\", \"targetDomainName\": \"CORP\", \"logonType\": \"3\", \"ipAddress\": \"10.10.90.10\", \"workstationName\": \"WS-FIN01\", \"status\": \"0xc000006d\", \"subStatus\": \"0xc000006a\"}}}"
+    },
+    {
+      "id": "bf01-ssh-guest",
+      "expect": 100111,
+      "repeat": 10,
+      "log_format": "syslog",
+      "location": "/var/log/auth.log",
+      "event": "Sep 29 12:00:00 ws-dev01 sshd[2101]: Failed password for invalid user admin from 10.10.90.10 port 50112 ssh2"
+    },
+    {
+      "id": "net01-guest-reject",
+      "expect": 100120,
+      "log_format": "json",
+      "location": "Wazuh-AWS",
+      "event": "{\"integration\": \"aws\", \"aws\": {\"source\": \"vpc\", \"version\": \"2\", \"account_id\": \"123456789012\", \"interface_id\": \"eni-0123456789abcdef0\", \"srcaddr\": \"10.10.90.10\", \"dstaddr\": \"10.10.50.10\", \"srcport\": \"50120\", \"dstport\": \"22\", \"protocol\": \"6\", \"packets\": \"1\", \"bytes\": \"60\", \"start\": \"2026-09-29T12:00:00Z\", \"end\": \"2026-09-29T12:01:00Z\", \"action\": \"REJECT\", \"log_status\": \"OK\"}}"
+    },
+    {
+      "id": "ct01-sg-change",
+      "expect": 100130,
+      "log_format": "json",
+      "location": "Wazuh-AWS",
+      "event": "{\"integration\": \"aws\", \"aws\": {\"source\": \"cloudtrail\", \"eventSource\": \"ec2.amazonaws.com\", \"eventName\": \"AuthorizeSecurityGroupIngress\", \"awsRegion\": \"us-east-1\", \"sourceIPAddress\": \"198.51.100.20\", \"userIdentity\": {\"type\": \"AssumedRole\", \"arn\": \"arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_AdministratorAccess/operator\"}}}"
+    },
+    {
+      "id": "ct02-root",
+      "expect": 100131,
+      "log_format": "json",
+      "location": "Wazuh-AWS",
+      "event": "{\"integration\": \"aws\", \"aws\": {\"source\": \"cloudtrail\", \"eventSource\": \"signin.amazonaws.com\", \"eventName\": \"ConsoleLogin\", \"awsRegion\": \"us-east-1\", \"sourceIPAddress\": \"198.51.100.20\", \"userIdentity\": {\"type\": \"Root\", \"arn\": \"arn:aws:iam::123456789012:root\"}}}"
+    },
+    {
+      "id": "ct03-stop-logging",
+      "expect": 100132,
+      "log_format": "json",
+      "location": "Wazuh-AWS",
+      "event": "{\"integration\": \"aws\", \"aws\": {\"source\": \"cloudtrail\", \"eventSource\": \"cloudtrail.amazonaws.com\", \"eventName\": \"StopLogging\", \"awsRegion\": \"us-east-1\", \"sourceIPAddress\": \"198.51.100.20\", \"userIdentity\": {\"type\": \"AssumedRole\", \"arn\": \"arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_AdministratorAccess/operator\"}}}"
+    }
+  ]
+}

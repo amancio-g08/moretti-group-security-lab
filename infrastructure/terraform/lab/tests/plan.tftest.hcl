@@ -77,8 +77,21 @@ run "workstations_accept_no_inbound_traffic" {
     error_message = "Every host runs on Spot except the domain controller (ADR-009)."
   }
   assert {
-    condition     = aws_instance.host["DC01"].iam_instance_profile == "moretti-group-lab-domain-controller" && aws_instance.host["WS-FIN01"].iam_instance_profile == "moretti-group-lab-ssm-instance"
-    error_message = "Only DC01 may store the AD passwords in Parameter Store."
+    condition = (
+      aws_instance.host["DC01"].iam_instance_profile == "moretti-group-lab-domain-controller"
+      && aws_instance.host["WS-FIN01"].iam_instance_profile == "moretti-group-lab-agent"
+      && aws_instance.host["SIEM01"].iam_instance_profile == "moretti-group-lab-siem"
+      && aws_instance.host["GUEST01"].iam_instance_profile == "moretti-group-lab-basic"
+    )
+    error_message = "Each host gets only its role: AD secrets on DC01, log access on SIEM01, no secret on GUEST01."
+  }
+  assert {
+    condition     = toset(keys(aws_iam_role_policy.grant)) == toset(["agent.wazuh_enrollment", "domain_controller.wazuh_enrollment", "domain_controller.ad_secrets", "siem.wazuh_secrets", "siem.siem_logs"])
+    error_message = "Unexpected set of IAM grants."
+  }
+  assert {
+    condition     = aws_instance.host["SIEM01"].instance_type == "t3.large"
+    error_message = "SIEM01 runs on x86_64 (ADR-010)."
   }
 }
 

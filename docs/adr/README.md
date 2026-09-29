@@ -19,6 +19,7 @@ As ADRs em si estão em inglês.
 | [007](ADR-007-minimum-footprint.md) | Começar com poucas máquinas e crescer por fase | Aceita |
 | [008](ADR-008-network-enforcement-points.md) | ACLs no switch core entre VLANs, ASA no perímetro, NAT no roteador de borda | Proposta |
 | [009](ADR-009-cost-optimized-aws-lab.md) | Lab na AWS mais barato: máquinas por fase, Graviton, Spot e NAT instance | Aceita |
+| [010](ADR-010-siem-sizing.md) | SIEM01 em x86_64, abaixo do tamanho recomendado, com retenção de 14 dias | Aceita |
 
 **Status possíveis:** Proposta → Aceita → (Substituída pela ADR-xxx | Descontinuada).
 

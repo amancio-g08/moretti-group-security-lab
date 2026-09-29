@@ -61,7 +61,7 @@ resource "aws_instance" "nat" {
   vpc_security_group_ids      = [aws_security_group.nat.id]
   associate_public_ip_address = true
   source_dest_check           = false
-  iam_instance_profile        = aws_iam_instance_profile.ssm.name
+  iam_instance_profile        = aws_iam_instance_profile.role["basic"].name
 
   user_data = <<-EOT
     #!/bin/bash

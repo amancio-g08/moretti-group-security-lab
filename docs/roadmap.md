@@ -19,7 +19,7 @@ executed later (owner decision, 2026-09-29).
 | 3 | P05 — Python core (parsers, enrichment, detections, reports) | None | Done |
 | 4 | Minimal AWS lab: VPC, SGs from the matrix, Flow Logs, CloudTrail, Budgets; hosts per phase (ADR-009) | Starts here | In progress (code ready, not applied) |
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | In progress (code ready, not applied) |
-| 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | Planned |
+| 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | In progress (code ready, not applied) |
 | 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | Planned |
 | 8 | P04b — Entra ID (Cloud Sync, MFA, Conditional Access, lifecycle) | Trial license | Planned |
 | 9 | Portfolio consolidation and teardown | → None | Planned |
@@ -105,6 +105,14 @@ executed later (owner decision, 2026-09-29).
 - **Creates:** Wazuh deployment notes, agent enrollment, Sysmon, FIM, AWS module, custom rules and
   CDB lists, baseline documentation.
 - **Exit criteria:** every host reports to Wazuh; baseline alerts documented.
+- **Status (2026-09-29):** design approved (SIEM01 on x86_64 t3.large with 14-day retention,
+  [ADR-010](adr/ADR-010-siem-sizing.md); GUEST01 without agent). Code ready: install and
+  deployment scripts, agent installers (Linux; Windows with Sysmon), agent group configurations,
+  14 custom rules mapped to the `moretti-sec` detections and MITRE ATT&CK, account lists generated
+  from `data/`, 15 synthetic logtest cases and a runner for SIEM01, playbooks; per-role IAM in
+  Terraform (only agents read the enrollment password; SIEM01 reads the log bucket). Checked here:
+  `test_wazuh.py`, shellcheck, PSScriptAnalyzer, `terraform test`, the logtest runner against a
+  simulated API. **Not yet deployed**: [operator checklist](operator-checklist.md), section E.
 
 ### Phase 7 — Scenarios
 - **Creates:** SCN-01 … SCN-05 and FP-01 run books, captures, investigation reports, incident

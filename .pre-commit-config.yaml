@@ -105,3 +105,10 @@ repos:
         additional_dependencies: ["pyyaml==6.0.2"]
         files: ^(data/(employees\.csv|(roles|accounts|company)\.yaml)|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-04-iam/(tools/.*|generated/.*))$
         pass_filenames: false
+      - id: wazuh-lists-in-sync
+        name: Wazuh account lists regenerated from data
+        entry: python project-03-soc/tools/render_wazuh_lists.py --check
+        language: python
+        additional_dependencies: ["pyyaml==6.0.2"]
+        files: ^(data/(employees\.csv|accounts\.yaml)|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-03-soc/(tools/.*|detections/lists/.*))$
+        pass_filenames: false

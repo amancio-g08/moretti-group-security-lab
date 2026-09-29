@@ -78,6 +78,7 @@ jobs:
         run: |
           Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
           Invoke-ScriptAnalyzer -Path project-04-iam -Recurse -Severity Error,Warning -EnableExit
+          Invoke-ScriptAnalyzer -Path project-03-soc -Recurse -Severity Error,Warning -EnableExit
       - name: Provisioning dry runs (simulated domain)
         run: ./project-04-iam/tests/Test-ProvisioningDryRun.ps1
       - name: GPO templates

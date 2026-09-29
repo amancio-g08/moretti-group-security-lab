@@ -17,6 +17,7 @@ in a new ADR that supersedes the old one.
 | [007](ADR-007-minimum-footprint.md) | Minimum VM footprint, grown per phase | Accepted |
 | [008](ADR-008-network-enforcement-points.md) | Core switch ACLs east-west, ASA at the perimeter, NAT at the edge router | Proposed |
 | [009](ADR-009-cost-optimized-aws-lab.md) | Cost-optimized AWS lab: hosts per phase, Graviton, Spot and a NAT instance | Accepted |
+| [010](ADR-010-siem-sizing.md) | SIEM01 on x86_64, below the recommended size, with 14-day retention | Accepted |
 
 **Statuses:** Proposed → Accepted → (Superseded by ADR-xxx | Deprecated).
 

@@ -32,30 +32,45 @@ def run(
     render: Callable[[Path], dict],
     argv: list[str] | None = None,
 ) -> int:
-    """Render from data/ and write `output` (repository-relative), or check it is up to date."""
+    """Render one JSON document from data/ into `output` (repository-relative)."""
+    return run_files(description, lambda data_dir: {output: to_json(render(data_dir))}, argv)
+
+
+def run_files(
+    description: str,
+    render: Callable[[Path], dict[Path, str]],
+    argv: list[str] | None = None,
+) -> int:
+    """Render files from data/ (repository-relative path -> text), or check they are up to date."""
     parser = argparse.ArgumentParser(description=description)
     mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--write", action="store_true", help="regenerate the output file")
-    mode.add_argument("--check", action="store_true", help="fail if the output is out of date")
+    mode.add_argument("--write", action="store_true", help="regenerate the output files")
+    mode.add_argument("--check", action="store_true", help="fail if an output is out of date")
     parser.add_argument("--data-dir", type=Path, help="path to data/ (default: auto-detect)")
     args = parser.parse_args(argv)
 
     data_dir = args.data_dir or find_data_dir()
-    target = data_dir.parent / output
     try:
-        expected = to_json(render(data_dir))
+        files = render(data_dir)
     except PolicyError as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
 
-    if args.check:
-        current = target.read_text(encoding="utf-8") if target.is_file() else ""
-        if current != expected:
+    stale = []
+    for output, expected in files.items():
+        target = data_dir.parent / output
+        if args.check:
+            current = target.read_text(encoding="utf-8") if target.is_file() else ""
+            if current != expected:
+                stale.append(output)
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(expected, encoding="utf-8")
+        print(f"wrote {output}")
+    if stale:
+        for output in stale:
             print(f"{output} is out of date: regenerate it with --write", file=sys.stderr)
-            return 1
-        print(f"{output} is up to date")
-        return 0
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(expected, encoding="utf-8")
-    print(f"wrote {output}")
+        return 1
+    if args.check:
+        print(f"{len(files)} generated file(s) up to date")
     return 0

@@ -4,13 +4,15 @@
 locals {
   # Instance size and purchase option per host. Spot everywhere except the domain controller:
   # an interruption in the middle of a session is acceptable for a lab host, not for AD.
+  # arch: Linux image architecture. SIEM01 is x86_64: the stable Wazuh documentation lists only
+  # x86_64 for the central components (ADR-010). iam: role from iam.tf.
   host_profiles = {
-    "DC01"      = { instance_type = "t3.medium", spot = false, disk_gb = 30 }
-    "WS-FIN01"  = { instance_type = "t3.medium", spot = true, disk_gb = 30 }
-    "SIEM01"    = { instance_type = "t4g.large", spot = true, disk_gb = 30 }
-    "WS-DEV01"  = { instance_type = "t4g.micro", spot = true, disk_gb = 8 }
-    "GUEST01"   = { instance_type = "t4g.micro", spot = true, disk_gb = 8 }
-    "APP-FIN01" = { instance_type = "t4g.small", spot = true, disk_gb = 10 }
+    "DC01"      = { instance_type = "t3.medium", spot = false, disk_gb = 30, arch = "x86_64", iam = "domain_controller" }
+    "WS-FIN01"  = { instance_type = "t3.medium", spot = true, disk_gb = 30, arch = "x86_64", iam = "agent" }
+    "SIEM01"    = { instance_type = "t3.large", spot = true, disk_gb = 40, arch = "x86_64", iam = "siem" }
+    "WS-DEV01"  = { instance_type = "t4g.micro", spot = true, disk_gb = 8, arch = "arm64", iam = "agent" }
+    "GUEST01"   = { instance_type = "t4g.micro", spot = true, disk_gb = 8, arch = "arm64", iam = "basic" }
+    "APP-FIN01" = { instance_type = "t4g.small", spot = true, disk_gb = 10, arch = "arm64", iam = "agent" }
   }
 
   hosts = {
@@ -25,8 +27,9 @@ locals {
   ]...)
 }
 
-data "aws_ssm_parameter" "ubuntu_arm64" {
-  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/arm64/hvm/ebs-gp3/ami-id"
+data "aws_ssm_parameter" "ubuntu" {
+  for_each = toset(["arm64", "amd64"])
+  name     = "/aws/service/canonical/ubuntu/server/24.04/stable/current/${each.key}/hvm/ebs-gp3/ami-id"
 }
 
 data "aws_ssm_parameter" "windows_2022" {
@@ -65,83 +68,17 @@ resource "aws_vpc_security_group_egress_rule" "host" {
   to_port           = each.value.to_port
 }
 
-# ------------------------------------------------------------------------------ SSM access
-# Session Manager is the only way in: no SSH keys, no RDP from the internet, no public IPs.
-data "aws_iam_policy_document" "ec2_assume" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "ssm" {
-  name               = "${var.project}-ssm-instance"
-  assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
-}
-
-resource "aws_iam_role_policy_attachment" "ssm" {
-  role       = aws_iam_role.ssm.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_instance_profile" "ssm" {
-  name = "${var.project}-ssm-instance"
-  role = aws_iam_role.ssm.name
-}
-
-# DC01 only: the AD scripts (project-04-iam) store the passwords they generate under
-# /<project>/ad/ in Parameter Store. No other host can read or write them.
-data "aws_iam_policy_document" "ad_secrets" {
-  statement {
-    actions   = ["ssm:GetParameter", "ssm:PutParameter"]
-    resources = ["arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/ad/*"]
-  }
-  statement {
-    # SecureString parameters use the AWS managed key aws/ssm, only through Parameter Store.
-    actions   = ["kms:Encrypt", "kms:Decrypt", "kms:GenerateDataKey"]
-    resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "kms:ViaService"
-      values   = ["ssm.${var.region}.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "domain_controller" {
-  name               = "${var.project}-domain-controller"
-  assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
-}
-
-resource "aws_iam_role_policy_attachment" "domain_controller_ssm" {
-  role       = aws_iam_role.domain_controller.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_role_policy" "domain_controller_secrets" {
-  name   = "ad-secrets"
-  role   = aws_iam_role.domain_controller.id
-  policy = data.aws_iam_policy_document.ad_secrets.json
-}
-
-resource "aws_iam_instance_profile" "domain_controller" {
-  name = "${var.project}-domain-controller"
-  role = aws_iam_role.domain_controller.name
-}
-
 # ------------------------------------------------------------------------------ instances
 resource "aws_instance" "host" {
   for_each = local.hosts
 
-  ami                    = each.value.platform == "windows" ? data.aws_ssm_parameter.windows_2022.value : data.aws_ssm_parameter.ubuntu_arm64.value
+  ami = (each.value.platform == "windows" ? data.aws_ssm_parameter.windows_2022.value
+  : data.aws_ssm_parameter.ubuntu[local.host_profiles[each.key].arch == "arm64" ? "arm64" : "amd64"].value)
   instance_type          = local.host_profiles[each.key].instance_type
   subnet_id              = aws_subnet.segment[each.value.segment].id
   private_ip             = each.value.ip
   vpc_security_group_ids = [aws_security_group.host[each.key].id]
-  iam_instance_profile   = each.key == "DC01" ? aws_iam_instance_profile.domain_controller.name : aws_iam_instance_profile.ssm.name
+  iam_instance_profile   = aws_iam_instance_profile.role[local.host_profiles[each.key].iam].name
 
   # Host names match the asset IDs so logs can be enriched from data/ (P05).
   user_data = each.value.platform == "windows" ? join("\n", [
