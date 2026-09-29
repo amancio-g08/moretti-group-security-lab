@@ -7,6 +7,9 @@ The lab is built in phases. Each phase follows the same cycle:
 
 Results are only documented from what was actually executed and observed. Steps that require the
 lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]**.
+From phase 4 on, the code of each phase is written and tested offline first; the steps that need
+the lab owner are collected, in order, in the [operator checklist](operator-checklist.md) and
+executed later (owner decision, 2026-09-29).
 
 | Phase | Deliverable | Cloud cost | Status |
 |---|---|---|---|
@@ -82,7 +85,8 @@ lab owner (accounts, credentials, GUI tools) are marked **[USER ACTION REQUIRED]
   scripts, [deployment guide](../infrastructure/docs/deployment-guide.md) and
   [validation plan](../infrastructure/docs/validation-plan.md). Checked here: `terraform
   validate` and `terraform test` (4 passing), renderer tests, shellcheck. **Not yet applied** to an
-  AWS account: [USER ACTION REQUIRED] steps 1–5 of the deployment guide.
+  AWS account: [USER ACTION REQUIRED] steps 1–5 of the deployment guide. The first CI run of the
+  Terraform job (fmt, validate, offline plan tests) passed on `main` at commit `0320f57`.
 
 ### Phase 5 — P04a Active Directory
 - **Creates:** OU design, group model, GPOs, password and lockout policies, PowerShell provisioning

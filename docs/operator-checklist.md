@@ -1,0 +1,56 @@
+# Operator Checklist
+
+Everything that only the lab owner can do (own accounts, credentials, GUI tools), in the order
+to do it. The code for these steps is already in the repository; nothing here has been executed
+until its box is ticked and its result is recorded in the linked plan.
+
+Rules while working through the list:
+
+- Record only what you observe. A step that fails is recorded as failed, with the output.
+- Evidence never contains account IDs, e-mail addresses, access portal URLs or passwords: replace
+  them with `<account>`, `<email>` and so on.
+- The Packet Tracer lab password is lab-only. Never reuse it anywhere else.
+- Stop the AWS lab at the end of every session (`infrastructure/scripts/lab-down.sh`).
+
+## A. Packet Tracer (phase 2, paused)
+
+Details: [roadmap, phase 2](roadmap.md#phase-2--p01-network-packet-tracer) and the
+[validation plan](../project-01-network/documentation/validation-plan.md).
+
+- [ ] A1. C-04: FINANCE DHCP pool on DC01, then DHCP renew on PC-DHCP-TEST.
+- [ ] A2. C-06: clear FW01's ACLs, re-apply `configs/FW01.txt` (numeric ports), turn on HTTPS on
+      WEB01, test from INTERNET-SRV.
+- [ ] A3. Apply the core ACLs (build script with `RUN_CORE_ACLS = true`); turn on HTTPS on
+      APP-FIN01 and APP-HR01.
+- [ ] A4. Run the representative sample (V-01, V-05, V-10, V-14, V-17, D-01, D-02, D-04, D-06,
+      D-08, D-11, L-01, L-05) and record the results.
+- [ ] A5. Optional: revisit C-03 (JUMP01 → R-EDGE01 ping) with `show access-list` counters on FW01.
+- [ ] A6. Commit `packet-tracer/moretti-group-network.pkt` and the screenshots in
+      `documentation/evidence/`.
+
+## B. AWS account and tools (phase 4)
+
+Details: [deployment guide](../infrastructure/docs/deployment-guide.md), steps 1–3.
+
+- [ ] B1. Create the AWS account; check the free-tier credit offer.
+- [ ] B2. Root user: MFA on, no access keys.
+- [ ] B3. IAM Identity Center in us-east-1: your user with MFA, AdministratorAccess permission set.
+- [ ] B4. On the Mac: `awscli`, `terraform` (HashiCorp tap), `session-manager-plugin`;
+      `aws configure sso` with profile `moretti-lab`; `aws sts get-caller-identity` works.
+
+## C. AWS lab, phase 4
+
+Details: [deployment guide](../infrastructure/docs/deployment-guide.md), steps 4–7, and the
+[AWS validation plan](../infrastructure/docs/validation-plan.md).
+
+- [ ] C1. Apply `terraform/bootstrap` (budget e-mail in `terraform.tfvars`, never committed).
+- [ ] C2. Plan `terraform/lab` (`lab_phase = 4`), review it, apply it.
+- [ ] C3. Commit the two `.terraform.lock.hcl` files that `terraform init` created (they pin the
+      provider version; they contain no secrets).
+- [ ] C4. Run A-01 … A-10 and record the results.
+- [ ] C5. After one week: `cost-check.sh` → *Measurements* in ADR-004 (A-11).
+
+## Later phases
+
+Items are added here as the code of each phase is written (5 — Active Directory, 6 — Wazuh,
+7 — scenarios, 8 — Entra ID).
