@@ -92,6 +92,46 @@ resource "aws_iam_instance_profile" "ssm" {
   role = aws_iam_role.ssm.name
 }
 
+# DC01 only: the AD scripts (project-04-iam) store the passwords they generate under
+# /<project>/ad/ in Parameter Store. No other host can read or write them.
+data "aws_iam_policy_document" "ad_secrets" {
+  statement {
+    actions   = ["ssm:GetParameter", "ssm:PutParameter"]
+    resources = ["arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/ad/*"]
+  }
+  statement {
+    # SecureString parameters use the AWS managed key aws/ssm, only through Parameter Store.
+    actions   = ["kms:Encrypt", "kms:Decrypt", "kms:GenerateDataKey"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["ssm.${var.region}.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "domain_controller" {
+  name               = "${var.project}-domain-controller"
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
+}
+
+resource "aws_iam_role_policy_attachment" "domain_controller_ssm" {
+  role       = aws_iam_role.domain_controller.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy" "domain_controller_secrets" {
+  name   = "ad-secrets"
+  role   = aws_iam_role.domain_controller.id
+  policy = data.aws_iam_policy_document.ad_secrets.json
+}
+
+resource "aws_iam_instance_profile" "domain_controller" {
+  name = "${var.project}-domain-controller"
+  role = aws_iam_role.domain_controller.name
+}
+
 # ------------------------------------------------------------------------------ instances
 resource "aws_instance" "host" {
   for_each = local.hosts
@@ -101,7 +141,7 @@ resource "aws_instance" "host" {
   subnet_id              = aws_subnet.segment[each.value.segment].id
   private_ip             = each.value.ip
   vpc_security_group_ids = [aws_security_group.host[each.key].id]
-  iam_instance_profile   = aws_iam_instance_profile.ssm.name
+  iam_instance_profile   = each.key == "DC01" ? aws_iam_instance_profile.domain_controller.name : aws_iam_instance_profile.ssm.name
 
   # Host names match the asset IDs so logs can be enriched from data/ (P05).
   user_data = each.value.platform == "windows" ? join("\n", [

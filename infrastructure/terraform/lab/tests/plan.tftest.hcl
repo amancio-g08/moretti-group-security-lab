@@ -76,6 +76,10 @@ run "workstations_accept_no_inbound_traffic" {
     condition     = length(aws_instance.host["DC01"].instance_market_options) == 0 && length(aws_instance.host["GUEST01"].instance_market_options) == 1
     error_message = "Every host runs on Spot except the domain controller (ADR-009)."
   }
+  assert {
+    condition     = aws_instance.host["DC01"].iam_instance_profile == "moretti-group-lab-domain-controller" && aws_instance.host["WS-FIN01"].iam_instance_profile == "moretti-group-lab-ssm-instance"
+    error_message = "Only DC01 may store the AD passwords in Parameter Store."
+  }
 }
 
 run "egress_disabled_removes_the_nat_instance" {

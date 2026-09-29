@@ -18,7 +18,7 @@ executed later (owner decision, 2026-09-29).
 | 2 | P01 — Packet Tracer enterprise design | None | Paused (validation in progress, see below) |
 | 3 | P05 — Python core (parsers, enrichment, detections, reports) | None | Done |
 | 4 | Minimal AWS lab: VPC, SGs from the matrix, Flow Logs, CloudTrail, Budgets; hosts per phase (ADR-009) | Starts here | In progress (code ready, not applied) |
-| 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | Planned |
+| 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | In progress (code ready, not applied) |
 | 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | Planned |
 | 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | Planned |
 | 8 | P04b — Entra ID (Cloud Sync, MFA, Conditional Access, lifecycle) | Trial license | Planned |
@@ -92,6 +92,14 @@ executed later (owner decision, 2026-09-29).
 - **Creates:** OU design, group model, GPOs, password and lockout policies, PowerShell provisioning
   from company data, delegated permissions, admin tiering.
 - **Exit criteria:** every user's permissions are traceable to a role in `data/`.
+- **Status (2026-09-29):** design approved (employees on leave disabled; random passwords in SSM
+  Parameter Store, changed at first logon). Code ready: AD plan generator in P05 with 18 tests
+  (AGDLP, segregation of duties, leaver rules, Domain Admins membership), PowerShell scripts to
+  create the forest, apply the plan idempotently, create the GPOs (including audit policy and user
+  rights written as GPO files) and join WS-FIN01 with a Tier 2 account; DC01-only IAM permission for
+  the AD passwords in Terraform. Checked here: PSScriptAnalyzer (0 findings), dry runs against a
+  simulated domain (empty domain, leaver), GPO file tests, `terraform test`. **Not yet applied**:
+  [operator checklist](operator-checklist.md), section D. Design: [AD design](../project-04-iam/documentation/ad-design.md).
 
 ### Phase 6 — P03 Wazuh
 - **Creates:** Wazuh deployment notes, agent enrollment, Sysmon, FIM, AWS module, custom rules and

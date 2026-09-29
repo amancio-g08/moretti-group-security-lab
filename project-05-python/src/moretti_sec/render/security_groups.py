@@ -20,26 +20,17 @@ Run from the repository root:
 
 from __future__ import annotations
 
-import argparse
 import ipaddress
-import json
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-import yaml
-
-from ..company import find_data_dir
+from ._cli import PolicyError, load_yaml, run
 
 ENV = "aws"
 OUTPUT = Path("infrastructure/terraform/lab/generated/security-groups.json")
 # Default AWS quota for rules per Security Group and direction.
 MAX_RULES_PER_DIRECTION = 60
 ANYWHERE = ipaddress.ip_network("0.0.0.0/0")
-
-
-class PolicyError(ValueError):
-    """The matrix contains something Security Groups cannot enforce."""
 
 
 @dataclass(frozen=True)
@@ -236,43 +227,13 @@ def _sort_key(item: dict) -> tuple:
     return (item["rules"][0], item["cidr"], item["protocol"], item["from_port"] or 0)
 
 
-def to_json(document: dict) -> str:
-    return json.dumps(document, indent=2) + "\n"
+def render_from(data_dir: Path) -> dict:
+    matrix = load_yaml(data_dir / "network-matrix.yaml")
+    return render(matrix, load_yaml(data_dir / "assets.yaml")["assets"])
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--write", action="store_true", help="regenerate the output file")
-    mode.add_argument("--check", action="store_true", help="fail if the output is out of date")
-    parser.add_argument("--data-dir", type=Path, help="path to data/ (default: auto-detect)")
-    args = parser.parse_args(argv)
-
-    data_dir = args.data_dir or find_data_dir()
-    output = data_dir.parent / OUTPUT
-    with (data_dir / "network-matrix.yaml").open(encoding="utf-8") as handle:
-        matrix = yaml.safe_load(handle)
-    with (data_dir / "assets.yaml").open(encoding="utf-8") as handle:
-        assets = yaml.safe_load(handle)["assets"]
-    try:
-        expected = to_json(render(matrix, assets))
-    except PolicyError as error:
-        print(f"error: {error}", file=sys.stderr)
-        return 1
-
-    if args.check:
-        current = output.read_text(encoding="utf-8") if output.is_file() else ""
-        if current != expected:
-            print(
-                f"{OUTPUT} is out of date: run render_security_groups.py --write", file=sys.stderr
-            )
-            return 1
-        print(f"{OUTPUT} is up to date")
-        return 0
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(expected, encoding="utf-8")
-    print(f"wrote {OUTPUT}")
-    return 0
+    return run(__doc__.splitlines()[0], OUTPUT, render_from, argv)
 
 
 if __name__ == "__main__":

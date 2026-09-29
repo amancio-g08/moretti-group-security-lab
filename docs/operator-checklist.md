@@ -50,7 +50,34 @@ Details: [deployment guide](../infrastructure/docs/deployment-guide.md), steps 4
 - [ ] C4. Run A-01 … A-10 and record the results.
 - [ ] C5. After one week: `cost-check.sh` → *Measurements* in ADR-004 (A-11).
 
+## D. Active Directory (phase 5)
+
+Details: [AD design](../project-04-iam/documentation/ad-design.md) and the
+[AD validation plan](../project-04-iam/documentation/validation-plan.md). Needs section C done.
+
+- [ ] D1. Deploy DC01 and WS-FIN01: `terraform -chdir=infrastructure/terraform/lab apply -var lab_phase=5`.
+- [ ] D2. Open a session on DC01 (`aws ssm start-session --target <DC01 id>`; it starts PowerShell)
+      and download the scripts and the plan:
+      ```powershell
+      $repo = 'https://raw.githubusercontent.com/amancio-g08/moretti-group-security-lab/main/project-04-iam'
+      New-Item -ItemType Directory -Force C:\lab\scripts, C:\lab\generated | Out-Null
+      'LabCommon.ps1', 'GpoTemplates.ps1', 'Install-DomainController.ps1', 'Invoke-ADProvisioning.ps1', 'New-LabGpos.ps1' |
+          ForEach-Object { Invoke-WebRequest "$repo/scripts/$_" -OutFile "C:\lab\scripts\$_" -UseBasicParsing }
+      Invoke-WebRequest "$repo/generated/ad-plan.json" -OutFile C:\lab\generated\ad-plan.json -UseBasicParsing
+      cd C:\lab\scripts
+      ```
+- [ ] D3. `.\Install-DomainController.ps1 -WhatIf`, then without `-WhatIf`. DC01 restarts; wait about
+      10 minutes and open a new session.
+- [ ] D4. `.\Invoke-ADProvisioning.ps1 -WhatIf`, review the list, run it, then run it again (AD-02).
+- [ ] D5. `.\New-LabGpos.ps1 -WhatIf`, then without `-WhatIf`.
+- [ ] D6. On WS-FIN01: download `Join-LabDomain.ps1` the same way, get the password of
+      `adm-kelly.mattos` on your Mac (the command is at the top of the script) and run it.
+- [ ] D7. Run AD-01 … AD-16 and record the results.
+- [ ] D8. After confirming that `adm-marcio.guimaraes` can administer the domain, disable the
+      built-in `Administrator` account and record it (AD-07).
+- [ ] D9. `infrastructure/scripts/lab-down.sh`.
+
 ## Later phases
 
-Items are added here as the code of each phase is written (5 — Active Directory, 6 — Wazuh,
-7 — scenarios, 8 — Entra ID).
+Items are added here as the code of each phase is written (6 — Wazuh, 7 — scenarios,
+8 — Entra ID).

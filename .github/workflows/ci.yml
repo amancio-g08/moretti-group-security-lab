@@ -65,3 +65,20 @@ jobs:
           terraform -chdir=infrastructure/terraform/lab init -backend=false -input=false
           terraform -chdir=infrastructure/terraform/lab validate
           terraform -chdir=infrastructure/terraform/lab test
+
+  powershell:
+    name: PowerShell (PSScriptAnalyzer, dry runs)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v5
+      - name: Static analysis
+        run: |
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+          Invoke-ScriptAnalyzer -Path project-04-iam -Recurse -Severity Error,Warning -EnableExit
+      - name: Provisioning dry runs (simulated domain)
+        run: ./project-04-iam/tests/Test-ProvisioningDryRun.ps1
+      - name: GPO templates
+        run: ./project-04-iam/tests/Test-GpoTemplates.ps1

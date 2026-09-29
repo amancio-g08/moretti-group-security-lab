@@ -76,7 +76,7 @@ Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4624,4625} -MaxEvents 500
 ## Testes
 
 ```bash
-pytest          # 32 testes
+pytest          # 50 testes
 ruff check . && ruff format --check .
 ```
 
@@ -95,7 +95,7 @@ Os mesmos comandos rodam no CI (`.github/workflows/ci.yml`) e no `pre-commit`.
 ```
 project-05-python/
 ├── src/moretti_sec/   # pacote: parsers, enriquecimento, detecções, IOC, timeline, relatório, CLI
-│   └── render/        # matriz → Security Groups da AWS (usado pelo infrastructure/)
+│   └── render/        # data/ → Security Groups da AWS (infrastructure/) e plano do AD (project-04-iam/)
 ├── tests/             # testes (fixtures marcadas como sintéticas)
 └── examples/          # logs sintéticos e o relatório gerado a partir deles
 ```
