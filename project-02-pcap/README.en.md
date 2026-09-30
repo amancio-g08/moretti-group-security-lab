@@ -5,17 +5,47 @@
 Structured investigations of captures produced by lab scenarios, answering who, what, when,
 where and how, with a timeline, Wireshark filters and the reasoning behind each conclusion.
 
-**Status:** planned for Phase 7.
+**Status:** the **Wireshark plugin in Lua** is ready and tested. The investigations come in
+phase 7, when the scenarios run in the lab and real captures exist.
 
-Planned layout:
+## Wireshark plugin (Lua)
+
+Lua is one of the languages I use most, and it is Wireshark's plugin language. So instead of only
+analyzing captures, I taught Wireshark about the company: every packet gets a **Moretti Group**
+section saying which host and segment it came from, where it went, and whether that flow is
+**allowed or forbidden by the network matrix**, with the deciding rule.
+
+```
+Moretti Group: GUEST01 (guest) -> WS-FIN01 (finance): deny (NM-004)
+```
+
+Filter `moretti.verdict == "deny"` to see every flow that breaks the policy at once, or
+`moretti.src.segment == "guest"` to follow the visitor.
+
+- The asset and rule table is **generated from `data/`**, like the rest of the project.
+- It understands connections like a real firewall: only the start of a flow is judged, and the
+  reply inherits the verdict.
+- It works with the AWS or the Packet Tracer rules (a Wireshark preference).
+
+**How it was proven correct:**
+- unit tests of the engine in plain Lua;
+- a **differential test** that compares the Lua engine with an independent Python evaluator on
+  **203,228 flows**, with no disagreement;
+- an end-to-end test with `tshark` on a synthetic capture.
+
+All of it runs in CI.
+
+Installation, use and limitations: [documentation/wireshark-plugin.md](documentation/wireshark-plugin.md).
+
+## Layout
 
 ```
 project-02-pcap/
-├── pcaps/
-│   └── curated/     # reviewed captures that back a published report (committed)
-├── analysis/        # filters, notes and reasoning per investigation
-├── evidence/        # extracted evidence with hashes
-└── reports/         # investigation reports
+├── wireshark/       # Lua plugin: moretti.lua, policy_engine.lua, moretti_policy.lua (generated)
+├── tools/           # policy table generator
+├── tests/           # engine tests and the synthetic capture builder
+├── documentation/   # plugin documentation
+└── (phase 7)        # pcaps/curated, analysis, evidence, reports
 ```
 
 Raw captures are git-ignored by default; only curated captures are committed. Evidence is never

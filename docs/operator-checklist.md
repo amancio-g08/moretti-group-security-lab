@@ -109,6 +109,15 @@ Details: [SOC design](../project-03-soc/documentation/soc-design.md) and the
       `/opt/moretti-lab/project-03-soc/wazuh/deploy-ruleset.sh` on SIEM01.
 - [ ] E10. `infrastructure/scripts/lab-down.sh`.
 
+## F. Wireshark plugin (optional, no AWS needed)
+
+Details: [plugin documentation](../project-02-pcap/documentation/wireshark-plugin.md).
+
+- [ ] F1. Install Wireshark on the Mac and copy `project-02-pcap/wireshark/*.lua` to the Personal
+      Lua Plugins folder.
+- [ ] F2. Build the synthetic capture (`python3 project-02-pcap/tests/make_synthetic_pcap.py
+      ~/moretti-synthetic.pcap`), open it and apply `moretti.verdict == "deny"`: 5 packets.
+
 ## Later phases
 
 Items are added here as the code of each phase is written (7 — scenarios, 8 — Entra ID).

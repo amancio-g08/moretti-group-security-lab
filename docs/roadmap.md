@@ -20,7 +20,7 @@ executed later (owner decision, 2026-09-29).
 | 4 | Minimal AWS lab: VPC, SGs from the matrix, Flow Logs, CloudTrail, Budgets; hosts per phase (ADR-009) | Starts here | In progress (code ready, not applied) |
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | In progress (code ready, not applied) |
 | 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | In progress (code ready, not applied) |
-| 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | Planned |
+| 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | In progress (Wireshark plugin done) |
 | 8 | P04b — Entra ID (Cloud Sync, MFA, Conditional Access, lifecycle) | Trial license | Planned |
 | 9 | Portfolio consolidation and teardown | → None | Planned |
 
@@ -118,6 +118,12 @@ executed later (owner decision, 2026-09-29).
 - **Creates:** SCN-01 … SCN-05 and FP-01 run books, captures, investigation reports, incident
   reports, generated Python reports; APP-FIN01 added.
 - **Exit criteria:** every scenario traceable across all relevant sources, with observed evidence.
+- **Status (2026-09-30):** first part done, owner's addition: a **Wireshark plugin in Lua**
+  (project-02-pcap) that labels every packet with the asset, the segment and the network matrix
+  verdict, from a policy table generated from `data/`. Checked here and in CI: engine unit tests,
+  a differential test against an independent Python evaluator (203,228 flows, no disagreement) and
+  an end-to-end `tshark` test on a synthetic capture. An Nmap NSE script (Lua) that audits
+  segmentation from GUEST01 comes with the scenarios, since it needs the lab running.
 
 ### Phase 8 — P04b Entra ID
 - **Creates:** tenant configuration, Cloud Sync, MFA, Conditional Access, Joiner/Mover/Leaver,

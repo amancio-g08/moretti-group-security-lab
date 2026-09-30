@@ -112,3 +112,10 @@ repos:
         additional_dependencies: ["pyyaml==6.0.2"]
         files: ^(data/(employees\.csv|accounts\.yaml)|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-03-soc/(tools/.*|detections/lists/.*))$
         pass_filenames: false
+      - id: wireshark-policy-in-sync
+        name: Wireshark policy table regenerated from the matrix
+        entry: python project-02-pcap/tools/render_wireshark_policy.py --check
+        language: python
+        additional_dependencies: ["pyyaml==6.0.2"]
+        files: ^(data/(network-matrix|assets)\.yaml|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-02-pcap/(tools/.*|wireshark/moretti_policy\.lua))$
+        pass_filenames: false
