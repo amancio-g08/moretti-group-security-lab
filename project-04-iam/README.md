@@ -7,7 +7,7 @@ passando por identidade híbrida e chegando no Entra ID
 ([ADR-006](../docs/adr/ADR-006-identity-evolution.md)).
 
 **Status:** fase 5 (Active Directory) com o código pronto e testado offline; ainda **não foi
-aplicado** num controlador de domínio. A fase 8 (Entra ID) vem depois.
+aplicado** num controlador de domínio. A fase 8 (Entra ID) também está com o código pronto: políticas de Conditional Access geradas do `data/`, script de aplicação e a revisão de acesso em Python (`moretti-sec access-review`). Falta aplicar num tenant.
 
 ## A ideia
 

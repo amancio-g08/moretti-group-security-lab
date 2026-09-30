@@ -6,7 +6,7 @@ RBAC and least privilege for Moretti Group, evolving from Active Directory to hy
 and Entra ID ([ADR-006](../docs/adr/ADR-006-identity-evolution.md)).
 
 **Status:** phase 5 (Active Directory) code is ready and tested offline; it has **not been
-applied** to a domain controller yet. Phase 8 (Entra ID) comes later.
+applied** to a domain controller yet. Phase 8 (Entra ID) code is also ready: Conditional Access policies generated from `data/`, an apply script, and the Python access review (`moretti-sec access-review`). It has not been applied to a tenant.
 
 ## The idea
 

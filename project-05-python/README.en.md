@@ -47,6 +47,12 @@ pip install -e ".[dev]"
 # report from the sample logs
 moretti-sec analyze examples/logs/* --year 2026 --report report.md
 
+# timeline merging logs, AWS Flow Logs and Wazuh alerts
+moretti-sec correlate --flow flowlogs/ --wazuh alerts.json --report timeline.md
+
+# access review: compare an AD export with the policy in data/
+moretti-sec access-review --ad-export accounts.csv --report review.md
+
 # extract IOCs from text (defanged indicators such as hxxp and [.] are accepted)
 moretti-sec ioc ticket.txt
 ```
@@ -75,7 +81,7 @@ Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4624,4625} -MaxEvents 500
 ## Tests
 
 ```bash
-pytest          # 76 tests (2 need lua and tshark)
+pytest          # 91 tests (2 need lua and tshark)
 ruff check . && ruff format --check .
 ```
 
@@ -92,7 +98,7 @@ The same commands run in CI (`.github/workflows/ci.yml`) and in `pre-commit`.
 ```
 project-05-python/
 ├── src/moretti_sec/   # package: parsers, enrichment, detections, IOC, timeline, report, CLI
-│   └── render/        # data/ → Security Groups (infrastructure/), AD plan (project-04-iam/), Wazuh lists (project-03-soc/) and Wireshark policy (project-02-pcap/)
+│   └── render/        # data/ → Security Groups (infrastructure/), AD plan (project-04-iam/), Wazuh lists (project-03-soc/) and Wireshark policy (project-02-pcap/) and Conditional Access (project-04-iam/)
 ├── tests/             # tests (fixtures labeled as synthetic)
 └── examples/          # synthetic logs and the report generated from them
 ```

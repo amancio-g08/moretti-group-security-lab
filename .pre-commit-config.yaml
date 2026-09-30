@@ -126,3 +126,10 @@ repos:
         additional_dependencies: ["pyyaml==6.0.2"]
         files: ^(data/(network-matrix|assets)\.yaml|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-02-pcap/(tools/.*|nse/moretti_targets\.lua))$
         pass_filenames: false
+      - id: conditional-access-in-sync
+        name: Conditional Access policies regenerated from roles
+        entry: python project-04-iam/tools/render_conditional_access.py --check
+        language: python
+        additional_dependencies: ["pyyaml==6.0.2"]
+        files: ^(data/roles\.yaml|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-04-iam/(tools/render_conditional_access\.py|generated/conditional-access-policies\.json))$
+        pass_filenames: false

@@ -1,0 +1,124 @@
+{
+  "_generated": "GENERATED from data/roles.yaml by project-04-iam/tools/render_conditional_access.py. Do not edit.",
+  "_notes": {
+    "state": "All policies start in report-only; the apply script enables them once confirmed. Break-glass accounts are excluded from every policy.",
+    "named_locations": "AllowedCountries and the FinanceApp application are named references the operator creates in the tenant (validation plan)."
+  },
+  "policies": [
+    {
+      "displayName": "CA01 - Require MFA for all users",
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "users": {
+          "includeUsers": [
+            "All"
+          ],
+          "excludeGroups": [
+            "GG-Break-Glass"
+          ]
+        },
+        "applications": {
+          "includeApplications": [
+            "All"
+          ]
+        }
+      },
+      "grantControls": {
+        "operator": "OR",
+        "builtInControls": [
+          "mfa"
+        ]
+      }
+    },
+    {
+      "displayName": "CA02 - Require phishing-resistant MFA for admins",
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "users": {
+          "includeGroups": [
+            "GG-Admin-Accounts",
+            "GG-Priv-Tier0DomainAdmin",
+            "GG-Priv-ServerAdmin",
+            "GG-Priv-NetworkAdmin",
+            "GG-Priv-EndpointAdmin",
+            "GG-Priv-SiemAdmin",
+            "GG-Priv-SocResponder"
+          ],
+          "excludeGroups": [
+            "GG-Break-Glass"
+          ]
+        },
+        "applications": {
+          "includeApplications": [
+            "All"
+          ]
+        }
+      },
+      "grantControls": {
+        "operator": "OR",
+        "authenticationStrength": {
+          "displayName": "Phishing-resistant MFA"
+        }
+      }
+    },
+    {
+      "displayName": "CA03 - Block logon from outside the allowed country",
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "users": {
+          "includeUsers": [
+            "All"
+          ],
+          "excludeGroups": [
+            "GG-Break-Glass"
+          ]
+        },
+        "applications": {
+          "includeApplications": [
+            "All"
+          ]
+        },
+        "locations": {
+          "includeLocations": [
+            "All"
+          ],
+          "excludeLocations": [
+            "AllowedCountries"
+          ]
+        }
+      },
+      "grantControls": {
+        "operator": "OR",
+        "builtInControls": [
+          "block"
+        ]
+      }
+    },
+    {
+      "displayName": "CA04 - Require compliant device for the finance application",
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "users": {
+          "includeGroups": [
+            "GG-Role-FinanceStaff",
+            "GG-Role-FinanceManager"
+          ],
+          "excludeGroups": [
+            "GG-Break-Glass"
+          ]
+        },
+        "applications": {
+          "includeApplications": [
+            "FinanceApp"
+          ]
+        }
+      },
+      "grantControls": {
+        "operator": "OR",
+        "builtInControls": [
+          "compliantDevice"
+        ]
+      }
+    }
+  ]
+}

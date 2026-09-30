@@ -21,7 +21,7 @@ executed later (owner decision, 2026-09-29).
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | In progress (code ready, not applied) |
 | 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | In progress (code ready, not applied) |
 | 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | In progress (all code ready, not executed) |
-| 8 | P04b — Entra ID (Cloud Sync, MFA, Conditional Access, lifecycle) | Trial license | Planned |
+| 8 | P04b — Entra ID (Cloud Sync, MFA, Conditional Access, lifecycle) | Trial license | In progress (code ready, not applied) |
 | 9 | Portfolio consolidation and teardown | → None | Planned |
 
 ## Phase details
@@ -136,6 +136,11 @@ executed later (owner decision, 2026-09-29).
 - **Creates:** tenant configuration, Cloud Sync, MFA, Conditional Access, Joiner/Mover/Leaver,
   access reviews.
 - **[USER ACTION REQUIRED]:** Entra tenant and P1/P2 trial activation.
+- **Status (2026-09-30), code complete:** Conditional Access policies as Graph JSON generated from
+  `data/` (report-only, break-glass excluded) with an apply script; `moretti-sec access-review` (the
+  Entra P2 substitute the ADR names) comparing an AD export with the plan and flagging deviations;
+  Cloud Sync scope, JML mapping and validation plan documented. Checked here and in CI: Python tests
+  (access review and CA generator), PSScriptAnalyzer. **Not applied**: operator checklist, section H.
 
 ### Phase 9 — Consolidation
 - **Creates:** final diagrams, lessons learned, troubleshooting, portfolio summary; environment

@@ -136,6 +136,27 @@ Details: run books in [scenarios/run-books/](../scenarios/run-books) and
 - [ ] G6. Fill in each run book's "Observed" section and record the FP-01 exception.
 - [ ] G7. `infrastructure/scripts/lab-down.sh`.
 
+## H. Entra ID (phase 8)
+
+Details: [Entra design](../project-04-iam/documentation/entra-design.md) and the
+[Entra validation plan](../project-04-iam/documentation/entra-validation-plan.md). Needs section D done.
+
+- [ ] H1. Create an Entra ID tenant and activate the P1/P2 trial (note the limits in the design).
+- [ ] H2. Install the **Entra Cloud Sync** agent on DC01; scope it to `OU=Users` and `OU=Groups`
+      under `OU=Moretti` (not Admin, not ServiceAccounts). Run sync; check EN-01, EN-02, EN-03.
+- [ ] H3. In the tenant, create the named location `AllowedCountries` and the `FinanceApp` app
+      reference used by CA03/CA04.
+- [ ] H4. On the Mac: `Connect-MgGraph -Scopes "Policy.ReadWrite.ConditionalAccess","Group.Read.All"`,
+      then `project-04-iam/scripts/Set-ConditionalAccess.ps1 -WhatIf`, then without `-WhatIf`
+      (creates CA01-CA04 in report-only). Check EN-04 to EN-07.
+- [ ] H5. Review the report-only impact for a few days, then `Set-ConditionalAccess.ps1 -Enable`
+      (EN-08).
+- [ ] H6. Access review: on DC01 export accounts and groups
+      (`Get-ADUser -Filter * -Properties Enabled, MemberOf` → a `sam,enabled,groups` CSV), then on
+      the Mac `moretti-sec access-review --ad-export export.csv --report review.md` (EN-10).
+- [ ] H7. Leaver end to end (EN-09): set an employee `terminated` in `data/`, regenerate the AD
+      plan, re-run `Invoke-ADProvisioning.ps1`, and confirm the cloud account is disabled after sync.
+
 ## Later phases
 
-Items are added here as the code of each phase is written (7 — scenarios, 8 — Entra ID).
+Item added here as the code of each phase is written (9 — consolidation, after the scenarios run).

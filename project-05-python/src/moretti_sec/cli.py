@@ -8,7 +8,7 @@ import sys
 from datetime import timedelta
 from pathlib import Path
 
-from . import __version__, correlate
+from . import __version__, access_review, correlate
 from .company import Company, find_data_dir
 from .detections import BruteForceConfig, run_all
 from .enrich import enrich
@@ -76,6 +76,25 @@ def _sshd_or_windows(lines, year=None):
     return parse_sshd(lines, year=year)
 
 
+def _access_review(args: argparse.Namespace) -> int:
+    plan_path = args.plan or (
+        (args.data_dir or find_data_dir()).parent / "project-04-iam/generated/ad-plan.json"
+    )
+    plan = access_review.load_plan(plan_path)
+    ad_accounts = access_review.load_ad_export(args.ad_export)
+    result = access_review.review(plan, ad_accounts)
+    report = access_review.render_markdown(result, args.ad_export.name, plan["domain"]["fqdn"])
+    if args.report:
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(report, encoding="utf-8")
+        print(
+            f"{result.accounts_reviewed} accounts, {len(result.findings)} findings -> {args.report}"
+        )
+    else:
+        print(report)
+    return 0
+
+
 def _ioc(args: argparse.Namespace) -> int:
     text = args.file.read_text(encoding="utf-8") if args.file else sys.stdin.read()
     print(json.dumps(extract_iocs(text), indent=2))
@@ -111,6 +130,15 @@ def _parser() -> argparse.ArgumentParser:
     corr.add_argument("--data-dir", type=Path, help="path to data/ (default: auto-detect)")
     corr.add_argument("--report", type=Path, help="write the Markdown timeline to this file")
     corr.set_defaults(func=_correlate)
+
+    ar = sub.add_parser("access-review", help="compare an AD export with the plan from data/")
+    ar.add_argument(
+        "--ad-export", type=Path, required=True, help="AD export CSV (sam,enabled,groups)"
+    )
+    ar.add_argument("--plan", type=Path, help="ad-plan.json (default: project-04-iam/generated/)")
+    ar.add_argument("--data-dir", type=Path, help="path to data/ (default: auto-detect)")
+    ar.add_argument("--report", type=Path, help="write the Markdown review to this file")
+    ar.set_defaults(func=_access_review)
 
     ioc = sub.add_parser("ioc", help="extract indicators of compromise from text (JSON output)")
     ioc.add_argument("file", nargs="?", type=Path, help="text file (default: standard input)")
