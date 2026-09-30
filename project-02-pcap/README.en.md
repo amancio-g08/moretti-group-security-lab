@@ -44,8 +44,10 @@ project-02-pcap/
 ├── wireshark/       # Lua plugin: moretti.lua, policy_engine.lua, moretti_policy.lua (generated)
 ├── tools/           # policy table generator
 ├── tests/           # engine tests and the synthetic capture builder
+├── nse/             # Lua segmentation audit (Nmap), targets generated from data/
 ├── documentation/   # plugin documentation
-└── (phase 7)        # pcaps/curated, analysis, evidence, reports
+├── reports/         # investigation report template
+└── (phase 7)        # pcaps/curated with the reviewed captures
 ```
 
 Raw captures are git-ignored by default; only curated captures are committed. Evidence is never

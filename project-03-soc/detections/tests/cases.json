@@ -65,6 +65,27 @@
       "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4625\", \"version\": \"2\", \"level\": \"0\", \"task\": \"12544\", \"opcode\": \"0\", \"keywords\": \"0x8010000000000000\", \"systemTime\": \"2026-09-29T12:00:00.000000000Z\", \"eventRecordID\": \"1000\", \"channel\": \"Security\", \"computer\": \"WS-FIN01.corp.moretti.internal\", \"severityValue\": \"AUDIT_FAILURE\", \"message\": \"\\\"An account failed to log on.\\\"\"}, \"eventdata\": {\"targetUserName\": \"adm-marcio.guimaraes\", \"targetDomainName\": \"CORP\", \"logonType\": \"10\", \"ipAddress\": \"10.10.20.10\", \"workstationName\": \"WS-FIN01\", \"status\": \"0xc000015b\", \"subStatus\": \"0x0\"}}}"
     },
     {
+      "id": "acc07-domain-admins",
+      "expect": 100108,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4732\", \"version\": \"0\", \"level\": \"0\", \"task\": \"13826\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-30T12:00:00.000000000Z\", \"eventRecordID\": \"2000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"A member was added to a security-enabled global group.\\\"\"}, \"eventdata\": {\"targetUserName\": \"Domain Admins\", \"subjectUserName\": \"adm-marcio.guimaraes\", \"memberName\": \"CN=joao.silva,OU=Finance,OU=Users,OU=Moretti,DC=corp,DC=moretti,DC=internal\"}}}"
+    },
+    {
+      "id": "acc07-priv-group",
+      "expect": 100108,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4728\", \"version\": \"0\", \"level\": \"0\", \"task\": \"13826\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-30T12:00:00.000000000Z\", \"eventRecordID\": \"2000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"A member was added to a security-enabled global group.\\\"\"}, \"eventdata\": {\"targetUserName\": \"GG-Priv-ServerAdmin\", \"subjectUserName\": \"adm-marcio.guimaraes\", \"memberName\": \"CN=joao.silva,OU=Finance,OU=Users,OU=Moretti,DC=corp,DC=moretti,DC=internal\"}}}"
+    },
+    {
+      "id": "acc07-normal-group-ignored",
+      "expect_not": 100108,
+      "log_format": "eventchannel",
+      "location": "EventChannel",
+      "event": "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"providerGuid\": \"{54849625-5478-4994-a5ba-3e3b0328c30d}\", \"eventID\": \"4728\", \"version\": \"0\", \"level\": \"0\", \"task\": \"13826\", \"opcode\": \"0\", \"keywords\": \"0x8020000000000000\", \"systemTime\": \"2026-09-30T12:00:00.000000000Z\", \"eventRecordID\": \"2000\", \"channel\": \"Security\", \"computer\": \"DC01.corp.moretti.internal\", \"severityValue\": \"AUDIT_SUCCESS\", \"message\": \"\\\"A member was added to a security-enabled global group.\\\"\"}, \"eventdata\": {\"targetUserName\": \"GG-Role-FinanceStaff\", \"subjectUserName\": \"adm-marcio.guimaraes\", \"memberName\": \"CN=joao.silva,OU=Finance,OU=Users,OU=Moretti,DC=corp,DC=moretti,DC=internal\"}}}"
+    },
+    {
       "id": "bf01-windows-guest",
       "expect": 100110,
       "repeat": 10,

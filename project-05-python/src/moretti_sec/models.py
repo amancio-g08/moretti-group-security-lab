@@ -76,3 +76,46 @@ class Finding:
     @property
     def first_seen(self) -> datetime | None:
         return min((e.event.timestamp for e in self.events), default=None)
+
+
+@dataclass(frozen=True)
+class NetworkFlow:
+    """One VPC Flow Log record (version 2 fields)."""
+
+    timestamp: datetime  # the flow's start, timezone-aware
+    src_ip: str | None
+    dst_ip: str | None
+    src_port: int | None
+    dst_port: int | None
+    protocol: str  # "tcp", "udp", "icmp" or a number as text
+    action: str  # ACCEPT | REJECT
+    packets: int = 0
+    bytes: int = 0
+
+
+@dataclass(frozen=True)
+class WazuhAlert:
+    """One alert from the Wazuh manager (alerts.json), reduced to what the timeline needs."""
+
+    timestamp: datetime
+    rule_id: str
+    level: int
+    description: str
+    agent: str | None  # the host the alert came from
+    src_ip: str | None
+    user: str | None
+    groups: tuple[str, ...] = field(default_factory=tuple)
+
+
+@dataclass(frozen=True)
+class TimelineItem:
+    """A single point on the correlated timeline, from any source, enriched with company context."""
+
+    timestamp: datetime
+    source: str  # "auth", "flow" or "wazuh"
+    summary: str
+    src: IpContext | None = None
+    dst: IpContext | None = None
+    account: AccountContext | None = None
+    outcome: str | None = None  # success/failure/ACCEPT/REJECT, when it applies
+    rule_ids: tuple[str, ...] = field(default_factory=tuple)  # matrix or Wazuh rule references

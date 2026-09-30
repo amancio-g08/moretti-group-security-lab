@@ -45,8 +45,10 @@ project-02-pcap/
 ├── wireshark/       # plugin Lua: moretti.lua, policy_engine.lua, moretti_policy.lua (gerado)
 ├── tools/           # gerador da tabela de política
 ├── tests/           # testes do motor e gerador da captura sintética
+├── nse/             # auditoria de segmentação em Lua (Nmap), alvos gerados do data/
 ├── documentation/   # documentação do plugin
-└── (fase 7)         # pcaps/curated, analysis, evidence, reports
+├── reports/         # modelo de relatório de investigação
+└── (fase 7)         # pcaps/curated com as capturas revisadas
 ```
 
 As capturas brutas ficam fora do Git; só as revisadas entram. Nenhuma evidência é inventada: o que

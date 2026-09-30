@@ -101,6 +101,18 @@
     </mitre>
   </rule>
 
+  <!-- ACC-07 (SCN-03): a member was added to a privileged group. Event 4728 (global/universal)
+       and 4732 (domain local) carry the group in win.eventdata.targetUserName. The value comes
+       from the moretti-privileged-groups list generated from data/. -->
+  <rule id="100108" level="12">
+    <field name="win.system.eventID">^4728$|^4732$|^4756$</field>
+    <list field="win.eventdata.targetUserName" lookup="match_key">etc/lists/moretti-privileged-groups</list>
+    <description>ACC-07: member added to the privileged group $(win.eventdata.targetUserName) by $(win.eventdata.subjectUserName)</description>
+    <mitre>
+      <id>T1098</id>
+    </mitre>
+  </rule>
+
   <!-- BF-01: repeated failures from the untrusted guest network -->
   <rule id="100110" level="12">
     <if_sid>60204</if_sid>

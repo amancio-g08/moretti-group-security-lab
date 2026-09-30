@@ -118,6 +118,24 @@ Details: [plugin documentation](../project-02-pcap/documentation/wireshark-plugi
 - [ ] F2. Build the synthetic capture (`python3 project-02-pcap/tests/make_synthetic_pcap.py
       ~/moretti-synthetic.pcap`), open it and apply `moretti.verdict == "deny"`: 5 packets.
 
+## G. Scenarios (phase 7)
+
+Details: run books in [scenarios/run-books/](../scenarios/run-books) and
+[scenarios/documentation-note.md](../scenarios/documentation-note.md). Needs section E done.
+
+- [ ] G1. Deploy APP-FIN01: `terraform -chdir=infrastructure/terraform/lab apply -var lab_phase=7`,
+      then enroll its Wazuh agent (E4) and add the syscheck entry for SCN-05.
+- [ ] G2. Copy `project-02-pcap/nse/*` to GUEST01 for the segmentation audit (SCN-04).
+- [ ] G3. Run SCN-01, SCN-02, SCN-03, SCN-04, SCN-05 and FP-01, one at a time, from their run
+      books. Collect the evidence each names.
+- [ ] G4. For each scenario, build the timeline on the Mac:
+      `moretti-sec correlate --flow <flowlogs> --wazuh <alerts.json> --auth <logs> --report <scn>.md`.
+- [ ] G5. Write the incident reports (`project-03-soc/incidents/`) and PCAP investigations
+      (`project-02-pcap/reports/`) from the templates, and commit the curated captures under
+      `project-02-pcap/pcaps/curated/`.
+- [ ] G6. Fill in each run book's "Observed" section and record the FP-01 exception.
+- [ ] G7. `infrastructure/scripts/lab-down.sh`.
+
 ## Later phases
 
 Items are added here as the code of each phase is written (7 — scenarios, 8 — Entra ID).

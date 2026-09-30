@@ -20,7 +20,7 @@ executed later (owner decision, 2026-09-29).
 | 4 | Minimal AWS lab: VPC, SGs from the matrix, Flow Logs, CloudTrail, Budgets; hosts per phase (ADR-009) | Starts here | In progress (code ready, not applied) |
 | 5 | P04a — Active Directory (OUs, GPOs, RBAC, policies) | Low | In progress (code ready, not applied) |
 | 6 | P03 — Wazuh + agents, AWS module, custom rules | Medium | In progress (code ready, not applied) |
-| 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | In progress (Wireshark plugin done) |
+| 7 | Scenarios end to end: PCAP + SOC + Python (APP-FIN01 added) | Medium | In progress (all code ready, not executed) |
 | 8 | P04b — Entra ID (Cloud Sync, MFA, Conditional Access, lifecycle) | Trial license | Planned |
 | 9 | Portfolio consolidation and teardown | → None | Planned |
 
@@ -124,6 +124,13 @@ executed later (owner decision, 2026-09-29).
   a differential test against an independent Python evaluator (203,228 flows, no disagreement) and
   an end-to-end `tshark` test on a synthetic capture. An Nmap NSE script (Lua) that audits
   segmentation from GUEST01 comes with the scenarios, since it needs the lab running.
+- **Status (2026-09-30), code complete:** run books for SCN-01..05 and FP-01; `moretti-sec
+  correlate` merging auth logs, VPC Flow Logs and Wazuh alerts into one enriched timeline (new
+  parsers, tested with synthetic samples); Wazuh rule ACC-07 (SCN-03) with a privileged-groups
+  list generated from `data/`; the Nmap NSE segmentation audit in Lua with its target table
+  generated from `data/` and unit-tested; incident and PCAP report templates. Checked here and in
+  CI: Python tests, the Lua engine and segmentation tests, tshark end to end. **Not executed**:
+  operator checklist, section G.
 
 ### Phase 8 — P04b Entra ID
 - **Creates:** tenant configuration, Cloud Sync, MFA, Conditional Access, Joiner/Mover/Leaver,

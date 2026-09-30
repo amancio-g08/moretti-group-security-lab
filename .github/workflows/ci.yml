@@ -101,6 +101,8 @@ jobs:
         run: for f in project-02-pcap/wireshark/*.lua project-02-pcap/tests/*.lua; do luac5.4 -p "$f"; done
       - name: Engine unit tests
         run: lua5.4 project-02-pcap/tests/test_engine.lua
+      - name: Segmentation audit unit tests
+        run: lua5.4 project-02-pcap/tests/test_segmentation.lua
       - run: pip install -e "project-05-python[dev]"
       - name: Differential and end-to-end tests
         working-directory: project-05-python

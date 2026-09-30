@@ -24,13 +24,29 @@ LISTS = (
     "moretti-break-glass-accounts",
     "moretti-service-accounts",
     "moretti-admin-accounts",
+    "moretti-privileged-groups",
 )
+# Account-name lists are validated as lowercase; the privileged-groups list holds AD group names
+# (mixed case, e.g. "Domain Admins"), so it is validated differently.
+_ACCOUNT_LISTS = tuple(name for name in LISTS if name != "moretti-privileged-groups")
 
 
-def render(accounts: dict, employees: list[dict]) -> dict[str, dict[str, str]]:
-    """List name -> {account name: value}."""
+def _camel(identifier: str) -> str:
+    return "".join(part[:1].upper() + part[1:] for part in identifier.split("-"))
+
+
+def render(
+    accounts: dict, employees: list[dict], roles: dict | None = None
+) -> dict[str, dict[str, str]]:
+    """List name -> {key: value}."""
     by_id = {e["employee_id"]: e for e in employees}
     lists: dict[str, dict[str, str]] = {name: {} for name in LISTS}
+
+    # Privileged groups whose membership change is worth an alert (SCN-03). Domain Admins is the
+    # built-in Tier 0 group; the GG-Priv-* groups come from roles.yaml.
+    lists["moretti-privileged-groups"]["Domain Admins"] = "tier0-builtin"
+    for role in (roles or {}).get("privileged_roles", []):
+        lists["moretti-privileged-groups"][f"GG-Priv-{_camel(role['id'])}"] = role["id"]
 
     for emp in employees:
         if emp["status"] == "terminated":
@@ -54,10 +70,13 @@ def render(accounts: dict, employees: list[dict]) -> dict[str, dict[str, str]]:
         name = item["username"] + ("$" if item.get("type") == "gmsa" else "")
         lists["moretti-service-accounts"][name] = item["owner"]
 
-    for name, entries in lists.items():
-        for key in entries:
+    for name in _ACCOUNT_LISTS:
+        for key in lists[name]:
             if key != key.lower() or ":" in key or not key:
                 raise PolicyError(f"{name}: invalid account name {key!r}")
+    for key in lists["moretti-privileged-groups"]:
+        if ":" in key or not key:
+            raise PolicyError(f"moretti-privileged-groups: invalid group name {key!r}")
     return lists
 
 
@@ -68,7 +87,9 @@ def to_cdb(entries: dict[str, str]) -> str:
 def render_from(data_dir: Path) -> dict[Path, str]:
     with (data_dir / "employees.csv").open(encoding="utf-8", newline="") as handle:
         employees = list(csv.DictReader(handle))
-    lists = render(load_yaml(data_dir / "accounts.yaml"), employees)
+    lists = render(
+        load_yaml(data_dir / "accounts.yaml"), employees, load_yaml(data_dir / "roles.yaml")
+    )
     return {LIST_DIR / name: to_cdb(entries) for name, entries in lists.items()}
 
 

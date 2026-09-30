@@ -7,7 +7,7 @@ fontes onde ele deixa rastro: captura de tráfego, VPC Flow Logs, alertas do Waz
 Python, ações de IAM e o relatório do incidente. O ID do cenário aparece no nome dos arquivos e nas
 referências, então dá para acompanhar o mesmo evento pelo laboratório inteiro.
 
-**Status:** previsto para a fase 7.
+**Status:** os run books e as ferramentas de apoio estão prontos e testados offline; falta executar (checklist, seção G). Veja [documentation-note.md](documentation-note.md).
 
 | ID | Cenário (rascunho) |
 |---|---|

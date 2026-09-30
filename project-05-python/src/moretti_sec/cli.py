@@ -8,13 +8,15 @@ import sys
 from datetime import timedelta
 from pathlib import Path
 
-from . import __version__
+from . import __version__, correlate
 from .company import Company, find_data_dir
 from .detections import BruteForceConfig, run_all
 from .enrich import enrich
 from .ioc import extract_iocs
 from .parsers import FORMATS, parse_file
-from .report import render_markdown
+from .parsers.flowlog import parse_flowlog
+from .parsers.wazuh_alerts import parse_wazuh_alerts
+from .report import render_markdown, render_timeline_markdown
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -37,6 +39,41 @@ def _analyze(args: argparse.Namespace) -> int:
     else:
         print(report)
     return 0
+
+
+def _read(paths, parser, **kwargs):
+    items = []
+    for path in paths or []:
+        items.extend(parser(path.read_text(encoding="utf-8").splitlines(), **kwargs))
+    return items
+
+
+def _correlate(args: argparse.Namespace) -> int:
+    company = Company.load(args.data_dir or find_data_dir())
+    auth = _read(args.auth, _sshd_or_windows, year=args.year)
+    flows = _read(args.flow, parse_flowlog)
+    alerts = _read(args.wazuh, parse_wazuh_alerts)
+    if not (auth or flows or alerts):
+        print("nothing to correlate: pass --auth, --flow and/or --wazuh", file=sys.stderr)
+        return 2
+    timeline = correlate.build(company, auth=auth, flows=flows, alerts=alerts)
+    names = [p.name for group in (args.auth, args.flow, args.wazuh) if group for p in group]
+    report = render_timeline_markdown(timeline, names)
+    if args.report:
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(report, encoding="utf-8")
+        print(f"{len(timeline)} timeline items -> {args.report}")
+    else:
+        print(report)
+    return 0
+
+
+def _sshd_or_windows(lines, year=None):
+    from .parsers import detect_format, parse_sshd, parse_windows
+
+    if detect_format(lines) == "windows":
+        return parse_windows(lines)
+    return parse_sshd(lines, year=year)
 
 
 def _ioc(args: argparse.Namespace) -> int:
@@ -63,6 +100,17 @@ def _parser() -> argparse.ArgumentParser:
     analyze.add_argument("--window", type=int, default=10, help="brute force window, in minutes")
     analyze.add_argument("--report", type=Path, help="write the Markdown report to this file")
     analyze.set_defaults(func=_analyze)
+
+    corr = sub.add_parser(
+        "correlate", help="merge auth logs, Flow Logs and Wazuh alerts into a timeline"
+    )
+    corr.add_argument("--auth", type=Path, action="append", help="sshd or Windows log (repeatable)")
+    corr.add_argument("--flow", type=Path, action="append", help="VPC Flow Log file (repeatable)")
+    corr.add_argument("--wazuh", type=Path, action="append", help="Wazuh alerts.json (repeatable)")
+    corr.add_argument("--year", type=int, help="year for syslog lines without one")
+    corr.add_argument("--data-dir", type=Path, help="path to data/ (default: auto-detect)")
+    corr.add_argument("--report", type=Path, help="write the Markdown timeline to this file")
+    corr.set_defaults(func=_correlate)
 
     ioc = sub.add_parser("ioc", help="extract indicators of compromise from text (JSON output)")
     ioc.add_argument("file", nargs="?", type=Path, help="text file (default: standard input)")

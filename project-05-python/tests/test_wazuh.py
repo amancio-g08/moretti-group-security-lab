@@ -27,8 +27,9 @@ OSSEC_BLOCK = SOC / "wazuh/moretti-ossec.conf"
 @pytest.fixture(scope="module")
 def sources():
     accounts = yaml.safe_load((REPO_DATA / "accounts.yaml").read_text(encoding="utf-8"))
+    roles = yaml.safe_load((REPO_DATA / "roles.yaml").read_text(encoding="utf-8"))
     with (REPO_DATA / "employees.csv").open(encoding="utf-8", newline="") as handle:
-        return accounts, list(csv.DictReader(handle))
+        return accounts, list(csv.DictReader(handle)), roles
 
 
 @pytest.fixture(scope="module")
@@ -55,21 +56,27 @@ def test_lists_follow_data(sources):
     assert lists["moretti-break-glass-accounts"] == {"bg-admin01": "security"}
     assert "svc-backup$" in lists["moretti-service-accounts"]  # gMSAs log on with a trailing $
     assert len(lists["moretti-admin-accounts"]) == 9
+    groups = lists["moretti-privileged-groups"]
+    assert groups["Domain Admins"] == "tier0-builtin"
+    assert "GG-Priv-Tier0DomainAdmin" in groups
+    assert all(":" not in name for name in groups)
 
 
 def test_admin_account_of_a_leaver_is_listed_as_terminated(sources):
-    accounts, employees = copy.deepcopy(sources)
+    accounts, employees, roles = copy.deepcopy(sources)
     for emp in employees:
         if emp["employee_id"] == "MG-0082":
             emp["status"] = "terminated"
-    assert "adm-rogerio.quintela" in render(accounts, employees)["moretti-terminated-accounts"]
+    assert (
+        "adm-rogerio.quintela" in render(accounts, employees, roles)["moretti-terminated-accounts"]
+    )
 
 
 def test_invalid_account_name_is_rejected(sources):
-    accounts, employees = copy.deepcopy(sources)
+    accounts, employees, roles = copy.deepcopy(sources)
     accounts["service_accounts"][0]["username"] = "Svc-Upper"
     with pytest.raises(PolicyError, match="invalid account name"):
-        render(accounts, employees)
+        render(accounts, employees, roles)
 
 
 # ---------------------------------------------------------------------------- rules

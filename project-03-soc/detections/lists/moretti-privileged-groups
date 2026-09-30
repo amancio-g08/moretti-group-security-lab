@@ -1,0 +1,7 @@
+Domain Admins:tier0-builtin
+GG-Priv-EndpointAdmin:endpoint-admin
+GG-Priv-NetworkAdmin:network-admin
+GG-Priv-ServerAdmin:server-admin
+GG-Priv-SiemAdmin:siem-admin
+GG-Priv-SocResponder:soc-responder
+GG-Priv-Tier0DomainAdmin:tier0-domain-admin

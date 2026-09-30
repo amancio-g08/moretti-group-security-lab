@@ -75,7 +75,7 @@ Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4624,4625} -MaxEvents 500
 ## Tests
 
 ```bash
-pytest          # 71 tests (2 need lua and tshark)
+pytest          # 76 tests (2 need lua and tshark)
 ruff check . && ruff format --check .
 ```
 

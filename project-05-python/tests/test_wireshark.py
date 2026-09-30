@@ -199,3 +199,9 @@ def test_synthetic_capture_is_labeled_and_uses_lab_addresses():
         for address in (packet[2], packet[4]):
             ip = ipaddress.ip_address(address)
             assert ip in lab or any(ip in net for net in documentation), address
+
+
+def test_generated_nse_targets_are_up_to_date():
+    from moretti_sec.render.nse_targets import main as nse_main
+
+    assert nse_main(["--check", "--data-dir", str(REPO_DATA)]) == 0

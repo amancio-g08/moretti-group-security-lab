@@ -110,7 +110,7 @@ repos:
         entry: python project-03-soc/tools/render_wazuh_lists.py --check
         language: python
         additional_dependencies: ["pyyaml==6.0.2"]
-        files: ^(data/(employees\.csv|accounts\.yaml)|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-03-soc/(tools/.*|detections/lists/.*))$
+        files: ^(data/(employees\.csv|(accounts|roles)\.yaml)|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-03-soc/(tools/.*|detections/lists/.*))$
         pass_filenames: false
       - id: wireshark-policy-in-sync
         name: Wireshark policy table regenerated from the matrix
@@ -118,4 +118,11 @@ repos:
         language: python
         additional_dependencies: ["pyyaml==6.0.2"]
         files: ^(data/(network-matrix|assets)\.yaml|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-02-pcap/(tools/.*|wireshark/moretti_policy\.lua))$
+        pass_filenames: false
+      - id: nse-targets-in-sync
+        name: NSE segmentation targets regenerated from the matrix
+        entry: python project-02-pcap/tools/render_nse_targets.py --check
+        language: python
+        additional_dependencies: ["pyyaml==6.0.2"]
+        files: ^(data/(network-matrix|assets)\.yaml|project-05-python/src/moretti_sec/(render/.*|company\.py)|project-02-pcap/(tools/.*|nse/moretti_targets\.lua))$
         pass_filenames: false

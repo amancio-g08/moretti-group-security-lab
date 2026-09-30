@@ -6,7 +6,7 @@ Each scenario (`SCN-xx`) is traced across every relevant evidence source: networ
 VPC Flow Logs, Wazuh alerts, Python reports, IAM actions and the incident report. The scenario ID
 is reused in filenames and references so that one event can be followed through the whole lab.
 
-**Status:** planned for Phase 7.
+**Status:** run books and the supporting tooling are ready and tested offline; execution is pending (operator checklist, section G). See [documentation-note.md](documentation-note.md).
 
 | ID | Scenario (draft) |
 |---|---|
